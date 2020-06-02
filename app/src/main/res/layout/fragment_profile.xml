@@ -108,7 +108,6 @@
         app:layout_constraintStart_toEndOf="@+id/iconInstagram"
         app:layout_constraintTop_toTopOf="@+id/iconInstagram" />
 
-    <!--    TODO WIP PIN ITEM   -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="100dp"

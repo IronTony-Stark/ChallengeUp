@@ -19,14 +19,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-// TODO categories chips
-//  data binding
-//  sorting page
-//  round images
-//  recycler view dividers
-//  achievements grid item with no padding
-//  animations with lottie
-//  open nav drawer on swipe left
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
