@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <variable name="icon" type="java.lang.String"/>
-        <variable name="data" type="java.lang.String"/>
-        <variable name="description" type="java.lang.String"/>
+        <variable name="iconVar" type="java.lang.String"/>
+        <variable name="dataVar" type="java.lang.String"/>
+        <variable name="descriptionVar" type="java.lang.String"/>
     </data>
 
     <androidx.cardview.widget.CardView
@@ -22,7 +22,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="8dp"
-                android:src="@{icon}"
+                android:src="@{iconVar}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -33,7 +33,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="24sp"
-                android:text="@{data}"
+                android:text="@{dataVar}"
                 app:layout_constraintBottom_toTopOf="@+id/description"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -45,7 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="@{description}"
+                android:text="@{descriptionVar}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
