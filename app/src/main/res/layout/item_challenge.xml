@@ -71,10 +71,11 @@
             android:id="@+id/dataAccepted"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/dataCompleted"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="309dp"
             tools:text="2M" />
 
         <ImageView
@@ -94,7 +95,7 @@
             app:layout_constraintEnd_toStartOf="@+id/dataLiked"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/dataAccepted"
-            tools:layout_editor_absoluteY="309dp"
+            app:layout_constraintTop_toTopOf="@+id/dataAccepted"
             tools:text="1M" />
 
         <ImageView
@@ -114,7 +115,7 @@
             app:layout_constraintEnd_toStartOf="@+id/iconSave"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/dataCompleted"
-            tools:layout_editor_absoluteY="309dp"
+            app:layout_constraintTop_toTopOf="@+id/dataCompleted"
             tools:text="1M" />
 
         <ImageView

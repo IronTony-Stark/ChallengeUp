@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
         NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout);
         NavigationUI.setupWithNavController(binding.navView, navController);
+        NavigationUI.setupWithNavController(binding.bottomNavigationView, navController);
 
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph())
                 .setOpenableLayout(drawerLayout)

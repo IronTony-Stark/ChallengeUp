@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/timeChallenges"
+        android:icon="@drawable/ic_time"
+        android:title="@string/time_challenges" />
+    <item
+        android:id="@+id/challenges"
+        android:icon="@drawable/ic_search"
+        android:title="@string/search" />
+    <item
+        android:id="@+id/newsFeed"
+        android:icon="@drawable/ic_news"
+        android:title="@string/news_feed" />
+    <item
+        android:id="@+id/profile"
+        android:icon="@drawable/ic_user"
+        android:title="@string/profile" />
+</menu>
