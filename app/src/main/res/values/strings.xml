@@ -20,6 +20,11 @@
     <string name="search">Search</string>
     <string name="time_challenges">Time Challenges</string>
     <string name="shop">Shop</string>
+    <string name="saved_challenges">Saved Challenges</string>
+    <string name="top_challenges">Top Challenges</string>
+    <string name="top_players">Top Players</string>
+    <string name="achievements">Achievements</string>
+    <string name="settings">Settings</string>
 
     <string-array name="challengesOrderBy">
         <item>None</item>

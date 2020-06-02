@@ -1,15 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <item android:title="Title">
-        <menu>
-            <item
-                android:id="@+id/item1"
-                android:checked="true"
-                android:title="item1" />
-            <item
-                android:id="@+id/item2"
-                android:title="Item2" />
-        </menu>
-    </item>
+    <item
+        android:id="@+id/savedChallenges"
+        android:checked="true"
+        android:title="@string/saved_challenges" />
+    <item
+        android:id="@+id/shop"
+        android:checked="true"
+        android:title="@string/shop" />
+    <item
+        android:id="@+id/topChallenges"
+        android:checked="true"
+        android:title="@string/top_challenges" />
+    <item
+        android:id="@+id/topPlayers"
+        android:checked="true"
+        android:title="@string/top_players" />
+    <item
+        android:id="@+id/achievements"
+        android:checked="true"
+        android:title="@string/achievements" />
+    <item
+        android:id="@+id/settings"
+        android:checked="true"
+        android:title="@string/settings" />
 </menu>

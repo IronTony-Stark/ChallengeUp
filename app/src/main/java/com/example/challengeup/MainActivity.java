@@ -15,6 +15,10 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.challengeup.databinding.ActivityMainBinding;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+
 // TODO categories chips
 //  data binding
 //  sorting page
@@ -22,6 +26,7 @@ import com.example.challengeup.databinding.ActivityMainBinding;
 //  recycler view dividers
 //  achievements grid item with no padding
 //  animations with lottie
+//  open nav drawer on swipe left
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
@@ -37,20 +42,34 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout = binding.drawerLayout;
         navController = Navigation.findNavController(this, R.id.navHostFragment);
 
-        NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout);
+        appBarConfiguration = new AppBarConfiguration
+                .Builder(R.id.timeChallenges, R.id.challenges, R.id.newsFeed, R.id.profile)
+                .setOpenableLayout(drawerLayout)
+                .build();
+
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
         NavigationUI.setupWithNavController(binding.bottomNavigationView, navController);
 
-        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph())
-                .setOpenableLayout(drawerLayout)
-                .build();
+        final List<Integer> navDrawerUnlockedFragmentIds = new LinkedList<Integer>() {
+            {
+                add(Objects.requireNonNull(navController
+                        .getGraph().findNode(R.id.timeChallenges)).getId());
+                add(Objects.requireNonNull(navController
+                        .getGraph().findNode(R.id.challenges)).getId());
+                add(Objects.requireNonNull(navController
+                        .getGraph().findNode(R.id.newsFeed)).getId());
+                add(Objects.requireNonNull(navController
+                        .getGraph().findNode(R.id.profile)).getId());
+            }
+        };
 
         navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
             @Override
             public void onDestinationChanged(@NonNull NavController controller,
                                              @NonNull NavDestination destination,
                                              @Nullable Bundle arguments) {
-                if (destination.getId() == navController.getGraph().getStartDestination())
+                if (navDrawerUnlockedFragmentIds.contains(destination.getId()))
                     drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
                 else
                     drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
