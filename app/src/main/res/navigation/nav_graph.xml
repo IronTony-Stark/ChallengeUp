@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/newsFeed">
+    <fragment
+        android:id="@+id/profile"
+        android:name="com.example.challengeup.Profile"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/newsFeed"
+        android:name="com.example.challengeup.NewsFeed"
+        android:label="fragment_news_feed"
+        tools:layout="@layout/fragment_news_feed" />
+    <fragment
+        android:id="@+id/challenges"
+        android:name="com.example.challengeup.Challenges"
+        android:label="fragment_challenges"
+        tools:layout="@layout/fragment_challenges" />
+    <fragment
+        android:id="@+id/createChallenge"
+        android:name="com.example.challengeup.CreateChallenge"
+        android:label="fragment_create_challenge"
+        tools:layout="@layout/fragment_create_challenge" />
+    <fragment
+        android:id="@+id/timeChallenges"
+        android:name="com.example.challengeup.TimeChallenges"
+        android:label="fragment_time_challenges"
+        tools:layout="@layout/fragment_time_challenges" />
+    <fragment
+        android:id="@+id/shop"
+        android:name="com.example.challengeup.Shop"
+        android:label="fragment_shop"
+        tools:layout="@layout/fragment_shop" />
+    <fragment
+        android:id="@+id/savedChallenges"
+        android:name="com.example.challengeup.SavedChallenges"
+        android:label="fragment_saved_challenges"
+        tools:layout="@layout/fragment_saved_challenges" />
+</navigation>

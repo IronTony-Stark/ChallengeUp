@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="350dp"
+    android:elevation="3dp"
+    app:cardCornerRadius="10dp"
+    app:cardUseCompatPadding="true"
+    tools:targetApi="lollipop">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/thumbnail"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+        <ImageView
+            android:id="@+id/avatar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintBottom_toBottomOf="@+id/name"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toStartOf="@+id/avatar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/thumbnail"
+            tools:text="Challenge Name" />
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:maxLines="4"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/name"
+            tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis suscipit lectus non est elementum congue. Sed at imperdiet quam. Pellentesque ullamcorper dolor nec sem euismod, nec feugiat ex ultricies. Proin ut efficitur ligula. Sed feugiat, metus a sagittis porttitor, ante metus vestibulum mi, sit amet faucibus nibh sapien eget mi. Vestibulum porta est vel volutpat aliquet. Nulla eleifend sem at feugiat porttitor. Mauris vel ligula at leo imperdiet viverra. Fusce nec euismod justo. Etiam cursus purus sed orci maximus eleifend. Sed sodales diam erat, id laoreet ante sollicitudin ut. Nunc congue neque vitae fringilla elementum. In feugiat, lacus non facilisis viverra, diam tortor sodales dui, at dignissim ipsum sem ut tortor.  Vestibulum tristique neque et condimentum varius. Cras feugiat felis vel est luctus, vitae fermentum est congue. Vestibulum nec quam ac nunc fringilla sodales ut et orci. Nulla viverra non libero ac eleifend. Etiam ante diam, placerat ut tempor id, consectetur id ante. Nam vestibulum, ligula a iaculis aliquam, ligula lacus tincidunt turpis, in venenatis sapien sapien non nibh. Maecenas posuere lobortis elit sit amet faucibus. Proin scelerisque iaculis mi, eget viverra diam mattis vitae. Proin nec ligula dictum, volutpat enim eget, pretium ex. In lobortis cursus elit, in aliquet massa tincidunt sit amet. Maecenas ultrices suscipit lacus a gravida. Maecenas vel faucibus massa. Mauris vel ligula vel risus vulputate euismod mollis vel risus. Nam suscipit et tortor et varius. Donec et vestibulum enim, et fringilla velit. " />
+
+        <ImageView
+            android:id="@+id/iconAccepted"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/ic_users"
+            app:layout_constraintBottom_toBottomOf="@+id/dataAccepted"
+            app:layout_constraintEnd_toStartOf="@+id/dataAccepted"
+            app:layout_constraintTop_toTopOf="@+id/dataAccepted" />
+
+        <TextView
+            android:id="@+id/dataAccepted"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@+id/dataCompleted"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:layout_editor_absoluteY="309dp"
+            tools:text="2M" />
+
+        <ImageView
+            android:id="@+id/iconCompleted"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/ic_checkmark"
+            app:layout_constraintBottom_toBottomOf="@+id/dataCompleted"
+            app:layout_constraintEnd_toStartOf="@+id/dataCompleted"
+            app:layout_constraintTop_toTopOf="@+id/dataCompleted" />
+
+        <TextView
+            android:id="@+id/dataCompleted"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@+id/dataLiked"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/dataAccepted"
+            tools:layout_editor_absoluteY="309dp"
+            tools:text="1M" />
+
+        <ImageView
+            android:id="@+id/iconLiked"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/ic_heart"
+            app:layout_constraintBottom_toBottomOf="@+id/dataLiked"
+            app:layout_constraintEnd_toStartOf="@+id/dataLiked"
+            app:layout_constraintTop_toTopOf="@+id/dataLiked" />
+
+        <TextView
+            android:id="@+id/dataLiked"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@+id/iconSave"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/dataCompleted"
+            tools:layout_editor_absoluteY="309dp"
+            tools:text="1M" />
+
+        <ImageView
+            android:id="@+id/iconSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:src="@drawable/ic_bookmark"
+            app:layout_constraintBottom_toBottomOf="@+id/iconLiked"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/iconLiked" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

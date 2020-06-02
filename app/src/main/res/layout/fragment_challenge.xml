@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:context=".Challenge">
+
+        <ImageView
+            android:id="@+id/imageChallenge"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/backgrounds/scenic" />
+
+        <TextView
+            android:id="@+id/dataCompleted"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:textSize="36sp"
+            app:layout_constraintEnd_toStartOf="@+id/iconSave"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageChallenge"
+            tools:text="Challenge Name" />
+
+        <ImageView
+            android:id="@+id/iconSave"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginEnd="24dp"
+            android:src="@drawable/ic_bookmark"
+            app:layout_constraintBottom_toBottomOf="@+id/dataCompleted"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/dataCompleted" />
+
+        <ImageView
+            android:id="@+id/avatar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="48dp"
+            android:layout_marginTop="32dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dataCompleted"
+            tools:src="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/nameUser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="@+id/avatar"
+            app:layout_constraintStart_toEndOf="@+id/avatar"
+            app:layout_constraintTop_toTopOf="@+id/avatar"
+            tools:text="Iron Tony" />
+
+        <Button
+            android:id="@+id/btnFollow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="48dp"
+            android:text="@string/follow"
+            app:layout_constraintBottom_toBottomOf="@+id/avatar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/avatar" />
+
+        <TextView
+            android:id="@+id/todoChips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/avatar"
+            tools:text="Hard         Awkward         Adult" />
+
+        <TextView
+            android:id="@+id/titleDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="36dp"
+            android:textSize="30sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/todoChips"
+            android:text="@string/description" />
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textAlignment="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/titleDescription"
+            tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis suscipit lectus non est elementum congue. Sed at imperdiet quam. Pellentesque ullamcorper dolor nec sem euismod, nec feugiat ex ultricies. Proin ut efficitur ligula. Sed feugiat, metus a sagittis porttitor, ante metus vestibulum mi, sit amet faucibus nibh sapien eget mi. Vestibulum porta est vel volutpat aliquet. Nulla eleifend sem at feugiat porttitor. Mauris vel ligula at leo imperdiet viverra. Fusce nec euismod justo. Etiam cursus purus sed orci maximus eleifend. Sed sodales diam erat, id laoreet ante sollicitudin ut. Nunc congue neque vitae fringilla elementum. In feugiat, lacus non facilisis viverra, diam tortor sodales dui, at dignissim ipsum sem ut tortor. " />
+
+        <TextView
+            android:id="@+id/titleTask"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textSize="30sp"
+            app:layout_constraintStart_toStartOf="@+id/titleDescription"
+            app:layout_constraintTop_toBottomOf="@+id/description"
+            android:text="@string/task" />
+
+        <TextView
+            android:id="@+id/task"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textAlignment="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/titleTask"
+            tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis suscipit lectus non est elementum congue. Sed at imperdiet quam. Pellentesque ullamcorper dolor nec sem euismod, nec feugiat ex ultricies. Proin ut efficitur ligula. Sed feugiat, metus a sagittis porttitor, ante metus vestibulum mi, sit amet faucibus nibh sapien eget mi. Vestibulum porta est vel volutpat aliquet. Nulla eleifend sem at feugiat porttitor. Mauris vel ligula at leo imperdiet viverra. Fusce nec euismod justo. Etiam cursus purus sed orci maximus eleifend. Sed sodales diam erat, id laoreet ante sollicitudin ut. Nunc congue neque vitae fringilla elementum. In feugiat, lacus non facilisis viverra, diam tortor sodales dui, at dignissim ipsum sem ut tortor. " />
+
+        <TextView
+            android:id="@+id/hashTags"
+            android:layout_width="321dp"
+            android:layout_height="22dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/task"
+            tools:text="#Cool #Hard #NoKids #Whatever #HashTag" />
+
+        <ImageView
+            android:id="@+id/rewardAchievement"
+            android:layout_width="48dp"
+            android:layout_height="46dp"
+            android:layout_marginTop="32dp"
+            android:src="@drawable/ic_trophy"
+            app:layout_constraintEnd_toStartOf="@+id/rewardRP"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/hashTags" />
+
+        <TextView
+            android:id="@+id/rewardRP"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="@+id/rewardAchievement"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/rewardAchievement"
+            app:layout_constraintTop_toTopOf="@+id/rewardAchievement"
+            tools:text="100 RP" />
+
+        <include
+            android:id="@+id/statsCompleted"
+            layout="@layout/item_stats"
+            android:layout_width="120dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="32dp"
+            app:layout_constraintEnd_toStartOf="@+id/statsAccepted"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rewardAchievement" />
+
+        <include
+            android:id="@+id/statsAccepted"
+            layout="@layout/item_stats"
+            android:layout_width="120dp"
+            android:layout_height="150dp"
+            app:layout_constraintEnd_toStartOf="@+id/statsLiked"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/statsCompleted"
+            app:layout_constraintTop_toTopOf="@+id/statsCompleted" />
+
+        <include
+            android:id="@+id/statsLiked"
+            layout="@layout/item_stats"
+            android:layout_width="120dp"
+            android:layout_height="150dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/statsAccepted"
+            app:layout_constraintTop_toTopOf="@+id/statsAccepted" />
+
+        <Button
+            android:id="@+id/btnAccept"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/statsAccepted"
+            android:text="@string/challenge_me" />
+
+        <Button
+            android:id="@+id/btnReport"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="@+id/btnAccept"
+            app:layout_constraintStart_toStartOf="@+id/btnAccept"
+            app:layout_constraintTop_toBottomOf="@+id/btnAccept"
+            android:text="@string/report" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

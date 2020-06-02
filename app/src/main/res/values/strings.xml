@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">ChallengeUp</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="confirm">Confirm</string>
+    <string name="deny">Deny</string>
+    <string name="follow">Follow</string>
+    <string name="description">Description</string>
+    <string name="task">Task</string>
+    <string name="challenge_me">Challenge Me!</string>
+    <string name="report">Report</string>
+    <string name="preview">Preview</string>
+    <string name="name_of_your_challenge">Name of Your Challenge</string>
+    <string name="load_image">Load Image</string>
+    <string name="create">Create!</string>
+    <string name="challenge">Challenge</string>
+    <string name="statistics">Statistics</string>
+
+    <string-array name="challengesOrderBy">
+        <item>None</item>
+        <item>Likes</item>
+        <item>Accepted</item>
+        <item>Completed</item>
+        <item>Points</item>
+    </string-array>
+    <string-array name="orderDirection">
+        <item>Ascending</item>
+        <item>Descending</item>
+    </string-array>
+</resources>
