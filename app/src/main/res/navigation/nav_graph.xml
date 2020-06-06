@@ -77,4 +77,15 @@
         android:name="com.example.challengeup.Achievement"
         android:label="fragment_achievement"
         tools:layout="@layout/fragment_achievement" />
+    <fragment
+        android:id="@+id/login"
+        android:name="com.example.challengeup.Login"
+        android:label="login_fragment"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_login_to_newsFeed"
+            app:destination="@id/newsFeed"
+            app:popUpTo="@id/newsFeed"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>

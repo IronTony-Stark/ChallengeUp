@@ -108,95 +108,27 @@
         app:layout_constraintStart_toEndOf="@+id/iconInstagram"
         app:layout_constraintTop_toTopOf="@+id/iconInstagram" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:background="@drawable/layout_border"
-        app:layout_constraintEnd_toStartOf="@+id/constraintLayout3"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/constraintLayout2"
-        app:layout_constraintTop_toTopOf="@+id/constraintLayout2">
-
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            tools:text="Challenge Name"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toTopOf="@+id/textView15"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/textView15"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            tools:text="Completed"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout3"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:background="@drawable/layout_border"
+    <TextView
+        android:id="@+id/pinnedItemsSection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        android:text="Pinned Items"
+        android:textSize="36sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/constraintLayout"
-        app:layout_constraintTop_toTopOf="@+id/constraintLayout">
-
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="8dp"
-            tools:text="God Of War"
-            android:textSize="24sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout2"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="48dp"
-        android:background="@drawable/layout_border"
-        app:layout_constraintEnd_toStartOf="@+id/constraintLayout"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iconGoogle">
-
-        <ImageView
-            android:id="@+id/imageView21"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:src="@drawable/ic_trophy"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintTop_toBottomOf="@+id/iconGoogle" />
 
     <Button
         android:id="@+id/btnReport"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="64dp"
         android:text="@string/report"
         app:layout_constraintEnd_toStartOf="@+id/btnChallenge"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
+        app:layout_constraintTop_toBottomOf="@+id/pinnedItemsSection" />
 
     <Button
         android:id="@+id/btnChallenge"

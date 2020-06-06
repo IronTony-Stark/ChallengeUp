@@ -1,9 +1,11 @@
 package com.example.challengeup;
 
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -65,6 +67,17 @@ public class MainActivity extends AppCompatActivity {
                     drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
                 else
                     drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+
+                ActionBar actionBar = getSupportActionBar();
+                if (destination.getId() == R.id.login) {
+                    if (actionBar != null)
+                        actionBar.hide();
+                    binding.bottomNavigationView.setVisibility(View.GONE);
+                } else {
+                    if (actionBar != null)
+                        actionBar.show();
+                    binding.bottomNavigationView.setVisibility(View.VISIBLE);
+                }
             }
         });
     }
