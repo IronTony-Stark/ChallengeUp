@@ -34,7 +34,7 @@ public class NewsFeed extends Fragment {
         mNavController = Navigation.findNavController(view);
         mLoginViewModel = new ViewModelProvider(requireActivity()).get(LoginViewModel.class);
 
-        if (!mLoginViewModel.isUserAuthenticated())
-            mNavController.navigate(R.id.login);
+//        if (!mLoginViewModel.isUserAuthenticated())
+//            mNavController.navigate(R.id.login);
     }
 }

@@ -26,6 +26,8 @@
     <string name="achievements">Achievements</string>
     <string name="settings">Settings</string>
     <string name="login">Login</string>
+    <string name="log_out_text">Log out</string>
+    <string name="log_in_text">Log in</string>
 
     <string-array name="challengesOrderBy">
         <item>None</item>
