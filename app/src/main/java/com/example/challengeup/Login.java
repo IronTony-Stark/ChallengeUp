@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
@@ -36,12 +37,9 @@ public class Login extends Fragment {
         mNavController = Navigation.findNavController(view);
         mLoginViewModel = new ViewModelProvider(requireActivity()).get(LoginViewModel.class);
 
-        view.findViewById(R.id.btnLogin).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mLoginViewModel.setUserAuthenticated();
-                mNavController.navigate(R.id.newsFeed);
-            }
+        view.findViewById(R.id.btnLogin).setOnClickListener(v -> {
+            mLoginViewModel.setUserAuthenticated();
+            mNavController.navigate(LoginDirections.actionLoginToNewsFeed());
         });
     }
 }

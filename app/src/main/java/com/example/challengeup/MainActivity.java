@@ -3,14 +3,11 @@ package com.example.challengeup;
 import android.os.Bundle;
 import android.view.View;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
@@ -58,26 +55,21 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
-            @Override
-            public void onDestinationChanged(@NonNull NavController controller,
-                                             @NonNull NavDestination destination,
-                                             @Nullable Bundle arguments) {
-                if (navDrawerUnlockedFragmentIds.contains(destination.getId()))
-                    drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-                else
-                    drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            if (navDrawerUnlockedFragmentIds.contains(destination.getId()))
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+            else
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
-                ActionBar actionBar = getSupportActionBar();
-                if (destination.getId() == R.id.login) {
-                    if (actionBar != null)
-                        actionBar.hide();
-                    binding.bottomNavigationView.setVisibility(View.GONE);
-                } else {
-                    if (actionBar != null)
-                        actionBar.show();
-                    binding.bottomNavigationView.setVisibility(View.VISIBLE);
-                }
+            ActionBar actionBar = getSupportActionBar();
+            if (destination.getId() == R.id.login) {
+                if (actionBar != null)
+                    actionBar.hide();
+                binding.bottomNavigationView.setVisibility(View.GONE);
+            } else {
+                if (actionBar != null)
+                    actionBar.show();
+                binding.bottomNavigationView.setVisibility(View.VISIBLE);
             }
         });
     }
