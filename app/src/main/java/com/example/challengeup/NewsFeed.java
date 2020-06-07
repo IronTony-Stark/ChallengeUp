@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -31,7 +32,7 @@ public class NewsFeed extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mNavController = Navigation.findNavController(view);
-        mLoginViewModel = ViewModelProviders.of(requireActivity()).get(LoginViewModel.class);
+        mLoginViewModel = new ViewModelProvider(requireActivity()).get(LoginViewModel.class);
 
         if (!mLoginViewModel.isUserAuthenticated())
             mNavController.navigate(R.id.login);

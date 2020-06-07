@@ -1,5 +1,6 @@
 package com.example.challengeup;
 
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
@@ -33,7 +34,7 @@ public class Login extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mNavController = Navigation.findNavController(view);
-        mLoginViewModel = ViewModelProviders.of(requireActivity()).get(LoginViewModel.class);
+        mLoginViewModel = new ViewModelProvider(requireActivity()).get(LoginViewModel.class);
 
         view.findViewById(R.id.btnLogin).setOnClickListener(new View.OnClickListener() {
             @Override

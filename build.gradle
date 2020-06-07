@@ -7,7 +7,6 @@ buildscript {
         version_material = "1.1.0"
     }
 
-
     repositories {
         google()
         jcenter()
