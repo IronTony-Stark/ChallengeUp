@@ -6,87 +6,75 @@
     app:startDestination="@id/newsFeed">
     <fragment
         android:id="@+id/timeChallenges"
-        android:name="com.example.challengeup.TimeChallenges"
+        android:name="com.example.challengeup.fragment.TimeChallenges"
         android:label="fragment_time_challenges"
         tools:layout="@layout/fragment_time_challenges" />
     <fragment
         android:id="@+id/challenges"
-        android:name="com.example.challengeup.Challenges"
+        android:name="com.example.challengeup.fragment.Challenges"
         android:label="fragment_challenges"
         tools:layout="@layout/fragment_challenges" />
     <fragment
         android:id="@+id/newsFeed"
-        android:name="com.example.challengeup.NewsFeed"
+        android:name="com.example.challengeup.fragment.NewsFeed"
         android:label="fragment_news_feed"
         tools:layout="@layout/fragment_news_feed" />
     <fragment
         android:id="@+id/profile"
-        android:name="com.example.challengeup.Profile"
+        android:name="com.example.challengeup.fragment.Profile"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
 
     <fragment
         android:id="@+id/createChallenge"
-        android:name="com.example.challengeup.CreateChallenge"
+        android:name="com.example.challengeup.fragment.CreateChallenge"
         android:label="fragment_create_challenge"
         tools:layout="@layout/fragment_create_challenge" />
 
     <fragment
         android:id="@+id/savedChallenges"
-        android:name="com.example.challengeup.SavedChallenges"
+        android:name="com.example.challengeup.fragment.SavedChallenges"
         android:label="fragment_saved_challenges"
         tools:layout="@layout/fragment_saved_challenges" />
     <fragment
         android:id="@+id/shop"
-        android:name="com.example.challengeup.Shop"
+        android:name="com.example.challengeup.fragment.Shop"
         android:label="fragment_shop"
         tools:layout="@layout/fragment_shop" />
     <fragment
         android:id="@+id/topChallenges"
-        android:name="com.example.challengeup.TopChallenges"
+        android:name="com.example.challengeup.fragment.TopChallenges"
         android:label="fragment_top_challenges"
         tools:layout="@layout/fragment_top_challenges" />
     <fragment
         android:id="@+id/topPlayers"
-        android:name="com.example.challengeup.TopPlayers"
+        android:name="com.example.challengeup.fragment.TopPlayers"
         android:label="fragment_top_players"
         tools:layout="@layout/fragment_top_players" />
     <fragment
         android:id="@+id/achievements"
-        android:name="com.example.challengeup.Achievements"
+        android:name="com.example.challengeup.fragment.Achievements"
         android:label="fragment_achievements"
         tools:layout="@layout/fragment_achievements" />
     <fragment
         android:id="@+id/settings"
-        android:name="com.example.challengeup.Settings"
+        android:name="com.example.challengeup.fragment.Settings"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
 
     <fragment
         android:id="@+id/challenge"
-        android:name="com.example.challengeup.Challenge"
+        android:name="com.example.challengeup.fragment.Challenge"
         android:label="fragment_challenge"
         tools:layout="@layout/fragment_challenge" />
     <fragment
         android:id="@+id/stats"
-        android:name="com.example.challengeup.Stats"
+        android:name="com.example.challengeup.fragment.Stats"
         android:label="fragment_stats"
         tools:layout="@layout/fragment_stats" />
     <fragment
         android:id="@+id/achievement"
-        android:name="com.example.challengeup.Achievement"
+        android:name="com.example.challengeup.fragment.Achievement"
         android:label="fragment_achievement"
         tools:layout="@layout/fragment_achievement" />
-    <fragment
-        android:id="@+id/login"
-        android:name="com.example.challengeup.Login"
-        android:label="login_fragment"
-        tools:layout="@layout/fragment_login" >
-
-<!--&lt;!&ndash;        <action&ndash;&gt;-->
-<!--&lt;!&ndash;            android:id="@+id/action_login_to_newsFeed"&ndash;&gt;-->
-<!--&lt;!&ndash;            app:destination="@id/newsFeed"&ndash;&gt;-->
-<!--&lt;!&ndash;            app:popUpTo="@id/newsFeed"&ndash;&gt;-->
-<!--&lt;!&ndash;            app:popUpToInclusive="true" />&ndash;&gt;-->
-    </fragment>
 </navigation>

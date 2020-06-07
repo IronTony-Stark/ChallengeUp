@@ -3,9 +3,7 @@ package com.example.challengeup;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -15,6 +13,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.challengeup.databinding.ActivityMainBinding;
+import com.example.challengeup.utils.LoginUtils;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -26,8 +25,8 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 123;
-    private final String TAG = "MainActivity";
-    private ActivityMainBinding binding;
+    private static final String TAG = "MainActivity";
+
     private DrawerLayout drawerLayout;
     private NavController navController;
     private AppBarConfiguration appBarConfiguration;
@@ -35,7 +34,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        ActivityMainBinding binding = DataBindingUtil
+                .setContentView(this, R.layout.activity_main);
 
         Log.w(TAG, "Create Main Activity.");
 
@@ -51,36 +51,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(binding.navView, navController);
         NavigationUI.setupWithNavController(binding.bottomNavigationView, navController);
 
-        final List<Integer> navDrawerUnlockedFragmentIds = new LinkedList<Integer>() {
-            {
-                add(Objects.requireNonNull(navController
-                        .getGraph().findNode(R.id.timeChallenges)).getId());
-                add(Objects.requireNonNull(navController
-                        .getGraph().findNode(R.id.challenges)).getId());
-                add(Objects.requireNonNull(navController
-                        .getGraph().findNode(R.id.newsFeed)).getId());
-                add(Objects.requireNonNull(navController
-                        .getGraph().findNode(R.id.profile)).getId());
-            }
-        };
-
-        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-            if (navDrawerUnlockedFragmentIds.contains(destination.getId()))
-                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-            else
-                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-
-            ActionBar actionBar = getSupportActionBar();
-            if (destination.getId() == R.id.login) {
-                if (actionBar != null)
-                    actionBar.hide();
-                binding.bottomNavigationView.setVisibility(View.GONE);
-            } else {
-                if (actionBar != null)
-                    actionBar.show();
-                binding.bottomNavigationView.setVisibility(View.VISIBLE);
-            }
-        });
+        setupDestinations();
     }
 
     @Override
@@ -89,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
-            LoginActivity loginActivity = new LoginActivity(this);
+            LoginUtils loginActivity = new LoginUtils(this);
             loginActivity.createSignInIntent();
         }
     }
@@ -119,5 +90,27 @@ public class MainActivity extends AppCompatActivity {
                 // ...
             }
         }
+    }
+
+    private void setupDestinations() {
+        final List<Integer> navDrawerUnlockedFragmentIds = new LinkedList<Integer>() {
+            {
+                add(Objects.requireNonNull(navController
+                        .getGraph().findNode(R.id.timeChallenges)).getId());
+                add(Objects.requireNonNull(navController
+                        .getGraph().findNode(R.id.challenges)).getId());
+                add(Objects.requireNonNull(navController
+                        .getGraph().findNode(R.id.newsFeed)).getId());
+                add(Objects.requireNonNull(navController
+                        .getGraph().findNode(R.id.profile)).getId());
+            }
+        };
+
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            if (navDrawerUnlockedFragmentIds.contains(destination.getId()))
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+            else
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        });
     }
 }
