@@ -1,6 +1,7 @@
 package com.example.challengeup;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -16,11 +17,11 @@ import androidx.navigation.ui.NavigationUI;
 import com.example.challengeup.backend.User;
 import com.example.challengeup.databinding.ActivityMainBinding;
 import com.example.challengeup.databinding.NavDrawerHeaderBinding;
-import com.example.challengeup.result.ICallback;
-import com.example.challengeup.result.Result;
+import com.example.challengeup.request.ICallback;
+import com.example.challengeup.request.Result;
 import com.example.challengeup.utils.LoginUtils;
-import com.example.challengeup.viewModel.MainActivityFactory;
 import com.example.challengeup.viewModel.MainActivityViewModel;
+import com.example.challengeup.viewModel.factory.MainActivityFactory;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.LinkedList;
@@ -40,14 +41,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil
-                .setContentView(this, R.layout.activity_main);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
         Container container = ((ApplicationContainer) getApplication()).mContainer;
-        mViewModel = new ViewModelProvider(this,
-                new MainActivityFactory(
-                        container.mExecutor,
-                        container.mainThreadHandler)).get(MainActivityViewModel.class);
+        SharedPreferences preferences = getSharedPreferences(USER_DATA_KEY, MODE_PRIVATE);
+        mViewModel = new ViewModelProvider(this, new MainActivityFactory(
+                container.mRequestExecutor,
+                preferences)
+        ).get(MainActivityViewModel.class);
 
         drawerLayout = binding.drawerLayout;
         navController = Navigation.findNavController(this, R.id.navHostFragment);
@@ -171,4 +172,6 @@ public class MainActivity extends AppCompatActivity {
             headerBinding.setTag(tag);
         }
     }
+
+    public static final String USER_DATA_KEY = "com.example.challengeup.userdata";
 }

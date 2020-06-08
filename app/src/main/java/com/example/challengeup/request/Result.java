@@ -1,11 +1,9 @@
-package com.example.challengeup.result;
+package com.example.challengeup.request;
 
 public abstract class Result {
 
-    private Result() {
-    }
-
     public final static class Success<T> extends Result {
+
         public T data;
 
         public Success(T data) {
@@ -14,6 +12,7 @@ public abstract class Result {
     }
 
     public final static class Error extends Result {
+
         public Exception exception;
 
         public Error(Exception exception) {
