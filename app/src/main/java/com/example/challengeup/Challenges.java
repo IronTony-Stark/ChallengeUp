@@ -1,21 +1,16 @@
 package com.example.challengeup;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.core.os.HandlerCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,15 +18,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.challengeup.backend.Challenge;
 import com.example.challengeup.backend.User;
-import com.example.challengeup.result.ICallback;
 import com.example.challengeup.result.Result;
-import com.example.challengeup.viewModel.MainActivityViewModel;
+import com.example.challengeup.viewModel.ChallengesViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class Challenges extends Fragment {
 
@@ -43,7 +34,7 @@ public class Challenges extends Fragment {
     View view;
 
 
-    MainActivityViewModel mViewModel = new MainActivityViewModel();
+    private ChallengesViewModel mViewModel;
 
     public Challenges() {
 
@@ -87,15 +78,15 @@ public class Challenges extends Fragment {
 
         mViewModel.getAllChallenges(result -> {
             if (result instanceof Result.Success) {
-                /*List<Challenge> challenges*/ mArrayList = ((Result.Success<List<Challenge>>) result).data;
+                List<Challenge> challenges = ((Result.Success<List<Challenge>>) result).data;
                 Toast.makeText(
-                        view.getContext(),
-                        "Size: " + mArrayList.size(),
+                        Challenges.this.getActivity(),
+                        "Size: " + challenges.size(),
                         Toast.LENGTH_LONG)
                         .show();
             } else {
                 Toast.makeText(
-                        view.getContext(),
+                        Challenges.this.getActivity(),
                         "Can't get challenges",
                         Toast.LENGTH_LONG)
                         .show();
@@ -110,6 +101,7 @@ public class Challenges extends Fragment {
         /*View */view = inflater.inflate(R.layout.fragment_challenges, container, false);
 
         mRecyclerView = view.findViewById(R.id.challenges_list);
+        mViewModel = new ViewModelProvider(this).get(ChallengesViewModel.class);
 
         getAllChallangesCallback();
 
