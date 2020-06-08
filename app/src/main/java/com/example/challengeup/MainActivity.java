@@ -2,20 +2,25 @@ package com.example.challengeup;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.example.challengeup.backend.User;
 import com.example.challengeup.databinding.ActivityMainBinding;
+import com.example.challengeup.databinding.NavDrawerHeaderBinding;
+import com.example.challengeup.result.ICallback;
+import com.example.challengeup.result.Result;
 import com.example.challengeup.utils.LoginUtils;
+import com.example.challengeup.viewModel.MainActivityViewModel;
 import com.firebase.ui.auth.IdpResponse;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.LinkedList;
@@ -27,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 123;
     private static final String TAG = "MainActivity";
 
+    ActivityMainBinding binding;
+    private MainActivityViewModel mViewModel;
     private DrawerLayout drawerLayout;
     private NavController navController;
     private AppBarConfiguration appBarConfiguration;
@@ -34,11 +41,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ActivityMainBinding binding = DataBindingUtil
+        binding = DataBindingUtil
                 .setContentView(this, R.layout.activity_main);
 
-        Log.w(TAG, "Create Main Activity.");
-
+        mViewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
         drawerLayout = binding.drawerLayout;
         navController = Navigation.findNavController(this, R.id.navHostFragment);
 
@@ -58,10 +64,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) {
-            LoginUtils loginActivity = new LoginUtils(this);
-            loginActivity.createSignInIntent();
+        if (mViewModel.isAuthenticated()) {
+//            setupNavDrawer();
+        } else {
+            LoginUtils loginUtils = new LoginUtils(this);
+            loginUtils.createSignInIntent();
         }
     }
 
@@ -75,15 +82,27 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RC_SIGN_IN) {
-            IdpResponse response = IdpResponse.fromResultIntent(data);
-
             if (resultCode == RESULT_OK) {
-                // Successfully signed in
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                Log.w(TAG, "Login successful.");
-                // ...
+                FirebaseUser user = mViewModel.getUser();
+                mViewModel.getUserById(user.getUid(), result -> {
+                    if (result instanceof Result.Success) {
+                        User dbUser = ((Result.Success<User>) result).data;
+                        if (dbUser == null) {
+                            Toast.makeText(
+                                    MainActivity.this,
+                                    "Success",
+                                    Toast.LENGTH_LONG)
+                                    .show();
+                        }
+                    } else {
+                        Toast.makeText(
+                                MainActivity.this,
+                                "Can't get user from db",
+                                Toast.LENGTH_LONG)
+                                .show();
+                    }
+                });
             } else {
-                Log.w(TAG, "Login unsuccessful.");
                 // Sign in failed. If response is null the user canceled the
                 // sign-in flow using the back button. Otherwise check
                 // response.getError().getErrorCode() and handle the error.
@@ -112,5 +131,19 @@ public class MainActivity extends AppCompatActivity {
             else
                 drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         });
+    }
+
+    private void setupNavDrawer() {
+        String userId = mViewModel.getUser().getUid();
+        User user = User.getUserById(userId);
+        if (user != null) {
+            String nick = user.getNick();
+            String tag = user.getNick();
+
+            NavDrawerHeaderBinding headerBinding = NavDrawerHeaderBinding
+                    .bind(binding.navView.getHeaderView(0));
+            headerBinding.setNick(nick);
+            headerBinding.setTag(tag);
+        }
     }
 }

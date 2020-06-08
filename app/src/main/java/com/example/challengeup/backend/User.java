@@ -29,7 +29,7 @@ public class User {
     private String tag;
     private String nick;
     private String email;
-    private String password;
+
 
     private int rp;
     private int totalRp;
@@ -47,11 +47,11 @@ public class User {
 
 
 
-    public User(String tag, String nick, String email, String password)  {
+    public User(String tag, String nick, String email)  {
         this.tag = tag;
         this.nick = nick;
         this.email = email;
-        this.password = password;
+
 
         undone = new ArrayList<>();
         done = new ArrayList<>();
@@ -69,8 +69,8 @@ public class User {
         links.put("instagram","");
         links.put("youtube","");
     }
-    public User(String tag, String nick, String email, String password, ArrayList<String> categories) {
-        this(tag, nick, email, password);
+    public User(String tag, String nick, String email, ArrayList<String> categories) {
+        this(tag, nick, email);
         this.categories = categories;
     }
 
@@ -78,7 +78,7 @@ public class User {
         Validation.validateUserTagToBeUnique(user.tag);
         Validation.validateNickTagPassword(user.nick);
         Validation.validateNickTagPassword(user.tag);
-        Validation.validateNickTagPassword(user.password);
+
         Validation.validateEmail(user.email);
         OkHttpClient client = new OkHttpClient();
         try {
@@ -86,7 +86,6 @@ public class User {
                     .put("tag", user.tag)
                     .put("email", user.email)
                     .put("nick", user.nick)
-                    .put("password", user.password)
                     .put("categories", user.categories)
                     .put("subscriptions", user.subscriptions)
                     .put("undone", user.undone)
@@ -137,10 +136,9 @@ public class User {
         }
         return "";
     }
-    public static String addNewUser(String tag, String nick, String email, String password, ArrayList<String> categories) throws IllegalArgumentException{
+    public static String addNewUser(String tag, String nick, String email, ArrayList<String> categories) throws IllegalArgumentException{
         Validation.validateNickTagPassword(nick);
         Validation.validateNickTagPassword(tag);
-        Validation.validateNickTagPassword(password);
         Validation.validateEmail(email);
         Validation.validateUserTagToBeUnique(tag);
         OkHttpClient client = new OkHttpClient();
@@ -149,7 +147,6 @@ public class User {
                     .put("tag", tag)
                     .put("email", email)
                     .put("nick", nick)
-                    .put("password", password)
                     .put("categories", categories)
                     .put("subscriptions", new ArrayList())
                     .put("undone", new ArrayList())
@@ -310,7 +307,6 @@ public class User {
                 User user = new User(object.getJSONObject(key).getString("tag"),
                         object.getJSONObject(key).getString("nick"),
                         object.getJSONObject(key).getString("email"),
-                        object.getJSONObject(key).getString("password"),
                         categoriesArray);
                 user.setId(key);
                 user.setDone(doneArray);
@@ -399,7 +395,6 @@ public class User {
                 User user = new User(object.getJSONObject(id).getString("tag"),
                         object.getJSONObject(id).getString("nick"),
                         object.getJSONObject(id).getString("email"),
-                        object.getJSONObject(id).getString("password"),
                         categoriesArray);
                 user.setId(id);
                 user.setUndone(undoneArray);
@@ -424,7 +419,6 @@ public class User {
     public void update() throws IllegalArgumentException{
         Validation.validateNickTagPassword(nick);
         Validation.validateNickTagPassword(tag);
-        Validation.validateNickTagPassword(password);
         Validation.validateEmail(email);
         Validation.validateUserTagToBeUnique(tag);
         OkHttpClient client = new OkHttpClient();
@@ -435,7 +429,6 @@ public class User {
                     .put("tag", tag)
                     .put("email", email)
                     .put("nick", nick)
-                    .put("password", password)
                     .put("done", done)
                     .put("undone", undone)
                     .put("categories", categories)
@@ -496,9 +489,6 @@ public class User {
     public String getEmail() {
         return email;
     }
-    public String getPassword() {
-        return password;
-    }
     public ArrayList<String> getUndone() {
         return undone;
     }
@@ -550,10 +540,6 @@ public class User {
     public void setEmail(String email) {
 
         this.email = email;
-    }
-    public void setPassword(String password) {
-
-        this.password = password;
     }
     public void setUndone(ArrayList<String> undone) {
         this.undone = undone;
