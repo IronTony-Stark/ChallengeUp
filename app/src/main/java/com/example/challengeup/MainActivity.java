@@ -19,6 +19,7 @@ import com.example.challengeup.databinding.NavDrawerHeaderBinding;
 import com.example.challengeup.result.ICallback;
 import com.example.challengeup.result.Result;
 import com.example.challengeup.utils.LoginUtils;
+import com.example.challengeup.viewModel.MainActivityFactory;
 import com.example.challengeup.viewModel.MainActivityViewModel;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -29,9 +30,8 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 123;
-    private static final String TAG = "MainActivity";
 
-    ActivityMainBinding binding;
+    private ActivityMainBinding binding;
     private MainActivityViewModel mViewModel;
     private DrawerLayout drawerLayout;
     private NavController navController;
@@ -43,7 +43,12 @@ public class MainActivity extends AppCompatActivity {
         binding = DataBindingUtil
                 .setContentView(this, R.layout.activity_main);
 
-        mViewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
+        Container container = ((ApplicationContainer) getApplication()).mContainer;
+        mViewModel = new ViewModelProvider(this,
+                new MainActivityFactory(
+                        container.mExecutor,
+                        container.mainThreadHandler)).get(MainActivityViewModel.class);
+
         drawerLayout = binding.drawerLayout;
         navController = Navigation.findNavController(this, R.id.navHostFragment);
 
@@ -83,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
                 FirebaseUser user = mViewModel.getFirebaseUser();
-                addUserToDBifAbsent(user);
+                addUserToDbIfAbsent(user);
             } else {
                 // Sign in failed. If response is null the user canceled the
                 // sign-in flow using the back button. Otherwise check
@@ -93,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void addUserToDBifAbsent(FirebaseUser user) {
+    private void addUserToDbIfAbsent(FirebaseUser user) {
         ICallback addUserCallback = result -> {
             if (result instanceof Result.Success) {
                 String newUserId = ((Result.Success<String>) result).data;

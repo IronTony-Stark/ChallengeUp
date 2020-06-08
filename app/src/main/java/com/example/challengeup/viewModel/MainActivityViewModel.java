@@ -18,8 +18,14 @@ import java.util.concurrent.Executors;
 public class MainActivityViewModel extends ViewModel {
 
     private FirebaseUser mUser;
-    private ExecutorService mExecutor = Executors.newFixedThreadPool(4);
-    private Handler mainThreadHandler = HandlerCompat.createAsync(Looper.getMainLooper());
+    private final ExecutorService mExecutor;
+    private final Handler mMainThreadHandler;
+
+    public MainActivityViewModel(final ExecutorService executor,
+                                 final Handler mainThreadHandler) {
+        mExecutor = executor;
+        mMainThreadHandler = mainThreadHandler;
+    }
 
     public boolean isAuthenticated() {
         if (mUser == null)
@@ -68,6 +74,6 @@ public class MainActivityViewModel extends ViewModel {
     }
 
     private void notifyResult(Result result, ICallback callback) {
-        mainThreadHandler.post(() -> callback.onComplete(result));
+        mMainThreadHandler.post(() -> callback.onComplete(result));
     }
 }
