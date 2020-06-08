@@ -7,6 +7,7 @@ import androidx.core.os.HandlerCompat;
 import androidx.lifecycle.ViewModel;
 
 import com.example.challengeup.backend.Challenge;
+import com.example.challengeup.backend.User;
 import com.example.challengeup.result.ICallback;
 import com.example.challengeup.result.Result;
 
@@ -31,9 +32,26 @@ public class ChallengesViewModel extends ViewModel {
         });
     }
 
+    public void getUserById(String uid, ICallback callback) {
+        mExecutor.execute(() -> {
+            try {
+                Result result = getUserByIdSync(uid);
+                notifyResult(result, callback);
+            } catch (Exception e) {
+                Result errorResult = new Result.Error(e);
+                notifyResult(errorResult, callback);
+            }
+        });
+    }
+
     public Result getAllChallenges() {
         List<Challenge> challenges = Challenge.getAllChallenges();
         return new Result.Success<>(challenges);
+    }
+
+    public Result getUserByIdSync(String uid) {
+        User user = User.getUserById(uid);
+        return new Result.Success<>(user);
     }
 
     private void notifyResult(Result result, ICallback callback) {

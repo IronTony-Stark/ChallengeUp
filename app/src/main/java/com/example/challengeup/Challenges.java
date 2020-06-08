@@ -1,5 +1,6 @@
 package com.example.challengeup;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,7 +30,7 @@ public class Challenges extends Fragment {
     private RecyclerView mRecyclerView;
     private List<Challenge> mArrayList = new ArrayList<>();
    // private LinearLayoutManager mLayoutManager;
-    private RecyclerView.Adapter mAdapter;
+    private MyAdapter/*RecyclerView.Adapter*/ mAdapter;
 
     View view;
 
@@ -42,48 +43,19 @@ public class Challenges extends Fragment {
 
 
     private void getAllChallangesCallback() {
-//        ICallback getAllChallengesCallback = result -> {
-//            if (result instanceof Result.Success) {
-//                //mRecyclerView = view.findViewById(R.id.challenges_list);
-//
-//                mArrayList = ((Result.Success<ArrayList<Challenge>>) result).data;
-//
-//                Toast.makeText(
-//                        view.getContext(),
-//                        mArrayList.size(),
-//                        Toast.LENGTH_LONG)
-//                        .show();
-//
-////                mAdapter = new MyAdapter(mArrayList);
-////                mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
-////
-////                mRecyclerView.setItemAnimator( new DefaultItemAnimator());
-////                mRecyclerView.addItemDecoration(new DividerItemDecoration(view.getContext(), LinearLayoutManager.VERTICAL));
-////
-////                mRecyclerView.setAdapter(mAdapter);
-//
-//
-//
-//            } else {
-//                Toast.makeText(
-//                        view.getContext(),
-//                        "Can't get all challenges from db",
-//                        Toast.LENGTH_LONG)
-//                        .show();
-//            }
-//        };
-//
-//        getAllChallenges(getAllChallengesCallback);
-//       // mViewModel.getUserById(user.getUid(), getUserCallback);
 
         mViewModel.getAllChallenges(result -> {
             if (result instanceof Result.Success) {
-                List<Challenge> challenges = ((Result.Success<List<Challenge>>) result).data;
+                /*List<Challenge> challenges*/mArrayList = ((Result.Success<List<Challenge>>) result).data;
                 Toast.makeText(
                         Challenges.this.getActivity(),
-                        "Size: " + challenges.size(),
+                        "Size: " + mArrayList.size(),
                         Toast.LENGTH_LONG)
                         .show();
+
+                mAdapter.setmDataset(mArrayList);
+                mAdapter.notifyItemRangeInserted(0,mArrayList.size());
+
             } else {
                 Toast.makeText(
                         Challenges.this.getActivity(),
@@ -137,64 +109,90 @@ public class Challenges extends Fragment {
         return view;
     }
 
-}
 
-class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
-    private List<Challenge> mDataset = new ArrayList<>();
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
-        ImageView thumbnail, avatar;
-        ImageView iconSave;
-        TextView name, description, dataAccepted, dataCompleted, dataLiked;
-        public MyViewHolder(View itemView) {
-            super(itemView);
-            Log.v("ViewHolder","in View Holder");
-            thumbnail = itemView.findViewById(R.id.thumbnail);
-            avatar = itemView.findViewById(R.id.avatar);
-            name = itemView.findViewById(R.id.name);
-            description = itemView.findViewById(R.id.description);
-            dataAccepted = itemView.findViewById(R.id.dataAccepted);
-            dataCompleted = itemView.findViewById(R.id.dataCompleted);
-            dataLiked = itemView.findViewById(R.id.dataLiked);
+
+    class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
+        private List<Challenge> mDataset = new ArrayList<>();
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+            ImageView thumbnail, avatar;
+            ImageView iconSave;
+            TextView name, description, dataAccepted, dataCompleted, dataLiked;
+            public MyViewHolder(View itemView) {
+                super(itemView);
+                Log.v("ViewHolder","in View Holder");
+                thumbnail = itemView.findViewById(R.id.thumbnail);
+                avatar = itemView.findViewById(R.id.avatar);
+                name = itemView.findViewById(R.id.name);
+                description = itemView.findViewById(R.id.description);
+                dataAccepted = itemView.findViewById(R.id.dataAccepted);
+                dataCompleted = itemView.findViewById(R.id.dataCompleted);
+                dataLiked = itemView.findViewById(R.id.dataLiked);
+            }
+        }
+
+        // Provide a suitable constructor (depends on the kind of dataset)
+        public MyAdapter(List<Challenge> myDataset) {
+            if(myDataset!=null)
+                mDataset = myDataset;
+        }
+
+        // Create new views (invoked by the layout manager)
+        @Override
+        public MyAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
+                                                         int viewType) {
+            Log.v("CreateViewHolder", "in onCreateViewHolder");
+            View itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_challenge/*fragment_challenges*/,parent,false);
+
+            return new MyViewHolder(itemView);
+        }
+
+        // Replace the contents of a view (invoked by the layout manager)
+        @Override
+        public void onBindViewHolder(MyViewHolder holder, int position) {
+            Log.v("BindViewHolder", "in onBindViewHolder");
+            Challenge challenge = mDataset.get(position);
+            // holder.thumbnail.setImageBitmap(challenge.//todo image
+
+            mViewModel.getUserById(challenge.getCreator_id(), result -> {
+                if (result instanceof Result.Success) {
+                    Bitmap avatar = ((Result.Success<User>) result).data.getPhoto();
+                    if(avatar!=null)
+                        holder.avatar.setImageBitmap(avatar);
+                    else{
+                        Toast.makeText(Challenges.this.getActivity(), "Avatar is null", Toast.LENGTH_LONG).show();//todo remove toast
+                    }
+                } else {
+                    Toast.makeText(
+                            Challenges.this.getActivity(),
+                            "Can't get user",
+                            Toast.LENGTH_LONG)
+                            .show();
+                }
+            });
+
+
+            holder.name.setText(challenge.getName());
+            holder.description.setText(challenge.getTask());//todo show only part of description
+            //holder.dataAccepted.setText(challenge.//todo accepted
+            //todo completed
+            holder.dataLiked.setText(new Integer(challenge.getLikes()).toString());
 
         }
-    }
 
-    // Provide a suitable constructor (depends on the kind of dataset)
-    public MyAdapter(List<Challenge> myDataset) {
-        if(myDataset!=null)
-        mDataset = myDataset;
-    }
+        // Return the size of your dataset (invoked by the layout manager)
+        @Override
+        public int getItemCount() {
+            return mDataset.size();
+        }
 
-    // Create new views (invoked by the layout manager)
-    @Override
-    public MyAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
-                                                     int viewType) {
-        Log.v("CreateViewHolder", "in onCreateViewHolder");
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_challenges,parent,false);
+        public void setmDataset(List<Challenge> arrayList){
+            mDataset = arrayList;
+        }
 
-        return new MyViewHolder(itemView);
-    }
-
-    // Replace the contents of a view (invoked by the layout manager)
-    @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
-        Log.v("BindViewHolder", "in onBindViewHolder");
-        Challenge challenge = mDataset.get(position);
-       // holder.thumbnail.setImageBitmap(challenge.//todo image
-        holder.avatar.setImageBitmap(User.getUserById(challenge.getCreator_id()).getPhoto());
-        holder.name.setText(challenge.getName());
-        holder.description.setText(challenge.getTask());//todo show only part of description
-        //holder.dataAccepted.setText(challenge.//todo accepted
-        //todo completed
-       holder.dataLiked.setText(challenge.getLikes());
 
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
-    @Override
-    public int getItemCount() {
-        return mDataset.size();
-    }
 }
