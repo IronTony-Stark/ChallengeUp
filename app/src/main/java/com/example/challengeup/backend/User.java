@@ -417,8 +417,12 @@ public class User {
     }
     public static User getUserByEmail(String email){
         ArrayList<User> users = getAllUsers();
-        User a = users.stream().filter(x->x.getEmail().equals(email)).collect(Collectors.toList()).get(0);
-        return a;
+        try{
+            User a = users.stream().filter(x->x.getEmail().equals(email)).collect(Collectors.toList()).get(0);
+            return a;
+        }catch (IndexOutOfBoundsException e){
+            return null;
+        }
     }
 
     public void update() throws IllegalArgumentException{
