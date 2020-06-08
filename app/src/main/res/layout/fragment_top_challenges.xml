@@ -6,6 +6,7 @@
     tools:context=".TopChallenges">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/top_challenges_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:listitem="@layout/item_top_challenges" />

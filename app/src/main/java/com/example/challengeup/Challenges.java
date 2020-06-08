@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -37,6 +39,9 @@ public class Challenges extends Fragment {
 
     private ChallengesViewModel mViewModel;
 
+    private NavController mNavController;
+
+
     public Challenges() {
 
     }
@@ -51,7 +56,7 @@ public class Challenges extends Fragment {
                         Challenges.this.getActivity(),
                         "Size: " + mArrayList.size(),
                         Toast.LENGTH_LONG)
-                        .show();
+                        .show();//todo remove toast
 
                 mAdapter.setmDataset(mArrayList);
                 mAdapter.notifyItemRangeInserted(0,mArrayList.size());
@@ -70,7 +75,12 @@ public class Challenges extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
         /*View */view = inflater.inflate(R.layout.fragment_challenges, container, false);
+
+        //mNavController = Navigation.findNavController(view);//todo navigation
+
 
         mRecyclerView = view.findViewById(R.id.challenges_list);
         mViewModel = new ViewModelProvider(this).get(ChallengesViewModel.class);
@@ -85,27 +95,6 @@ public class Challenges extends Fragment {
 
         mRecyclerView.setAdapter(mAdapter);
 
-//        InitTask initTask=new InitTask();
-//        initTask.execute();
-//        try {
-//            String result = getChallengesTask.execute().get();
-//        } catch (ExecutionException e) {
-//            e.printStackTrace();
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-        //mArrayList = Challenge.getAllChallenges();
-
-//        Log.v("Array",new Integer(mArrayList.size()).toString());
-
-//        mAdapter = new MyAdapter(mArrayList);
-//        mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
-
-
-////        mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-//        mRecyclerView.setItemAnimator( new DefaultItemAnimator());
-//        mRecyclerView.addItemDecoration(new DividerItemDecoration(view.getContext(), LinearLayoutManager.VERTICAL));
-//        mRecyclerView.setAdapter(mAdapter);
         return view;
     }
 
@@ -115,7 +104,7 @@ public class Challenges extends Fragment {
     class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         private List<Challenge> mDataset = new ArrayList<>();
 
-        public class MyViewHolder extends RecyclerView.ViewHolder {
+        public class MyViewHolder extends RecyclerView.ViewHolder{
             ImageView thumbnail, avatar;
             ImageView iconSave;
             TextView name, description, dataAccepted, dataCompleted, dataLiked;
@@ -130,6 +119,7 @@ public class Challenges extends Fragment {
                 dataCompleted = itemView.findViewById(R.id.dataCompleted);
                 dataLiked = itemView.findViewById(R.id.dataLiked);
             }
+
         }
 
         // Provide a suitable constructor (depends on the kind of dataset)
@@ -153,6 +143,18 @@ public class Challenges extends Fragment {
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             Log.v("BindViewHolder", "in onBindViewHolder");
+
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View arg0) {
+                    // handle your click here.
+                    //mNavController.navigate(R.id.challenge);
+                    //todo send challenge id
+                } });
+
+
+
             Challenge challenge = mDataset.get(position);
             // holder.thumbnail.setImageBitmap(challenge.//todo image
 
@@ -176,8 +178,35 @@ public class Challenges extends Fragment {
 
             holder.name.setText(challenge.getName());
             holder.description.setText(challenge.getTask());//todo show only part of description
-            //holder.dataAccepted.setText(challenge.//todo accepted
-            //todo completed
+//            holder.dataAccepted.setText(new Long(challenge.numberOfPeopleWhoAccepted()).toString());
+//            holder.dataCompleted.setText(new Long(challenge.numberOfPeopleWhoComplete()).toString());
+
+            mViewModel.numberOfPeopleWhoAccepted(challenge, result -> {
+                if (result instanceof Result.Success) {
+                   holder.dataAccepted.setText(((Result.Success<Long>) result).data.toString());
+
+                } else {
+                    Toast.makeText(
+                            Challenges.this.getActivity(),
+                            "Can't get number of people accepted",
+                            Toast.LENGTH_LONG)
+                            .show();
+                }
+            });
+
+            mViewModel.numberOfPeopleWhoComplete(challenge, result -> {
+                if (result instanceof Result.Success) {
+                    holder.dataCompleted.setText(((Result.Success<Long>) result).data.toString());
+
+                } else {
+                    Toast.makeText(
+                            Challenges.this.getActivity(),
+                            "Can't get number of people complete",
+                            Toast.LENGTH_LONG)
+                            .show();
+                }
+            });
+
             holder.dataLiked.setText(new Integer(challenge.getLikes()).toString());
 
         }

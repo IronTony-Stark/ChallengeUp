@@ -44,6 +44,32 @@ public class ChallengesViewModel extends ViewModel {
         });
     }
 
+    public void numberOfPeopleWhoAccepted(Challenge challenge, ICallback callback) {
+        mExecutor.execute(() -> {
+            try {
+                Result result = numberOfPeopleWhoAcceptedSync(challenge);
+                notifyResult(result, callback);
+            } catch (Exception e) {
+                Result errorResult = new Result.Error(e);
+                notifyResult(errorResult, callback);
+            }
+        });
+
+    }
+
+    public void numberOfPeopleWhoComplete(Challenge challenge, ICallback callback) {
+        mExecutor.execute(() -> {
+            try {
+                Result result = numberOfPeopleWhoCompleteSync(challenge);
+                notifyResult(result, callback);
+            } catch (Exception e) {
+                Result errorResult = new Result.Error(e);
+                notifyResult(errorResult, callback);
+            }
+        });
+
+    }
+
     public Result getAllChallenges() {
         List<Challenge> challenges = Challenge.getAllChallenges();
         return new Result.Success<>(challenges);
@@ -52,6 +78,16 @@ public class ChallengesViewModel extends ViewModel {
     public Result getUserByIdSync(String uid) {
         User user = User.getUserById(uid);
         return new Result.Success<>(user);
+    }
+
+    public Result numberOfPeopleWhoAcceptedSync(Challenge challenge){
+        Long number = challenge.numberOfPeopleWhoAccepted();
+        return new Result.Success<>(number);
+    }
+
+    public Result numberOfPeopleWhoCompleteSync(Challenge challenge){
+        Long number = challenge.numberOfPeopleWhoComplete();
+        return new Result.Success<>(number);
     }
 
     private void notifyResult(Result result, ICallback callback) {
