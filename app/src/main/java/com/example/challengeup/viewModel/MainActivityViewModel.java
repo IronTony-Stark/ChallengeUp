@@ -27,7 +27,7 @@ public class MainActivityViewModel extends ViewModel {
         return mUser != null;
     }
 
-    public FirebaseUser getUser() {
+    public FirebaseUser getFirebaseUser() {
         if (mUser == null)
             mUser = FirebaseAuth.getInstance().getCurrentUser();
         return mUser;
@@ -45,9 +45,26 @@ public class MainActivityViewModel extends ViewModel {
         });
     }
 
+    public void addUser(User user, ICallback callback) {
+        mExecutor.execute(() -> {
+            try {
+                Result result = addUserSync(user);
+                notifyResult(result, callback);
+            } catch (Exception e) {
+                Result errorResult = new Result.Error(e);
+                notifyResult(errorResult, callback);
+            }
+        });
+    }
+
     public Result getUserByIdSync(String uid) {
         User user = User.getUserById(uid);
         return new Result.Success<>(user);
+    }
+
+    public Result addUserSync(User newUser) {
+        String userId = User.addNewUser(newUser);
+        return new Result.Success<>(userId);
     }
 
     private void notifyResult(Result result, ICallback callback) {

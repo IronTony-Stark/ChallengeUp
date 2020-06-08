@@ -20,7 +20,6 @@ import com.example.challengeup.result.ICallback;
 import com.example.challengeup.result.Result;
 import com.example.challengeup.utils.LoginUtils;
 import com.example.challengeup.viewModel.MainActivityViewModel;
-import com.firebase.ui.auth.IdpResponse;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.LinkedList;
@@ -83,25 +82,8 @@ public class MainActivity extends AppCompatActivity {
 
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
-                FirebaseUser user = mViewModel.getUser();
-                mViewModel.getUserById(user.getUid(), result -> {
-                    if (result instanceof Result.Success) {
-                        User dbUser = ((Result.Success<User>) result).data;
-                        if (dbUser == null) {
-                            Toast.makeText(
-                                    MainActivity.this,
-                                    "Success",
-                                    Toast.LENGTH_LONG)
-                                    .show();
-                        }
-                    } else {
-                        Toast.makeText(
-                                MainActivity.this,
-                                "Can't get user from db",
-                                Toast.LENGTH_LONG)
-                                .show();
-                    }
-                });
+                FirebaseUser user = mViewModel.getFirebaseUser();
+                addUserToDBifAbsent(user);
             } else {
                 // Sign in failed. If response is null the user canceled the
                 // sign-in flow using the back button. Otherwise check
@@ -109,6 +91,44 @@ public class MainActivity extends AppCompatActivity {
                 // ...
             }
         }
+    }
+
+    private void addUserToDBifAbsent(FirebaseUser user) {
+        ICallback addUserCallback = result -> {
+            if (result instanceof Result.Success) {
+                String newUserId = ((Result.Success<String>) result).data;
+                Toast.makeText(
+                        MainActivity.this,
+                        "Success " + user.getUid() + " " + newUserId,
+                        Toast.LENGTH_LONG)
+                        .show();
+            } else {
+                Toast.makeText(
+                        MainActivity.this,
+                        "Can't add user to db",
+                        Toast.LENGTH_LONG)
+                        .show();
+            }
+        };
+
+        ICallback getUserCallback = result -> {
+            if (result instanceof Result.Success) {
+                User dbUser = ((Result.Success<User>) result).data;
+                if (dbUser == null) {
+                    User newUser = new User(user.getUid(), "TagTagTag",
+                            "NickName", user.getEmail());
+                    mViewModel.addUser(newUser, addUserCallback);
+                }
+            } else {
+                Toast.makeText(
+                        MainActivity.this,
+                        "Can't get user from db",
+                        Toast.LENGTH_LONG)
+                        .show();
+            }
+        };
+
+        mViewModel.getUserById(user.getUid(), getUserCallback);
     }
 
     private void setupDestinations() {
@@ -134,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupNavDrawer() {
-        String userId = mViewModel.getUser().getUid();
+        String userId = mViewModel.getFirebaseUser().getUid();
         User user = User.getUserById(userId);
         if (user != null) {
             String nick = user.getNick();

@@ -47,10 +47,11 @@ public class User {
 
 
 
-    public User(String tag, String nick, String email)  {
+    public User(String id, String tag, String nick, String email)  {
         this.tag = tag;
         this.nick = nick;
         this.email = email;
+        this.id = id;
 
 
         undone = new ArrayList<>();
@@ -59,7 +60,6 @@ public class User {
         subscriptions = new ArrayList<>();
         saved = new ArrayList<>();
         trophies = new ArrayList<>();
-        id = null;
         photo = null;
         rp = 0;
         totalRp = 0;
@@ -69,8 +69,8 @@ public class User {
         links.put("instagram","");
         links.put("youtube","");
     }
-    public User(String tag, String nick, String email, ArrayList<String> categories) {
-        this(tag, nick, email);
+    public User(String id, String tag, String nick, String email, ArrayList<String> categories) {
+        this(id, tag, nick, email);
         this.categories = categories;
     }
 
@@ -83,6 +83,7 @@ public class User {
         OkHttpClient client = new OkHttpClient();
         try {
             JSONObject jsonObject = new JSONObject()
+                    .put("id", user.id)
                     .put("tag", user.tag)
                     .put("email", user.email)
                     .put("nick", user.nick)
@@ -136,7 +137,7 @@ public class User {
         }
         return "";
     }
-    public static String addNewUser(String tag, String nick, String email, ArrayList<String> categories) throws IllegalArgumentException{
+    public static String addNewUser(String id, String tag, String nick, String email, ArrayList<String> categories) throws IllegalArgumentException{
         Validation.validateNickTagPassword(nick);
         Validation.validateNickTagPassword(tag);
         Validation.validateEmail(email);
@@ -144,6 +145,7 @@ public class User {
         OkHttpClient client = new OkHttpClient();
         try {
             JSONObject jsonObject = new JSONObject()
+                    .put("id", id)
                     .put("tag", tag)
                     .put("email", email)
                     .put("nick", nick)
@@ -304,11 +306,10 @@ public class User {
                     for (int i = 0; i< done.length(); ++i)doneArray.add((String) done.get(i));
                 }catch (JSONException ignored){}
 
-                User user = new User(object.getJSONObject(key).getString("tag"),
+                User user = new User(key, object.getJSONObject(key).getString("tag"),
                         object.getJSONObject(key).getString("nick"),
                         object.getJSONObject(key).getString("email"),
                         categoriesArray);
-                user.setId(key);
                 user.setDone(doneArray);
                 user.setUndone(undoneArray);
                 user.setSubscriptions(subscriptionsArray);
@@ -392,11 +393,10 @@ public class User {
                 for (int i = 0; i< done.length(); ++i)doneArray.add((String) done.get(i));
             }catch (JSONException ignored){}
 
-                User user = new User(object.getJSONObject(id).getString("tag"),
+                User user = new User(id, object.getJSONObject(id).getString("tag"),
                         object.getJSONObject(id).getString("nick"),
                         object.getJSONObject(id).getString("email"),
                         categoriesArray);
-                user.setId(id);
                 user.setUndone(undoneArray);
                 user.setDone(doneArray);
                 user.setSubscriptions(subscriptionsArray);
@@ -578,7 +578,7 @@ public class User {
     private void setLinks(HashMap<String, String> links) {
         this.links = links;
     }
-    private void setId(String id){
+    public void setId(String id){
         this.id = id;
     }
 
