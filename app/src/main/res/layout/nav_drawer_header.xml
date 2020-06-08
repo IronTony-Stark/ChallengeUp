@@ -2,12 +2,8 @@
 <layout>
     <data>
         <variable
-            name="nick"
-            type="String" />
-
-        <variable
-            name="tag"
-            type="String" />
+            name="viewModel"
+            type="com.example.challengeup.viewModel.MainActivityViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -20,20 +16,20 @@
 
         <ImageView
             android:id="@+id/avatar"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/ic_user_white"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:src="@tools:sample/avatars" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:text="@{nick}"
+            android:layout_marginStart="24dp"
+            android:text="@{viewModel.mUser.name}"
             android:textColor="@color/design_default_color_on_primary"
-            android:textSize="32sp"
+            android:textSize="24sp"
             app:layout_constraintStart_toEndOf="@+id/avatar"
             app:layout_constraintTop_toTopOf="@+id/avatar"
             tools:text="Iron Tony" />
@@ -42,7 +38,7 @@
             android:id="@+id/username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{tag}"
+            android:text="@{viewModel.mUser.username}"
             android:textColor="@color/design_default_color_on_primary"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@+id/avatar"

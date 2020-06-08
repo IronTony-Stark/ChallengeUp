@@ -41,7 +41,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        binding.setLifecycleOwner(this);
 
         Container container = ((ApplicationContainer) getApplication()).mContainer;
         SharedPreferences preferences = getSharedPreferences(USER_DATA_KEY, MODE_PRIVATE);
@@ -63,15 +65,14 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(binding.bottomNavigationView, navController);
 
         setupDestinations();
+        setupNavDrawer();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        if (mViewModel.isAuthenticated()) {
-//            setupNavDrawer();
-        } else {
+        if (!mViewModel.isAuthenticated()) {
             LoginUtils loginUtils = new LoginUtils(this);
             loginUtils.createSignInIntent();
         }
@@ -90,22 +91,18 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 FirebaseUser user = mViewModel.getFirebaseUser();
                 addUserToDbIfAbsent(user);
-            } else {
-                // Sign in failed. If response is null the user canceled the
-                // sign-in flow using the back button. Otherwise check
-                // response.getError().getErrorCode() and handle the error.
-                // ...
             }
         }
     }
 
-    private void addUserToDbIfAbsent(FirebaseUser user) {
+    @SuppressWarnings("unchecked")
+    private void addUserToDbIfAbsent(FirebaseUser firebaseUser) {
         ICallback addUserCallback = result -> {
             if (result instanceof Result.Success) {
                 String newUserId = ((Result.Success<String>) result).data;
                 Toast.makeText(
                         MainActivity.this,
-                        "Success " + user.getUid() + " " + newUserId,
+                        "Success " + firebaseUser.getUid() + " " + newUserId,
                         Toast.LENGTH_LONG)
                         .show();
             } else {
@@ -119,12 +116,15 @@ public class MainActivity extends AppCompatActivity {
 
         ICallback getUserCallback = result -> {
             if (result instanceof Result.Success) {
-                User dbUser = ((Result.Success<User>) result).data;
-                if (dbUser == null) {
-                    User newUser = new User(user.getUid(), "TagTagTag",
-                            "NickName", user.getEmail());
-                    mViewModel.addUser(newUser, addUserCallback);
+                User user = ((Result.Success<User>) result).data;
+
+                if (user == null) {
+                    user = new User("TagTagTag", "NickName", firebaseUser.getEmail());
+                    mViewModel.addUser(user, addUserCallback);
                 }
+
+                mViewModel.saveUserToSharedPreferences(user);
+                mViewModel.refreshUserFromSharedPreferences();
             } else {
                 Toast.makeText(
                         MainActivity.this,
@@ -134,7 +134,8 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        mViewModel.getUserById(user.getUid(), getUserCallback);
+        // TODO get by email
+        mViewModel.getUserById(firebaseUser.getUid(), getUserCallback);
     }
 
     private void setupDestinations() {
@@ -160,17 +161,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupNavDrawer() {
-        String userId = mViewModel.getFirebaseUser().getUid();
-        User user = User.getUserById(userId);
-        if (user != null) {
-            String nick = user.getNick();
-            String tag = user.getNick();
-
-            NavDrawerHeaderBinding headerBinding = NavDrawerHeaderBinding
-                    .bind(binding.navView.getHeaderView(0));
-            headerBinding.setNick(nick);
-            headerBinding.setTag(tag);
-        }
+        NavDrawerHeaderBinding headerBinding = DataBindingUtil.inflate(getLayoutInflater(),
+                R.layout.nav_drawer_header, binding.navView, false);
+        binding.navView.addHeaderView(headerBinding.getRoot());
+        headerBinding.setViewModel(mViewModel);
+        headerBinding.setLifecycleOwner(this);
     }
 
     public static final String USER_DATA_KEY = "com.example.challengeup.userdata";
