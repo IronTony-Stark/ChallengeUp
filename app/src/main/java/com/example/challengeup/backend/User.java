@@ -44,7 +44,7 @@ public class User {
 
     private HashMap<String, String> links;
 
-    private Bitmap photo;
+    private String photo;
 
 
 
@@ -105,9 +105,13 @@ public class User {
 
             RequestBody requestBody;
             if (user.photo!=null){
+
+                URL url = new URL(user.photo);
+                Bitmap image = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+
                 File file = File.createTempFile("photo", null);
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                user.photo.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
+                image.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
                 byte[] bitmapdata = bos.toByteArray();
 
 //write the bytes in file
@@ -331,9 +335,7 @@ public class User {
                 user.setRp(Integer.parseInt(object.getJSONObject(key).getString("rp")));
                 user.setTotalRp(Integer.parseInt(object.getJSONObject(key).getString("totalRp")));
                 if(!object.getJSONObject(key).getString("photo_link").equals("")){
-                    URL url = new URL(object.getJSONObject(key).getString("photo_link"));
-                    Bitmap image = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-                    user.setPhoto(image);
+                    user.setPhoto(object.getJSONObject(key).getString("photo_link"));
                 }
                 users.add(user);
             }
@@ -434,9 +436,7 @@ public class User {
                 user.setRp(Integer.parseInt(object.getJSONObject(id).getString("rp")));
                 user.setTotalRp(Integer.parseInt(object.getJSONObject(id).getString("totalRp")));
                 if(!object.getJSONObject(id).getString("photo_link").equals("")){
-                    URL url = new URL(object.getJSONObject(id).getString("photo_link"));
-                    Bitmap image = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-                    user.setPhoto(image);
+                    user.setPhoto(object.getJSONObject(id).getString("photo_link"));
                 }
             return user;
         } catch (IOException | JSONException e) {
@@ -448,7 +448,6 @@ public class User {
         Validation.validateNickTagPassword(nick);
         Validation.validateNickTagPassword(tag);
         Validation.validateEmail(email);
-        Validation.validateUserTagToBeUnique(tag);
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)
@@ -474,9 +473,13 @@ public class User {
             //RequestBody body = RequestBody.create(jsonObject.toString(), JSON);
             RequestBody requestBody;
             if (photo!=null){
+
+                URL url = new URL(photo);
+                Bitmap image = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+
                 File file = File.createTempFile("photo", null);
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                photo.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
+                image.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
                 byte[] bitmapdata = bos.toByteArray();
 
 //write the bytes in file
@@ -542,7 +545,7 @@ public class User {
     public String getYoutubeLink(){
         return links.get("youtube");
     }
-    public Bitmap getPhoto() {
+    public String getPhoto() {
         return photo;
     }
     public ArrayList<String> getSaved() {
@@ -594,7 +597,7 @@ public class User {
     public void setYuotubeLink(String link){
         links.put("youtube", link);
     }
-    public void setPhoto(Bitmap photo) {
+    public void setPhoto(String photo) {
         this.photo = photo;
     }
     public void setRp(int rp) {
