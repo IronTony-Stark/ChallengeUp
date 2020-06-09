@@ -1,194 +1,212 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".Profile">
+    android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/iconSettings"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:scaleX="1.5"
-        android:scaleY="1.5"
-        android:src="@drawable/ic_settings"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".fragment.Profile">
 
-    <ImageView
-        android:id="@+id/avatar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@tools:sample/avatars" />
+        <Button
+            android:id="@+id/iconSettings"
+            android:layout_width="53dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:drawableTop="@drawable/ic_settings"
+            android:scaleX="1.5"
+            android:scaleY="1.5"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/nameUser"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:textSize="36sp"
-        app:layout_constraintEnd_toEndOf="@+id/avatar"
-        app:layout_constraintStart_toStartOf="@+id/avatar"
-        app:layout_constraintTop_toBottomOf="@+id/avatar"
-        tools:text="Iron Tony" />
+<!--        <ImageView-->
+<!--            android:id="@+id/iconSettings"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="16dp"-->
+<!--            android:layout_marginEnd="16dp"-->
+<!--            android:scaleX="1.5"-->
+<!--            android:scaleY="1.5"-->
+<!--            android:src="@drawable/ic_settings"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent" />-->
 
-    <TextView
-        android:id="@+id/username"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="@+id/nameUser"
-        app:layout_constraintStart_toStartOf="@+id/nameUser"
-        app:layout_constraintTop_toBottomOf="@+id/nameUser"
-        tools:text="\@IronTonyStark" />
+        <ImageView
+            android:id="@+id/avatar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/avatars" />
 
-    <TextView
-        android:id="@+id/infoUser"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:textAlignment="center"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/username"
-        tools:text="The best of the best of the best of the best of the worst" />
+        <TextView
+            android:id="@+id/nameUser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textSize="36sp"
+            app:layout_constraintEnd_toEndOf="@+id/avatar"
+            app:layout_constraintStart_toStartOf="@+id/avatar"
+            app:layout_constraintTop_toBottomOf="@+id/avatar"
+            tools:text="Iron Tony" />
 
-    <ImageView
-        android:id="@+id/iconGoogle"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="32dp"
-        android:src="@drawable/ic_google"
-        app:layout_constraintEnd_toStartOf="@+id/iconFacebook"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/infoUser" />
+        <TextView
+            android:id="@+id/username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="@+id/nameUser"
+            app:layout_constraintStart_toStartOf="@+id/nameUser"
+            app:layout_constraintTop_toBottomOf="@+id/nameUser"
+            tools:text="\@IronTonyStark" />
 
-    <ImageView
-        android:id="@+id/iconFacebook"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:src="@drawable/ic_facebook"
-        app:layout_constraintBottom_toBottomOf="@+id/iconGoogle"
-        app:layout_constraintEnd_toStartOf="@+id/iconInstagram"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/iconGoogle"
-        app:layout_constraintTop_toTopOf="@+id/iconGoogle" />
+        <TextView
+            android:id="@+id/infoUser"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/username"
+            tools:text="The best of the best of the best of the best of the worst" />
 
-    <ImageView
-        android:id="@+id/iconInstagram"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:src="@drawable/ic_instagram"
-        app:layout_constraintBottom_toBottomOf="@+id/iconFacebook"
-        app:layout_constraintEnd_toStartOf="@+id/iconYouTube"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/iconFacebook"
-        app:layout_constraintTop_toTopOf="@+id/iconFacebook" />
+        <ImageView
+            android:id="@+id/iconGoogle"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="32dp"
+            android:src="@drawable/ic_google"
+            app:layout_constraintEnd_toStartOf="@+id/iconFacebook"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/infoUser" />
 
-    <ImageView
-        android:id="@+id/iconYouTube"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:src="@drawable/ic_youtube"
-        app:layout_constraintBottom_toBottomOf="@+id/iconInstagram"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/iconInstagram"
-        app:layout_constraintTop_toTopOf="@+id/iconInstagram" />
+        <ImageView
+            android:id="@+id/iconFacebook"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:src="@drawable/ic_facebook"
+            app:layout_constraintBottom_toBottomOf="@+id/iconGoogle"
+            app:layout_constraintEnd_toStartOf="@+id/iconInstagram"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/iconGoogle"
+            app:layout_constraintTop_toTopOf="@+id/iconGoogle" />
 
-    <TextView
-        android:id="@+id/pinnedItemsSection"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
-        android:text="Pinned Items"
-        android:textSize="36sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iconGoogle" />
+        <ImageView
+            android:id="@+id/iconInstagram"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:src="@drawable/ic_instagram"
+            app:layout_constraintBottom_toBottomOf="@+id/iconFacebook"
+            app:layout_constraintEnd_toStartOf="@+id/iconYouTube"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/iconFacebook"
+            app:layout_constraintTop_toTopOf="@+id/iconFacebook" />
 
-    <Button
-        android:id="@+id/btnReport"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
-        android:text="@string/report"
-        app:layout_constraintEnd_toStartOf="@+id/btnChallenge"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pinnedItemsSection" />
+        <ImageView
+            android:id="@+id/iconYouTube"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_youtube"
+            app:layout_constraintBottom_toBottomOf="@+id/iconInstagram"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/iconInstagram"
+            app:layout_constraintTop_toTopOf="@+id/iconInstagram" />
 
-    <Button
-        android:id="@+id/btnChallenge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/challenge"
-        app:layout_constraintEnd_toStartOf="@+id/btnFollow"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/btnReport"
-        app:layout_constraintTop_toTopOf="@+id/btnReport" />
+        <TextView
+            android:id="@+id/pinnedItemsSection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="64dp"
+            android:text="Pinned Items"
+            android:textSize="36sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iconGoogle" />
 
-    <Button
-        android:id="@+id/btnFollow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/follow"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/btnChallenge"
-        app:layout_constraintTop_toTopOf="@+id/btnChallenge" />
+        <Button
+            android:id="@+id/btnReport"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="64dp"
+            android:text="@string/report"
+            app:layout_constraintEnd_toStartOf="@+id/btnChallenge"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pinnedItemsSection" />
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnReport">
+        <Button
+            android:id="@+id/btnChallenge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/challenge"
+            app:layout_constraintEnd_toStartOf="@+id/btnFollow"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/btnReport"
+            app:layout_constraintTop_toTopOf="@+id/btnReport" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingLeft="64dp"
-            android:paddingTop="16dp"
-            android:paddingRight="64dp"
-            android:paddingBottom="16dp">
+        <Button
+            android:id="@+id/btnFollow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/follow"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/btnChallenge"
+            app:layout_constraintTop_toTopOf="@+id/btnChallenge" />
 
-            <ImageView
-                android:id="@+id/iconStatistics"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:src="@drawable/ic_stats"
-                app:layout_constraintBottom_toBottomOf="@+id/titleStatistics"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/titleStatistics" />
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnReport">
 
-            <TextView
-                android:id="@+id/titleStatistics"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="48dp"
-                android:layout_weight="1"
-                android:text="@string/statistics"
-                android:textSize="36sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/iconStatistics"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="64dp"
+                android:paddingTop="16dp"
+                android:paddingRight="64dp"
+                android:paddingBottom="16dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+                <ImageView
+                    android:id="@+id/iconStatistics"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/ic_stats"
+                    app:layout_constraintBottom_toBottomOf="@+id/titleStatistics"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/titleStatistics" />
+
+                <TextView
+                    android:id="@+id/titleStatistics"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="48dp"
+                    android:layout_weight="1"
+                    android:text="@string/statistics"
+                    android:textSize="36sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/iconStatistics"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

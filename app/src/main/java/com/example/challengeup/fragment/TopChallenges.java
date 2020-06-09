@@ -1,4 +1,4 @@
-package com.example.challengeup;
+package com.example.challengeup.fragment;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -27,6 +27,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import com.example.challengeup.R;
 
 public class TopChallenges extends Fragment {
 
