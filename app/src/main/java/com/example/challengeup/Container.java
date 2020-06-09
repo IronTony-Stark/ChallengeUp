@@ -10,7 +10,7 @@ import com.example.challengeup.request.RequestExecutor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-class Container {
+public class Container {
 
     public final ExecutorService mExecutor;
     public final Handler mMainThreadHandler;

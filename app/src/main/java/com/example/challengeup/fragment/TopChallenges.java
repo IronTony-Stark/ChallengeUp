@@ -2,14 +2,14 @@ package com.example.challengeup.fragment;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -17,106 +17,79 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.challengeup.ApplicationContainer;
+import com.example.challengeup.Container;
+import com.example.challengeup.R;
 import com.example.challengeup.backend.Challenge;
 import com.example.challengeup.backend.User;
-import com.example.challengeup.result.Result;
+import com.example.challengeup.request.Result;
 import com.example.challengeup.viewModel.ChallengesViewModel;
+import com.example.challengeup.viewModel.factory.ChallengesFactory;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-
-import com.example.challengeup.R;
 
 public class TopChallenges extends Fragment {
 
-    private RecyclerView mRecyclerView;
+    private ChallengesViewModel mViewModel;
     private List<Challenge> mArrayList = new ArrayList<>();
-    private MyAdapter mAdapter;
+    private Adapter mAdapter;
 
-   View view;
+    @Override
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_top_challenges, container, false);
+    }
 
-    private ChallengesViewModel mViewModel;//todo???? create topchallengesviewmodel
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-    public TopChallenges(){}
+        Container appContainer = ((ApplicationContainer) requireActivity().getApplication()).mContainer;
+        mViewModel = new ViewModelProvider(this, new ChallengesFactory(
+                appContainer.mRequestExecutor
+        )).get(ChallengesViewModel.class);
 
+        RecyclerView recyclerView = view.findViewById(R.id.top_challenges_list);
 
-    private void getAllChallangesCallback() {
+        recyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.addItemDecoration(new DividerItemDecoration(view.getContext(), LinearLayoutManager.VERTICAL));
+
+        mAdapter = new Adapter(mArrayList);
+        recyclerView.setAdapter(mAdapter);
 
         mViewModel.getAllChallenges(result -> {
             if (result instanceof Result.Success) {
-        mArrayList = ((Result.Success<List<Challenge>>) result).data;
-        Toast.makeText(
-        TopChallenges.this.getActivity(),
-        "Size: " + mArrayList.size(),
-        Toast.LENGTH_LONG)
-        .show();//todo remove toast
+                //noinspection unchecked
+                mArrayList = ((Result.Success<List<Challenge>>) result).data;
 
+                Collections.sort(mArrayList, (c1, c2) ->
+                        Integer.compare(c1.getLikes(), c2.getLikes()));
 
-        //sorting arraylist
-                Collections.sort(mArrayList, new Comparator<Challenge>() {
-                    @Override
-                    public int compare(Challenge c1, Challenge c2) {
+                mAdapter.setDataset(mArrayList);
+                mAdapter.notifyItemRangeInserted(0, mArrayList.size());
 
-                        if (c1.getLikes() == c2.getLikes())
-                            return 0;
-                        if (c1.getLikes() > c2.getLikes())
-                            return 1;
-
-                        return -1;
-                    }
-
-                    });
-
-        mAdapter.setmDataset(mArrayList);
-        mAdapter.notifyItemRangeInserted(0,mArrayList.size());
-
-        } else {
-        Toast.makeText(
-        TopChallenges.this.getActivity(),
-        "Can't get challenges",
-        Toast.LENGTH_LONG)
-        .show();
-        }
+            }
         });
-        }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_top_challenges, container, false);
-        mRecyclerView = view.findViewById(R.id.top_challenges_list);
-
-        mViewModel = new ViewModelProvider(this).get(ChallengesViewModel.class);
-
-        getAllChallangesCallback();
-
-        mAdapter = new MyAdapter(mArrayList);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
-
-        mRecyclerView.setItemAnimator( new DefaultItemAnimator());
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(view.getContext(), LinearLayoutManager.VERTICAL));
-
-        mRecyclerView.setAdapter(mAdapter);
-
-
-        return view;
     }
 
+    class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
 
+        private List<com.example.challengeup.backend.Challenge> mDataset;
 
+        public class MyViewHolder extends RecyclerView.ViewHolder {
 
-    class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
-        private List<com.example.challengeup.backend.Challenge> mDataset = new ArrayList<>();
-
-        public class MyViewHolder extends RecyclerView.ViewHolder{
             ImageView avatar;
             TextView rank, name, dataAccepted, dataCompleted, dataLiked;
+
             public MyViewHolder(View itemView) {
                 super(itemView);
-                Log.v("ViewHolder","in View Holder");
+
                 avatar = itemView.findViewById(R.id.avatar);
                 rank = itemView.findViewById(R.id.rank);
                 name = itemView.findViewById(R.id.name);
@@ -124,98 +97,67 @@ public class TopChallenges extends Fragment {
                 dataCompleted = itemView.findViewById(R.id.dataCompleted);
                 dataLiked = itemView.findViewById(R.id.dataLiked);
             }
-
         }
 
-        // Provide a suitable constructor (depends on the kind of dataset)
-        public MyAdapter(List<com.example.challengeup.backend.Challenge> myDataset) {
-            if(myDataset!=null)
-                mDataset = myDataset;
+        public Adapter(@NonNull List<com.example.challengeup.backend.Challenge> myDataset) {
+            mDataset = myDataset;
         }
 
-        // Create new views (invoked by the layout manager)
+        @NotNull
         @Override
-        public MyAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
-                                                                    int viewType) {
-            Log.v("CreateViewHolder", "in onCreateViewHolder");
+        public Adapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_top_challenges,parent,false);
+                    .inflate(R.layout.item_top_challenges, parent, false);
 
-        return new MyAdapter.MyViewHolder(itemView);
-    }
+            return new Adapter.MyViewHolder(itemView);
+        }
 
-    // Replace the contents of a view (invoked by the layout manager)
-    @Override
-    public void onBindViewHolder(MyAdapter.MyViewHolder holder, int position) {
-        Log.v("BindViewHolder", "in onBindViewHolder");
+        @Override
+        public void onBindViewHolder(@NotNull Adapter.MyViewHolder holder, int position) {
+            com.example.challengeup.backend.Challenge challenge = mDataset.get(position);
 
+            holder.rank.setText(String.valueOf(position + 1));
+            holder.name.setText(challenge.getName());
+            holder.dataLiked.setText(String.valueOf(challenge.getLikes()));
 
-        com.example.challengeup.backend.Challenge challenge = mDataset.get(position);
-        // holder.thumbnail.setImageBitmap(challenge.//todo image
+            holder.itemView.setOnClickListener(view -> {
+                // TODO navigate
+            });
 
-        mViewModel.getUserById(challenge.getCreator_id(), result -> {
-            if (result instanceof Result.Success) {
-                Bitmap avatar = ((Result.Success<User>) result).data.getPhoto();
-                if(avatar!=null)
-                    holder.avatar.setImageBitmap(avatar);
-                else{
-                    Toast.makeText(TopChallenges.this.getActivity(), "Avatar is null", Toast.LENGTH_LONG).show();//todo remove toast
+            mViewModel.getUserById(challenge.getCreator_id(), result -> {
+                if (result instanceof Result.Success) {
+                    //noinspection unchecked
+                    Bitmap avatar = ((Result.Success<User>) result).data.getPhoto();
+                    if (avatar != null)
+                        holder.avatar.setImageBitmap(avatar);
                 }
-            } else {
-                Toast.makeText(
-                        TopChallenges.this.getActivity(),
-                        "Can't get user",
-                        Toast.LENGTH_LONG)
-                        .show();
-            }
-        });
+            });
 
+            mViewModel.getNumAccepted(challenge, result -> {
+                if (result instanceof Result.Success) {
+                    //noinspection unchecked
+                    Long num = ((Result.Success<Long>) result).data;
+                    holder.dataAccepted.setText(String.format("%s", num));
+                }
+            });
 
-        holder.rank.setText(new Integer(position+1).toString());
-        holder.name.setText(challenge.getName());
-//        holder.dataAccepted.setText(new Long(challenge.numberOfPeopleWhoAccepted()).toString());
-//        holder.dataCompleted.setText(new Long(challenge.numberOfPeopleWhoComplete()).toString());
-        mViewModel.numberOfPeopleWhoAccepted(challenge, result -> {
-            if (result instanceof Result.Success) {
-                holder.dataAccepted.setText(((Result.Success<Long>) result).data.toString());
+            mViewModel.getNumCompleted(challenge, result -> {
+                if (result instanceof Result.Success) {
+                    //noinspection unchecked
+                    Long num = ((Result.Success<Long>) result).data;
+                    holder.dataCompleted.setText(String.format("%s", num));
+                }
+            });
+        }
 
-            } else {
-                Toast.makeText(
-                        TopChallenges.this.getActivity(),
-                        "Can't get number of people accepted",
-                        Toast.LENGTH_LONG)
-                        .show();
-            }
-        });
+        @Override
+        public int getItemCount() {
+            return mDataset.size();
+        }
 
-        mViewModel.numberOfPeopleWhoComplete(challenge, result -> {
-            if (result instanceof Result.Success) {
-                holder.dataCompleted.setText(((Result.Success<Long>) result).data.toString());
-
-            } else {
-                Toast.makeText(
-                        TopChallenges.this.getActivity(),
-                        "Can't get number of people complete",
-                        Toast.LENGTH_LONG)
-                        .show();
-            }
-        });
-        holder.dataLiked.setText(new Integer(challenge.getLikes()).toString());
-
+        public void setDataset(List<Challenge> newDataset) {
+            mDataset = newDataset;
+            notifyDataSetChanged();
+        }
     }
-
-    // Return the size of your dataset (invoked by the layout manager)
-    @Override
-    public int getItemCount() {
-        return mDataset.size();
-    }
-
-    public void setmDataset(List<Challenge> arrayList){
-        mDataset = arrayList;
-    }
-
-
-}
-
-
 }

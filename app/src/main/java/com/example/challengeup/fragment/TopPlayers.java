@@ -1,16 +1,15 @@
 package com.example.challengeup.fragment;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -18,173 +17,118 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.challengeup.ApplicationContainer;
+import com.example.challengeup.Container;
+import com.example.challengeup.R;
 import com.example.challengeup.backend.User;
-import com.example.challengeup.result.Result;
+import com.example.challengeup.request.Result;
 import com.example.challengeup.viewModel.TopPlayersViewModel;
+import com.example.challengeup.viewModel.factory.TopPlayersFactory;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-
-import com.example.challengeup.R;
 
 public class TopPlayers extends Fragment {
 
-    private RecyclerView mRecyclerView;
+    private TopPlayersViewModel mViewModel;
     private List<User> mArrayList = new ArrayList<>();
-    private MyAdapter mAdapter;
+    private Adapter mAdapter;
 
-    View view;
+    @Override
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_top_players, container, false);
+    }
 
-    private TopPlayersViewModel mViewModel;//todo???? create topchallengesviewmodel
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-    public TopPlayers(){}
+        Container appContainer = ((ApplicationContainer) requireActivity().getApplication()).mContainer;
+        mViewModel = new ViewModelProvider(this, new TopPlayersFactory(
+                appContainer.mRequestExecutor
+        )).get(TopPlayersViewModel.class);
 
-    private void getAllUsersCallback() {
+        RecyclerView recyclerView = view.findViewById(R.id.top_players_list);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.addItemDecoration(new DividerItemDecoration(view.getContext(), LinearLayoutManager.VERTICAL));
+
+        mAdapter = new Adapter(mArrayList);
+        recyclerView.setAdapter(mAdapter);
 
         mViewModel.getAllUsers(result -> {
             if (result instanceof Result.Success) {
+                //noinspection unchecked
                 mArrayList = ((Result.Success<List<User>>) result).data;
-                Toast.makeText(
-                        TopPlayers.this.getActivity(),
-                        "Size: " + mArrayList.size(),
-                        Toast.LENGTH_LONG)
-                        .show();//todo remove toast
 
-                //sorting arraylist
-                Collections.sort(mArrayList, new Comparator<User>() {
-                    @Override
-                    public int compare(User u1, User u2) {
-                        if (u1.getTotalRp()==u2.getTotalRp())
-                            return 0;
-                        if (u1.getTotalRp()>u2.getTotalRp())
-                            return 1;
+                Collections.sort(mArrayList, (u1, u2) ->
+                        Integer.compare(u1.getTotalRp(), u2.getTotalRp()));
 
-                        return -1;
-                    }
-                });
-
-                mAdapter.setmDataset(mArrayList);
-                mAdapter.notifyItemRangeInserted(0,mArrayList.size());
-
-            } else {
-                Toast.makeText(
-                        TopPlayers.this.getActivity(),
-                        "Can't get players",
-                        Toast.LENGTH_LONG)
-                        .show();
+                mAdapter.setDataset(mArrayList);
+                mAdapter.notifyItemRangeInserted(0, mArrayList.size());
             }
         });
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_top_players, container, false);
-        mRecyclerView = view.findViewById(R.id.top_players_list);
+    static class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
 
-        mViewModel = new ViewModelProvider(this).get(TopPlayersViewModel.class);
+        private List<com.example.challengeup.backend.User> mDataset;
 
-        getAllUsersCallback();
+        public static class MyViewHolder extends RecyclerView.ViewHolder {
 
-        mAdapter = new MyAdapter(mArrayList);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
-
-        mRecyclerView.setItemAnimator( new DefaultItemAnimator());
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(view.getContext(), LinearLayoutManager.VERTICAL));
-
-        mRecyclerView.setAdapter(mAdapter);
-
-
-        return view;
-    }
-
-
-
-    class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
-        private List<com.example.challengeup.backend.User> mDataset = new ArrayList<>();
-
-        public class MyViewHolder extends RecyclerView.ViewHolder{
             ImageView avatar;
             TextView rank, name, rp;
+
             public MyViewHolder(View itemView) {
                 super(itemView);
-                Log.v("ViewHolder","in View Holder");
+
                 avatar = itemView.findViewById(R.id.avatar);
                 rank = itemView.findViewById(R.id.rank);
                 name = itemView.findViewById(R.id.name);
                 rp = itemView.findViewById(R.id.rp);
             }
-
         }
 
-        // Provide a suitable constructor (depends on the kind of dataset)
-        public MyAdapter(List<com.example.challengeup.backend.User> myDataset) {
-            if(myDataset!=null)
-                mDataset = myDataset;
+        public Adapter(@NonNull List<com.example.challengeup.backend.User> myDataset) {
+            mDataset = myDataset;
         }
 
-        // Create new views (invoked by the layout manager)
+        @NotNull
         @Override
-        public MyAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
-                                                         int viewType) {
-            Log.v("CreateViewHolder", "in onCreateViewHolder");
+        public Adapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_top_players,parent,false);
+                    .inflate(R.layout.item_top_players, parent, false);
 
-            return new MyAdapter.MyViewHolder(itemView);
+            return new MyViewHolder(itemView);
         }
 
-        // Replace the contents of a view (invoked by the layout manager)
         @Override
-        public void onBindViewHolder(MyAdapter.MyViewHolder holder, int position) {
-            Log.v("BindViewHolder", "in onBindViewHolder");
-
-
+        public void onBindViewHolder(@NotNull Adapter.MyViewHolder holder, int position) {
             User user = mDataset.get(position);
-           // User user = mDataset.get(3);
 
-            {
-                Bitmap avatar = user.getPhoto();
-                if (avatar != null) {
-                    holder.avatar.setImageBitmap(avatar);
-                    Toast.makeText(TopPlayers.this.getActivity(), "OK" + user.getId(), Toast.LENGTH_LONG).show();//todo remove toast
-                    avatar = null;
-                } else {
-                    Toast.makeText(TopPlayers.this.getActivity(), "Avatar is null" + user.getId(), Toast.LENGTH_LONG).show();//todo remove toast
-                }
-            }
+            Bitmap avatar = user.getPhoto();
+            if (avatar != null)
+                holder.avatar.setImageBitmap(avatar);
 
-            
-
-
-            holder.rank.setText(new Integer(position+1).toString());
+            holder.rank.setText(String.valueOf(position + 1));
             holder.name.setText(user.getNick());
-            holder.rp.setText(new Integer(user.getTotalRp()).toString());
-
+            holder.rp.setText(String.valueOf(user.getTotalRp()));
         }
 
-        // Return the size of your dataset (invoked by the layout manager)
         @Override
         public int getItemCount() {
             return mDataset.size();
         }
 
-        public void setmDataset(List<User> arrayList){
-            mDataset = arrayList;
+        public void setDataset(List<User> newDataset) {
+            mDataset = newDataset;
+            notifyDataSetChanged();
         }
-
-
     }
 }
-
-
-/*
-
-
-
-
-}
-
- */

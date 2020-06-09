@@ -3,7 +3,6 @@ package com.example.challengeup;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -100,30 +99,13 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressWarnings("unchecked")
     private void addUserToDbIfAbsent(FirebaseUser firebaseUser) {
-        ICallback addUserCallback = result -> {
-            if (result instanceof Result.Success) {
-                String newUserId = ((Result.Success<String>) result).data;
-                Toast.makeText(
-                        MainActivity.this,
-                        "Success " + firebaseUser.getUid() + " " + newUserId,
-                        Toast.LENGTH_LONG)
-                        .show();
-            } else {
-                Toast.makeText(
-                        MainActivity.this,
-                        "Can't add user to db",
-                        Toast.LENGTH_LONG)
-                        .show();
-            }
-        };
-
         ICallback getUserCallback = result -> {
             if (result instanceof Result.Success) {
                 User user = ((Result.Success<User>) result).data;
 
                 if (user == null) {
                     user = new User("IronTonyStark", "Iron-Tony", firebaseUser.getEmail());
-                    mViewModel.addUser(user, addUserCallback);
+                    mViewModel.addUser(user, ignored -> {});
                 }
 
                 if (user.getPhoto() != null) {
@@ -135,12 +117,6 @@ public class MainActivity extends AppCompatActivity {
 
                 mViewModel.saveUserToSharedPreferences(user);
                 mViewModel.refreshUserFromSharedPreferences();
-            } else {
-                Toast.makeText(
-                        MainActivity.this,
-                        "Can't get user from db",
-                        Toast.LENGTH_LONG)
-                        .show();
             }
         };
 

@@ -14,7 +14,6 @@ import com.example.challengeup.request.ICallback;
 import com.example.challengeup.request.RequestExecutor;
 import com.example.challengeup.request.command.AddUserCommand;
 import com.example.challengeup.request.command.GetUserByEmailCommand;
-import com.example.challengeup.request.command.GetUserByIdCommand;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -96,10 +95,6 @@ public class MainActivityViewModel extends ViewModel {
         Bitmap bitmap = BitmapFactory.decodeFile(mAvatarFile.getAbsolutePath());
         if (bitmap != null)
             setUserAvatar(bitmap);
-    }
-
-    public void getUserById(String uid, ICallback callback) {
-        mRequestExecutor.execute(new GetUserByIdCommand(uid), callback);
     }
 
     public void getUserByEmail(String email, ICallback getUserCallback) {
