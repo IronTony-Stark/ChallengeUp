@@ -1,4 +1,4 @@
-package com.example.challengeup.backend;
+package com.example.myapplication;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -37,7 +38,11 @@ public class Comment {
     }
 
     public static String addNewComment(Comment comment){
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .build();
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         try {
             JSONObject jsonObject = new JSONObject()
@@ -68,7 +73,11 @@ public class Comment {
         return "";
     }
     public static String addNewComment(String message, String user_id, String challenge_id, String date, String reply_on_id){
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .build();
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         try {
             JSONObject jsonObject = new JSONObject()
@@ -97,7 +106,11 @@ public class Comment {
 
     public static ArrayList<Comment> getAllComments(){
         try {
-            OkHttpClient client = new OkHttpClient();
+            OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .build();
             Request request = new Request.Builder()
                     .url("https://us-central1-challengeup-49057.cloudfunctions.net/get_all_comments")
                     .get()
@@ -130,7 +143,11 @@ public class Comment {
     }
 
     public void update(){
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .build();
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         try {
             JSONObject jsonObject = new JSONObject()

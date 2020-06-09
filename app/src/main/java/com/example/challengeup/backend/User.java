@@ -1,4 +1,4 @@
-package com.example.challengeup.backend;
+package com.example.myapplication;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -22,6 +22,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class User {
@@ -47,11 +48,10 @@ public class User {
 
 
 
-    public User(String id, String tag, String nick, String email)  {
+    public User(String tag, String nick, String email)  {
         this.tag = tag;
         this.nick = nick;
         this.email = email;
-        this.id = id;
 
 
         undone = new ArrayList<>();
@@ -60,6 +60,7 @@ public class User {
         subscriptions = new ArrayList<>();
         saved = new ArrayList<>();
         trophies = new ArrayList<>();
+        id = null;
         photo = null;
         rp = 0;
         totalRp = 0;
@@ -69,8 +70,8 @@ public class User {
         links.put("instagram","");
         links.put("youtube","");
     }
-    public User(String id, String tag, String nick, String email, ArrayList<String> categories) {
-        this(id, tag, nick, email);
+    public User(String tag, String nick, String email, ArrayList<String> categories) {
+        this(tag, nick, email);
         this.categories = categories;
     }
 
@@ -80,10 +81,13 @@ public class User {
         Validation.validateNickTagPassword(user.tag);
 
         Validation.validateEmail(user.email);
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .build();
         try {
             JSONObject jsonObject = new JSONObject()
-                    .put("id", user.id)
                     .put("tag", user.tag)
                     .put("email", user.email)
                     .put("nick", user.nick)
@@ -137,15 +141,18 @@ public class User {
         }
         return "";
     }
-    public static String addNewUser(String id, String tag, String nick, String email, ArrayList<String> categories) throws IllegalArgumentException{
+    public static String addNewUser(String tag, String nick, String email, ArrayList<String> categories) throws IllegalArgumentException{
         Validation.validateNickTagPassword(nick);
         Validation.validateNickTagPassword(tag);
         Validation.validateEmail(email);
         Validation.validateUserTagToBeUnique(tag);
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .build();
         try {
             JSONObject jsonObject = new JSONObject()
-                    .put("id", id)
                     .put("tag", tag)
                     .put("email", email)
                     .put("nick", nick)
@@ -242,7 +249,11 @@ public class User {
 
     public static ArrayList<User> getAllUsers(){
         try {
-            OkHttpClient client = new OkHttpClient();
+            OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .build();
             Request request = new Request.Builder()
                     .url("https://us-central1-challengeup-49057.cloudfunctions.net/get_all_users")
                     .get()
@@ -306,10 +317,11 @@ public class User {
                     for (int i = 0; i< done.length(); ++i)doneArray.add((String) done.get(i));
                 }catch (JSONException ignored){}
 
-                User user = new User(key, object.getJSONObject(key).getString("tag"),
+                User user = new User(object.getJSONObject(key).getString("tag"),
                         object.getJSONObject(key).getString("nick"),
                         object.getJSONObject(key).getString("email"),
                         categoriesArray);
+                user.setId(key);
                 user.setDone(doneArray);
                 user.setUndone(undoneArray);
                 user.setSubscriptions(subscriptionsArray);
@@ -331,9 +343,24 @@ public class User {
         }
         return null;
     }
+
+    public static User getUserByEmail(String email){
+        ArrayList<User> users = getAllUsers();
+        try{
+            User a = users.stream().filter(x->x.getEmail().equals(email)).collect(Collectors.toList()).get(0);
+            return a;
+        }catch (IndexOutOfBoundsException e){
+            return null;
+        }
+    }
+
     public static User getUserById(String id){
         try {
-            OkHttpClient client = new OkHttpClient();
+            OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .build();
 
             Request request = new Request.Builder()
                     .url("https://us-central1-challengeup-49057.cloudfunctions.net/get_user_by_id?user_id="+id)
@@ -393,10 +420,11 @@ public class User {
                 for (int i = 0; i< done.length(); ++i)doneArray.add((String) done.get(i));
             }catch (JSONException ignored){}
 
-                User user = new User(id, object.getJSONObject(id).getString("tag"),
+                User user = new User(object.getJSONObject(id).getString("tag"),
                         object.getJSONObject(id).getString("nick"),
                         object.getJSONObject(id).getString("email"),
                         categoriesArray);
+                user.setId(id);
                 user.setUndone(undoneArray);
                 user.setDone(doneArray);
                 user.setSubscriptions(subscriptionsArray);
@@ -415,22 +443,17 @@ public class User {
             return null;
         }
     }
-    public static User getUserByEmail(String email){
-        ArrayList<User> users = getAllUsers();
-        try{
-            User a = users.stream().filter(x->x.getEmail().equals(email)).collect(Collectors.toList()).get(0);
-            return a;
-        }catch (IndexOutOfBoundsException e){
-            return null;
-        }
-    }
 
     public void update() throws IllegalArgumentException{
         Validation.validateNickTagPassword(nick);
         Validation.validateNickTagPassword(tag);
         Validation.validateEmail(email);
         Validation.validateUserTagToBeUnique(tag);
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .build();
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         try {
             JSONObject jsonObject = new JSONObject()
@@ -587,7 +610,7 @@ public class User {
     private void setLinks(HashMap<String, String> links) {
         this.links = links;
     }
-    public void setId(String id){
+    private void setId(String id){
         this.id = id;
     }
 
