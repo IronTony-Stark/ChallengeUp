@@ -68,8 +68,16 @@ public class TopPlayers extends Fragment {
                 //noinspection unchecked
                 mArrayList = ((Result.Success<List<User>>) result).data;
 
-                Collections.sort(mArrayList, (u1, u2) ->
-                        Integer.compare(u1.getTotalRp(), u2.getTotalRp()));
+                // TODO sometimes values are null
+                Collections.sort(mArrayList, (u1, u2) -> {
+                        if (u1 == null && u2 == null)
+                            return 0;
+                        else if (u1 == null)
+                            return -1;
+                        else if (u2 == null)
+                            return 1;
+                        else return Integer.compare(u1.getTotalRp(), u2.getTotalRp());
+                });
 
                 mAdapter.setDataset(mArrayList);
                 mAdapter.notifyItemRangeInserted(0, mArrayList.size());
@@ -123,7 +131,8 @@ public class TopPlayers extends Fragment {
 
             holder.itemView.setOnClickListener(view -> {
                 TopPlayersDirections.ActionTopPlayersToProfile action =
-                        TopPlayersDirections.actionTopPlayersToProfile(user.getId());
+                        TopPlayersDirections.actionTopPlayersToProfile();
+                action.setUid(user.getId());
                 Navigation.findNavController(view).navigate(action);
             });
         }

@@ -3,6 +3,7 @@ package com.example.challengeup;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -21,6 +22,8 @@ import com.example.challengeup.request.Result;
 import com.example.challengeup.utils.LoginUtils;
 import com.example.challengeup.viewModel.MainActivityViewModel;
 import com.example.challengeup.viewModel.factory.MainActivityFactory;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.io.File;
@@ -32,17 +35,19 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 123;
 
-    private ActivityMainBinding binding;
     private MainActivityViewModel mViewModel;
-    private DrawerLayout drawerLayout;
-    private NavController navController;
-    private AppBarConfiguration appBarConfiguration;
+    private DrawerLayout mDrawerLayout;
+    private BottomNavigationView mBottomNav;
+    private NavigationView mNavView;
+    private AppBarConfiguration mAppBarConfiguration;
+    private NavController mNavController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        ActivityMainBinding binding = DataBindingUtil
+                .setContentView(this, R.layout.activity_main);
         binding.setLifecycleOwner(this);
 
         Container container = ((ApplicationContainer) getApplication()).mContainer;
@@ -54,17 +59,20 @@ public class MainActivity extends AppCompatActivity {
                 file)
         ).get(MainActivityViewModel.class);
 
-        drawerLayout = binding.drawerLayout;
-        navController = Navigation.findNavController(this, R.id.navHostFragment);
+        mDrawerLayout = binding.drawerLayout;
+        mBottomNav = binding.bottomNavigationView;
+        mNavView = binding.navView;
 
-        appBarConfiguration = new AppBarConfiguration
+        mAppBarConfiguration = new AppBarConfiguration
                 .Builder(R.id.timeChallenges, R.id.challenges, R.id.newsFeed, R.id.profile)
-                .setOpenableLayout(drawerLayout)
+                .setOpenableLayout(mDrawerLayout)
                 .build();
 
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(binding.navView, navController);
-        NavigationUI.setupWithNavController(binding.bottomNavigationView, navController);
+        mNavController = Navigation.findNavController(this, R.id.navHostFragment);
+
+        NavigationUI.setupActionBarWithNavController(this, mNavController, mAppBarConfiguration);
+        NavigationUI.setupWithNavController(mNavView, mNavController);
+        NavigationUI.setupWithNavController(mBottomNav, mNavController);
 
         setupDestinations();
         setupNavDrawer();
@@ -82,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        return NavigationUI.navigateUp(navController, appBarConfiguration);
+        return NavigationUI.navigateUp(mNavController, mAppBarConfiguration);
     }
 
     @Override
@@ -127,29 +135,32 @@ public class MainActivity extends AppCompatActivity {
     private void setupDestinations() {
         final List<Integer> navDrawerUnlockedFragmentIds = new LinkedList<Integer>() {
             {
-                add(Objects.requireNonNull(navController
+                add(Objects.requireNonNull(mNavController
                         .getGraph().findNode(R.id.timeChallenges)).getId());
-                add(Objects.requireNonNull(navController
+                add(Objects.requireNonNull(mNavController
                         .getGraph().findNode(R.id.challenges)).getId());
-                add(Objects.requireNonNull(navController
+                add(Objects.requireNonNull(mNavController
                         .getGraph().findNode(R.id.newsFeed)).getId());
-                add(Objects.requireNonNull(navController
+                add(Objects.requireNonNull(mNavController
                         .getGraph().findNode(R.id.profile)).getId());
             }
         };
 
-        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-            if (navDrawerUnlockedFragmentIds.contains(destination.getId()))
-                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-            else
-                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        mNavController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            if (navDrawerUnlockedFragmentIds.contains(destination.getId())) {
+                mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+                mBottomNav.setVisibility(View.VISIBLE);
+            } else {
+                mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                mBottomNav.setVisibility(View.GONE);
+            }
         });
     }
 
     private void setupNavDrawer() {
         NavDrawerHeaderBinding headerBinding = DataBindingUtil.inflate(getLayoutInflater(),
-                R.layout.nav_drawer_header, binding.navView, false);
-        binding.navView.addHeaderView(headerBinding.getRoot());
+                R.layout.nav_drawer_header, mNavView, false);
+        mNavView.addHeaderView(headerBinding.getRoot());
         headerBinding.setViewModel(mViewModel);
         headerBinding.setLifecycleOwner(this);
 
