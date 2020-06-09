@@ -415,6 +415,15 @@ public class User {
             return null;
         }
     }
+    public static User getUserByEmail(String email){
+        ArrayList<User> users = getAllUsers();
+        try{
+            User a = users.stream().filter(x->x.getEmail().equals(email)).collect(Collectors.toList()).get(0);
+            return a;
+        }catch (IndexOutOfBoundsException e){
+            return null;
+        }
+    }
 
     public void update() throws IllegalArgumentException{
         Validation.validateNickTagPassword(nick);

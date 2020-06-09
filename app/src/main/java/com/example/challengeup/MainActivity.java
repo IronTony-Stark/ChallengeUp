@@ -17,6 +17,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.example.challengeup.backend.User;
 import com.example.challengeup.databinding.ActivityMainBinding;
 import com.example.challengeup.databinding.NavDrawerHeaderBinding;
+import com.example.challengeup.dto.UserDTO;
 import com.example.challengeup.request.ICallback;
 import com.example.challengeup.request.Result;
 import com.example.challengeup.utils.LoginUtils;
@@ -119,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
                 User user = ((Result.Success<User>) result).data;
 
                 if (user == null) {
-                    user = new User("TagTagTag", "NickName", firebaseUser.getEmail());
+                    user = new User("IronTonyStark", "Iron-Tony", firebaseUser.getEmail());
                     mViewModel.addUser(user, addUserCallback);
                 }
 
@@ -134,8 +135,8 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        // TODO get by email
-        mViewModel.getUserById(firebaseUser.getUid(), getUserCallback);
+        mViewModel.getUserByEmail(firebaseUser.getEmail(), getUserCallback);
+        mViewModel.setLoadingUser();
     }
 
     private void setupDestinations() {

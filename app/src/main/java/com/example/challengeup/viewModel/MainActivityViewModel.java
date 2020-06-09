@@ -10,6 +10,7 @@ import com.example.challengeup.dto.UserDTO;
 import com.example.challengeup.request.ICallback;
 import com.example.challengeup.request.RequestExecutor;
 import com.example.challengeup.request.command.AddUserCommand;
+import com.example.challengeup.request.command.GetUserByEmailCommand;
 import com.example.challengeup.request.command.GetUserByIdCommand;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -26,11 +27,10 @@ public class MainActivityViewModel extends ViewModel {
     public MainActivityViewModel(final RequestExecutor requestExecutor,
                                  final SharedPreferences preferences) {
         mUser = new MutableLiveData<>();
-        UserDTO temp = new UserDTO("-1", "Loading...", "Loading...");
-        mUser.setValue(temp);
-
         mRequestExecutor = requestExecutor;
         mPreferences = preferences;
+
+        refreshUserFromSharedPreferences();
     }
 
     public boolean isAuthenticated() {
@@ -65,12 +65,21 @@ public class MainActivityViewModel extends ViewModel {
         mUser.setValue(userDTO);
     }
 
-    public void getUserById(String uid, ICallback getUserCallback) {
-        mRequestExecutor.execute(new GetUserByIdCommand(uid), getUserCallback);
+    public void setLoadingUser() {
+        UserDTO temp = new UserDTO("-1", "Loading...", "Loading...");
+        mUser.setValue(temp);
     }
 
-    public void addUser(User newUser, ICallback addUserCallback) {
-        mRequestExecutor.execute(new AddUserCommand(newUser), addUserCallback);
+    public void getUserById(String uid, ICallback callback) {
+        mRequestExecutor.execute(new GetUserByIdCommand(uid), callback);
+    }
+
+    public void getUserByEmail(String email, ICallback getUserCallback) {
+        mRequestExecutor.execute(new GetUserByEmailCommand(email), getUserCallback);
+    }
+
+    public void addUser(User newUser, ICallback callback) {
+        mRequestExecutor.execute(new AddUserCommand(newUser), callback);
     }
 
     public static final String USER_ID = "USER_ID";
