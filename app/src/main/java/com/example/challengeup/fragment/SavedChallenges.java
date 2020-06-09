@@ -20,9 +20,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.challengeup.ApplicationContainer;
 import com.example.challengeup.Container;
+import com.example.challengeup.MainActivity;
 import com.example.challengeup.R;
 import com.example.challengeup.backend.User;
 import com.example.challengeup.request.Result;
+import com.example.challengeup.viewModel.MainActivityViewModel;
 import com.example.challengeup.viewModel.SavedChallengesViewModel;
 import com.example.challengeup.viewModel.factory.SavedChallengesFactory;
 
@@ -38,6 +40,7 @@ public class SavedChallenges extends Fragment {
     String id;
     User user;
     private SavedChallengesViewModel mViewModel;
+    private MainActivityViewModel mainViewModel;
     private List<Challenge> mArrayList = new ArrayList<>();
     private Adapter mAdapter;
 
@@ -59,7 +62,11 @@ public class SavedChallenges extends Fragment {
         )).get(SavedChallengesViewModel.class);
 
         //todo get current user id
-        id = "a";
+        mainViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
+
+        id = mainViewModel.getUser().getValue().getId();
+        //id = "a";
+
         mViewModel.getUserById(id, result -> {
             if (result instanceof Result.Success) {
                 //noinspection unchecked
