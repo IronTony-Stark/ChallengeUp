@@ -6,6 +6,7 @@
     tools:context=".fragment.SavedChallenges">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/saved_challenges_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:listitem="@layout/item_challenge" />
