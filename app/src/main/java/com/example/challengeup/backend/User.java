@@ -1,6 +1,5 @@
 package com.example.challengeup.backend;
 
-
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
@@ -48,11 +47,10 @@ public class User {
 
 
 
-    public User(String id, String tag, String nick, String email)  {
+    public User(String tag, String nick, String email)  {
         this.tag = tag;
         this.nick = nick;
         this.email = email;
-        this.id = id;
 
 
         undone = new ArrayList<>();
@@ -61,6 +59,7 @@ public class User {
         subscriptions = new ArrayList<>();
         saved = new ArrayList<>();
         trophies = new ArrayList<>();
+        id = null;
         photo = null;
         rp = 0;
         totalRp = 0;
@@ -70,8 +69,8 @@ public class User {
         links.put("instagram","");
         links.put("youtube","");
     }
-    public User(String id, String tag, String nick, String email, ArrayList<String> categories) {
-        this(id, tag, nick, email);
+    public User(String tag, String nick, String email, ArrayList<String> categories) {
+        this(tag, nick, email);
         this.categories = categories;
     }
 
@@ -84,7 +83,6 @@ public class User {
         OkHttpClient client = new OkHttpClient();
         try {
             JSONObject jsonObject = new JSONObject()
-                    .put("id", user.id)
                     .put("tag", user.tag)
                     .put("email", user.email)
                     .put("nick", user.nick)
@@ -138,7 +136,7 @@ public class User {
         }
         return "";
     }
-    public static String addNewUser(String id, String tag, String nick, String email, ArrayList<String> categories) throws IllegalArgumentException{
+    public static String addNewUser(String tag, String nick, String email, ArrayList<String> categories) throws IllegalArgumentException{
         Validation.validateNickTagPassword(nick);
         Validation.validateNickTagPassword(tag);
         Validation.validateEmail(email);
@@ -146,7 +144,6 @@ public class User {
         OkHttpClient client = new OkHttpClient();
         try {
             JSONObject jsonObject = new JSONObject()
-                    .put("id", id)
                     .put("tag", tag)
                     .put("email", email)
                     .put("nick", nick)
@@ -161,8 +158,8 @@ public class User {
                     .put("totalRp", 0);
 
             RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
-                        .addFormDataPart("data", jsonObject.toString())
-                        .build();
+                    .addFormDataPart("data", jsonObject.toString())
+                    .build();
 
 
 
@@ -236,9 +233,9 @@ public class User {
         return users;
     }
     public ArrayList<User> getSubscribersAsUsers(){
-       ArrayList<User> users = getAllUsers();
-       ArrayList<User> a = (ArrayList<User>) users.stream().filter(x->x.getSubscriptions().contains(id)).collect(Collectors.toList());
-       return a;
+        ArrayList<User> users = getAllUsers();
+        ArrayList<User> a = (ArrayList<User>) users.stream().filter(x->x.getSubscriptions().contains(id)).collect(Collectors.toList());
+        return a;
     }
 
     public static ArrayList<User> getAllUsers(){
@@ -307,10 +304,11 @@ public class User {
                     for (int i = 0; i< done.length(); ++i)doneArray.add((String) done.get(i));
                 }catch (JSONException ignored){}
 
-                User user = new User(key, object.getJSONObject(key).getString("tag"),
+                User user = new User(object.getJSONObject(key).getString("tag"),
                         object.getJSONObject(key).getString("nick"),
                         object.getJSONObject(key).getString("email"),
                         categoriesArray);
+                user.setId(key);
                 user.setDone(doneArray);
                 user.setUndone(undoneArray);
                 user.setSubscriptions(subscriptionsArray);
@@ -394,25 +392,35 @@ public class User {
                 for (int i = 0; i< done.length(); ++i)doneArray.add((String) done.get(i));
             }catch (JSONException ignored){}
 
-                User user = new User(id, object.getJSONObject(id).getString("tag"),
-                        object.getJSONObject(id).getString("nick"),
-                        object.getJSONObject(id).getString("email"),
-                        categoriesArray);
-                user.setUndone(undoneArray);
-                user.setDone(doneArray);
-                user.setSubscriptions(subscriptionsArray);
-                user.setLinks(links);
-                user.setSaved(saved);
-                user.setTrophies(achievements);
-                user.setRp(Integer.parseInt(object.getJSONObject(id).getString("rp")));
-                user.setTotalRp(Integer.parseInt(object.getJSONObject(id).getString("totalRp")));
-                if(!object.getJSONObject(id).getString("photo_link").equals("")){
-                    URL url = new URL(object.getJSONObject(id).getString("photo_link"));
-                    Bitmap image = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-                    user.setPhoto(image);
-                }
+            User user = new User(object.getJSONObject(id).getString("tag"),
+                    object.getJSONObject(id).getString("nick"),
+                    object.getJSONObject(id).getString("email"),
+                    categoriesArray);
+            user.setId(id);
+            user.setUndone(undoneArray);
+            user.setDone(doneArray);
+            user.setSubscriptions(subscriptionsArray);
+            user.setLinks(links);
+            user.setSaved(saved);
+            user.setTrophies(achievements);
+            user.setRp(Integer.parseInt(object.getJSONObject(id).getString("rp")));
+            user.setTotalRp(Integer.parseInt(object.getJSONObject(id).getString("totalRp")));
+            if(!object.getJSONObject(id).getString("photo_link").equals("")){
+                URL url = new URL(object.getJSONObject(id).getString("photo_link"));
+                Bitmap image = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                user.setPhoto(image);
+            }
             return user;
         } catch (IOException | JSONException e) {
+            return null;
+        }
+    }
+    public static User getUserByEmail(String email){
+        ArrayList<User> users = getAllUsers();
+        try{
+            User a = users.stream().filter(x->x.getEmail().equals(email)).collect(Collectors.toList()).get(0);
+            return a;
+        }catch (IndexOutOfBoundsException e){
             return null;
         }
     }
@@ -579,7 +587,7 @@ public class User {
     private void setLinks(HashMap<String, String> links) {
         this.links = links;
     }
-    public void setId(String id){
+    private void setId(String id){
         this.id = id;
     }
 

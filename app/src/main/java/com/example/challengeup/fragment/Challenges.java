@@ -1,4 +1,4 @@
-package com.example.challengeup;
+package com.example.challengeup.fragment;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -13,12 +13,12 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.challengeup.R;
 import com.example.challengeup.backend.Challenge;
 import com.example.challengeup.backend.User;
 import com.example.challengeup.result.Result;
@@ -27,11 +27,12 @@ import com.example.challengeup.viewModel.ChallengesViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class Challenges extends Fragment {
 
     private RecyclerView mRecyclerView;
     private List<Challenge> mArrayList = new ArrayList<>();
-   // private LinearLayoutManager mLayoutManager;
+    // private LinearLayoutManager mLayoutManager;
     private MyAdapter/*RecyclerView.Adapter*/ mAdapter;
 
     View view;
@@ -42,16 +43,12 @@ public class Challenges extends Fragment {
     private NavController mNavController;
 
 
-    public Challenges() {
-
-    }
-
-
     private void getAllChallangesCallback() {
 
         mViewModel.getAllChallenges(result -> {
             if (result instanceof Result.Success) {
-                /*List<Challenge> challenges*/mArrayList = ((Result.Success<List<Challenge>>) result).data;
+                /*List<Challenge> challenges*/
+                mArrayList = ((Result.Success<List<Challenge>>) result).data;
                 Toast.makeText(
                         Challenges.this.getActivity(),
                         "Size: " + mArrayList.size(),
@@ -59,7 +56,7 @@ public class Challenges extends Fragment {
                         .show();//todo remove toast
 
                 mAdapter.setmDataset(mArrayList);
-                mAdapter.notifyItemRangeInserted(0,mArrayList.size());
+                mAdapter.notifyItemRangeInserted(0, mArrayList.size());
 
             } else {
                 Toast.makeText(
@@ -77,7 +74,8 @@ public class Challenges extends Fragment {
                              Bundle savedInstanceState) {
 
 
-        /*View */view = inflater.inflate(R.layout.fragment_challenges, container, false);
+        /*View */
+        view = inflater.inflate(R.layout.fragment_challenges, container, false);
 
         //mNavController = Navigation.findNavController(view);//todo navigation
 
@@ -90,7 +88,7 @@ public class Challenges extends Fragment {
         mAdapter = new MyAdapter(mArrayList);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
 
-        mRecyclerView.setItemAnimator( new DefaultItemAnimator());
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.addItemDecoration(new DividerItemDecoration(view.getContext(), LinearLayoutManager.VERTICAL));
 
         mRecyclerView.setAdapter(mAdapter);
@@ -99,18 +97,17 @@ public class Challenges extends Fragment {
     }
 
 
-
-
     class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         private List<Challenge> mDataset = new ArrayList<>();
 
-        public class MyViewHolder extends RecyclerView.ViewHolder{
+        public class MyViewHolder extends RecyclerView.ViewHolder {
             ImageView thumbnail, avatar;
             ImageView iconSave;
             TextView name, description, dataAccepted, dataCompleted, dataLiked;
+
             public MyViewHolder(View itemView) {
                 super(itemView);
-                Log.v("ViewHolder","in View Holder");
+                Log.v("ViewHolder", "in View Holder");
                 thumbnail = itemView.findViewById(R.id.thumbnail);
                 avatar = itemView.findViewById(R.id.avatar);
                 name = itemView.findViewById(R.id.name);
@@ -124,7 +121,7 @@ public class Challenges extends Fragment {
 
         // Provide a suitable constructor (depends on the kind of dataset)
         public MyAdapter(List<Challenge> myDataset) {
-            if(myDataset!=null)
+            if (myDataset != null)
                 mDataset = myDataset;
         }
 
@@ -134,7 +131,7 @@ public class Challenges extends Fragment {
                                                          int viewType) {
             Log.v("CreateViewHolder", "in onCreateViewHolder");
             View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_challenge/*fragment_challenges*/,parent,false);
+                    .inflate(R.layout.item_challenge/*fragment_challenges*/, parent, false);
 
             return new MyViewHolder(itemView);
         }
@@ -151,8 +148,8 @@ public class Challenges extends Fragment {
                     // handle your click here.
                     //mNavController.navigate(R.id.challenge);
                     //todo send challenge id
-                } });
-
+                }
+            });
 
 
             Challenge challenge = mDataset.get(position);
@@ -161,9 +158,9 @@ public class Challenges extends Fragment {
             mViewModel.getUserById(challenge.getCreator_id(), result -> {
                 if (result instanceof Result.Success) {
                     Bitmap avatar = ((Result.Success<User>) result).data.getPhoto();
-                    if(avatar!=null)
+                    if (avatar != null)
                         holder.avatar.setImageBitmap(avatar);
-                    else{
+                    else {
                         Toast.makeText(Challenges.this.getActivity(), "Avatar is null", Toast.LENGTH_LONG).show();//todo remove toast
                     }
                 } else {
@@ -183,7 +180,7 @@ public class Challenges extends Fragment {
 
             mViewModel.numberOfPeopleWhoAccepted(challenge, result -> {
                 if (result instanceof Result.Success) {
-                   holder.dataAccepted.setText(((Result.Success<Long>) result).data.toString());
+                    holder.dataAccepted.setText(((Result.Success<Long>) result).data.toString());
 
                 } else {
                     Toast.makeText(
@@ -217,7 +214,7 @@ public class Challenges extends Fragment {
             return mDataset.size();
         }
 
-        public void setmDataset(List<Challenge> arrayList){
+        public void setmDataset(List<Challenge> arrayList) {
             mDataset = arrayList;
         }
 
