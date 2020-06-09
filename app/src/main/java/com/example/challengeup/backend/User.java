@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -66,9 +67,6 @@ public class User {
         totalRp = 0;
 
         links = new HashMap<>();
-        links.put("facebook","");
-        links.put("instagram","");
-        links.put("youtube","");
     }
     public User(String tag, String nick, String email, ArrayList<String> categories) {
         this(tag, nick, email);
@@ -237,6 +235,12 @@ public class User {
         }
         return trophies;
     }
+    public ArrayList<Trophy> getUndoneAchievementsAsTrophies(){
+        ArrayList<Trophy> trophies = Trophy.getAllTrophies();
+        ArrayList<Trophy> curr = getAchievementsAsTrophies();
+        trophies.removeAll(curr);
+        return trophies;
+    }
 
     public ArrayList<User> getSubscriptionsAsUsers(){
         ArrayList<User> users = new ArrayList<>();
@@ -281,43 +285,46 @@ public class User {
                 ArrayList<String> saved = new ArrayList<>();
                 ArrayList<String> achievements = new ArrayList<>();
                 try{
-                    JSONArray s = object.getJSONObject(key).getJSONArray("trophies");
+                    JSONArray s = new JSONArray(object.getJSONObject(key).getString("trophies"));
                     for (int i = 0; i< s.length(); ++i)achievements.add((String) s.get(i));
                 } catch (JSONException ignored){}
 
-
-
                 try{
-                    JSONArray s = object.getJSONObject(key).getJSONArray("saved");
+                    JSONArray s = new JSONArray(object.getJSONObject(key).getString("saved"));
                     for (int i = 0; i< s.length(); ++i)saved.add((String) s.get(i));
                 } catch (JSONException ignored){}
 
-
                 try{
-                    JSONObject l = object.getJSONObject(key).getJSONObject("links");
-                    links.put("facebook", l.getString("facebook"));
-                    links.put("instagram", l.getString("instagram"));
-                    links.put("youtube", l.getString("youtube"));
+                    JSONObject l = new JSONObject(object.getJSONObject(key).getString("links"));
+                    if (l.has("facebook"))
+                        links.put("facebook", l.getString("facebook"));
+
+                    if (l.has("instagram"))
+                        links.put("instagram", l.getString("instagram"));
+
+                    if (l.has("youtube"))
+                        links.put("youtube", l.getString("youtube"));
                 } catch (JSONException ignored){}
 
                 try{
-                    JSONArray subscriptions = object.getJSONObject(key).getJSONArray("subscriptions");
+                    JSONArray subscriptions = new JSONArray(object.getJSONObject(key).getString("subscriptions"));
                     for (int i = 0; i< subscriptions.length(); ++i)subscriptionsArray.add((String) subscriptions.get(i));
                 } catch (JSONException ignored){}
 
 
                 try{
-                    JSONArray categories = object.getJSONObject(key).getJSONArray("categories");
+                    JSONArray categories = new JSONArray(object.getJSONObject(key).getJSONArray("categories"));
                     for (int i = 0; i< categories.length(); ++i)categoriesArray.add((String) categories.get(i));
                 } catch (JSONException ignored){}
 
                 try{
-                    JSONArray undone = object.getJSONObject(key).getJSONArray("undone");
+                    JSONArray undone = new JSONArray(object.getJSONObject(key).getString("undone"));
                     for (int i = 0; i< undone.length(); ++i)undoneArray.add((String) undone.get(i));
                 } catch (JSONException ignored){}
 
                 try {
-                    JSONArray done = object.getJSONObject(key).getJSONArray("done");
+
+                    JSONArray done = new JSONArray(object.getJSONObject(key).getString("done"));
                     for (int i = 0; i< done.length(); ++i)doneArray.add((String) done.get(i));
                 }catch (JSONException ignored){}
 
@@ -386,39 +393,46 @@ public class User {
             ArrayList<String> saved = new ArrayList<>();
             ArrayList<String> achievements = new ArrayList<>();
             try{
-                JSONArray s = object.getJSONObject(id).getJSONArray("trophies");
+                JSONArray s = new JSONArray(object.getJSONObject(id).getString("trophies"));
                 for (int i = 0; i< s.length(); ++i)achievements.add((String) s.get(i));
             } catch (JSONException ignored){}
+
             try{
-                JSONArray s = object.getJSONObject(id).getJSONArray("saved");
+                JSONArray s = new JSONArray(object.getJSONObject(id).getString("saved"));
                 for (int i = 0; i< s.length(); ++i)saved.add((String) s.get(i));
             } catch (JSONException ignored){}
 
             try{
-                JSONObject l = object.getJSONObject(id).getJSONObject("links");
-                links.put("facebook", l.getString("facebook"));
-                links.put("instagram", l.getString("instagram"));
-                links.put("youtube", l.getString("youtube"));
+                JSONObject l = new JSONObject(object.getJSONObject(id).getString("links"));
+                if (l.has("facebook"))
+                    links.put("facebook", l.getString("facebook"));
+
+                if (l.has("instagram"))
+                    links.put("instagram", l.getString("instagram"));
+
+                if (l.has("youtube"))
+                    links.put("youtube", l.getString("youtube"));
             } catch (JSONException ignored){}
 
             try{
-                JSONArray subscriptions = object.getJSONObject(id).getJSONArray("subscriptions");
+                JSONArray subscriptions = new JSONArray(object.getJSONObject(id).getString("subscriptions"));
                 for (int i = 0; i< subscriptions.length(); ++i)subscriptionsArray.add((String) subscriptions.get(i));
             } catch (JSONException ignored){}
 
 
             try{
-                JSONArray categories = object.getJSONObject(id).getJSONArray("categories");
+                JSONArray categories = new JSONArray(object.getJSONObject(id).getJSONArray("categories"));
                 for (int i = 0; i< categories.length(); ++i)categoriesArray.add((String) categories.get(i));
             } catch (JSONException ignored){}
 
             try{
-                JSONArray undone = object.getJSONObject(id).getJSONArray("undone");
+                JSONArray undone = new JSONArray(object.getJSONObject(id).getString("undone"));
                 for (int i = 0; i< undone.length(); ++i)undoneArray.add((String) undone.get(i));
             } catch (JSONException ignored){}
 
             try {
-                JSONArray done = object.getJSONObject(id).getJSONArray("done");
+
+                JSONArray done = new JSONArray(object.getJSONObject(id).getString("done"));
                 for (int i = 0; i< done.length(); ++i)doneArray.add((String) done.get(i));
             }catch (JSONException ignored){}
 
@@ -537,13 +551,19 @@ public class User {
         return subscriptions;
     }
     public String getFacebookLink(){
+        if (links.containsKey("facebook"))
         return links.get("facebook");
+        return "";
     }
     public String getInstagramLink(){
+        if (links.containsKey("instagram"))
         return links.get("instagram");
+        return "";
     }
     public String getYoutubeLink(){
+        if (links.containsKey("youtube"))
         return links.get("youtube");
+        return "";
     }
     public String getPhoto() {
         return photo;

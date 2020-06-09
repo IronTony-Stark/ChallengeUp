@@ -159,18 +159,18 @@ public class Challenge {
                 ArrayList<String> trophiesArray = new ArrayList<>();
 
                 try{
-                    JSONArray rewardTrophies = object.getJSONObject(key).getJSONArray("rewardTrophies");
+                    JSONArray rewardTrophies = new JSONArray(object.getJSONObject(key).getString("rewardTrophies"));
                     for (int i = 0; i< rewardTrophies.length(); ++i)trophiesArray.add((String) rewardTrophies.get(i));
                 } catch (JSONException ignored){}
 
                 try{
-                    JSONArray tags = object.getJSONObject(key).getJSONArray("tags");
+                    JSONArray tags = new JSONArray(object.getJSONObject(key).getString("tags"));
                     for (int i = 0; i< tags.length(); ++i)tagsArray.add((String) tags.get(i));
                 } catch (JSONException ignored){}
 
 
                 try {
-                    JSONArray categories = object.getJSONObject(key).getJSONArray("categories");
+                    JSONArray categories = new JSONArray(object.getJSONObject(key).getString("categories"));
                     for (int i = 0; i< categories.length(); ++i)categoriesArray.add((String) categories.get(i));
                 }catch (JSONException ignored){}
 
@@ -215,18 +215,18 @@ public class Challenge {
             ArrayList<String> trophiesArray = new ArrayList<>();
 
             try{
-                JSONArray rewardTrophies = object.getJSONObject(id).getJSONArray("rewardTrophies");
+                JSONArray rewardTrophies = new JSONArray(object.getJSONObject(id).getString("rewardTrophies"));
                 for (int i = 0; i< rewardTrophies.length(); ++i)trophiesArray.add((String) rewardTrophies.get(i));
             } catch (JSONException ignored){}
 
             try{
-                JSONArray tags = object.getJSONObject(id).getJSONArray("tags");
+                JSONArray tags = new JSONArray(object.getJSONObject(id).getString("tags"));
                 for (int i = 0; i< tags.length(); ++i)tagsArray.add((String) tags.get(i));
             } catch (JSONException ignored){}
 
 
             try {
-                JSONArray categories = object.getJSONObject(id).getJSONArray("categories");
+                JSONArray categories = new JSONArray(object.getJSONObject(id).getString("categories"));
                 for (int i = 0; i< categories.length(); ++i)categoriesArray.add((String) categories.get(i));
             }catch (JSONException ignored){}
 
