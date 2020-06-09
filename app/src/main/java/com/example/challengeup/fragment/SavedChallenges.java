@@ -75,7 +75,6 @@ public class SavedChallenges extends Fragment {
                 mAdapter = new Adapter(mArrayList);
                 recyclerView.setAdapter(mAdapter);
 
-
                 mViewModel.getSavedChallenges(user,result2 -> {
                     if (result2 instanceof Result.Success) {
                         //noinspection unchecked
@@ -83,9 +82,6 @@ public class SavedChallenges extends Fragment {
 
                         mAdapter.setDataset(mArrayList);
                         mAdapter.notifyItemRangeInserted(0, mArrayList.size());
-
-                        Toast.makeText(SavedChallenges.this.getContext(),new Integer(mArrayList.size()).toString(),Toast.LENGTH_LONG).show();
-
 
                     }
 
