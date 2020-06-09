@@ -17,7 +17,6 @@ import androidx.navigation.ui.NavigationUI;
 import com.example.challengeup.backend.User;
 import com.example.challengeup.databinding.ActivityMainBinding;
 import com.example.challengeup.databinding.NavDrawerHeaderBinding;
-import com.example.challengeup.dto.UserDTO;
 import com.example.challengeup.request.ICallback;
 import com.example.challengeup.request.Result;
 import com.example.challengeup.utils.LoginUtils;
@@ -25,6 +24,7 @@ import com.example.challengeup.viewModel.MainActivityViewModel;
 import com.example.challengeup.viewModel.factory.MainActivityFactory;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -48,9 +48,11 @@ public class MainActivity extends AppCompatActivity {
 
         Container container = ((ApplicationContainer) getApplication()).mContainer;
         SharedPreferences preferences = getSharedPreferences(USER_DATA_KEY, MODE_PRIVATE);
+        File file = new File(getFilesDir(), AVATAR_FILE);
         mViewModel = new ViewModelProvider(this, new MainActivityFactory(
                 container.mRequestExecutor,
-                preferences)
+                preferences,
+                file)
         ).get(MainActivityViewModel.class);
 
         drawerLayout = binding.drawerLayout;
@@ -124,6 +126,13 @@ public class MainActivity extends AppCompatActivity {
                     mViewModel.addUser(user, addUserCallback);
                 }
 
+                if (user.getPhoto() != null) {
+                    mViewModel.setUserAvatar(user.getPhoto());
+                    mViewModel.saveUserAvatar(user.getPhoto());
+                } else if (firebaseUser.getPhotoUrl() != null) {
+//                    TODO firebaseUser.getPhotoUrl();
+                }
+
                 mViewModel.saveUserToSharedPreferences(user);
                 mViewModel.refreshUserFromSharedPreferences();
             } else {
@@ -167,7 +176,12 @@ public class MainActivity extends AppCompatActivity {
         binding.navView.addHeaderView(headerBinding.getRoot());
         headerBinding.setViewModel(mViewModel);
         headerBinding.setLifecycleOwner(this);
+
+        mViewModel.refreshUserFromSharedPreferences();
+        mViewModel.refreshUserAvatar();
+        // TODO if avatar is absent set placeholder image
     }
 
     public static final String USER_DATA_KEY = "com.example.challengeup.userdata";
+    public static final String AVATAR_FILE = "AVATAR_FILE";
 }

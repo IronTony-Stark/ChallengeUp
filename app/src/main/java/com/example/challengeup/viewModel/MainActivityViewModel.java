@@ -1,7 +1,10 @@
 package com.example.challengeup.viewModel;
 
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -17,20 +20,27 @@ import com.google.firebase.auth.FirebaseUser;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 public class MainActivityViewModel extends ViewModel {
 
     private FirebaseUser mFirebaseUser;
-    public MutableLiveData<UserDTO> mUser;
+    private final MutableLiveData<UserDTO> mUser;
+    private final MutableLiveData<Bitmap> mUserAvatar;
     private final RequestExecutor mRequestExecutor;
     private final SharedPreferences mPreferences;
+    private final File mAvatarFile;
 
     public MainActivityViewModel(final RequestExecutor requestExecutor,
-                                 final SharedPreferences preferences) {
+                                 final SharedPreferences preferences,
+                                 final File avatarFile) {
         mUser = new MutableLiveData<>();
+        mUserAvatar = new MutableLiveData<>();
         mRequestExecutor = requestExecutor;
         mPreferences = preferences;
-
-        refreshUserFromSharedPreferences();
+        mAvatarFile = avatarFile;
     }
 
     public boolean isAuthenticated() {
@@ -70,6 +80,24 @@ public class MainActivityViewModel extends ViewModel {
         mUser.setValue(temp);
     }
 
+    public void setUserAvatar(Bitmap photo) {
+        mUserAvatar.setValue(photo);
+    }
+
+    public void saveUserAvatar(Bitmap photo) {
+        try (FileOutputStream fos = new FileOutputStream(mAvatarFile)) {
+            photo.compress(Bitmap.CompressFormat.PNG, 0, fos);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void refreshUserAvatar() {
+        Bitmap bitmap = BitmapFactory.decodeFile(mAvatarFile.getAbsolutePath());
+        if (bitmap != null)
+            setUserAvatar(bitmap);
+    }
+
     public void getUserById(String uid, ICallback callback) {
         mRequestExecutor.execute(new GetUserByIdCommand(uid), callback);
     }
@@ -80,6 +108,14 @@ public class MainActivityViewModel extends ViewModel {
 
     public void addUser(User newUser, ICallback callback) {
         mRequestExecutor.execute(new AddUserCommand(newUser), callback);
+    }
+
+    public LiveData<UserDTO> getUser() {
+        return mUser;
+    }
+
+    public LiveData<Bitmap> getUserAvatar() {
+        return mUserAvatar;
     }
 
     public static final String USER_ID = "USER_ID";

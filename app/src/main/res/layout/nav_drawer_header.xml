@@ -18,7 +18,7 @@
             android:id="@+id/avatar"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@drawable/ic_user_white"
+            imageBitmap="@{viewModel.userAvatar}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
-            android:text="@{viewModel.mUser.name}"
+            android:text="@{viewModel.user.name}"
             android:textColor="@color/design_default_color_on_primary"
             android:textSize="24sp"
             app:layout_constraintStart_toEndOf="@+id/avatar"
@@ -38,7 +38,7 @@
             android:id="@+id/username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{viewModel.mUser.username}"
+            android:text="@{viewModel.user.username}"
             android:textColor="@color/design_default_color_on_primary"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@+id/avatar"
