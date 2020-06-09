@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -119,6 +120,12 @@ public class TopPlayers extends Fragment {
             holder.rank.setText(String.valueOf(position + 1));
             holder.name.setText(user.getNick());
             holder.rp.setText(String.valueOf(user.getTotalRp()));
+
+            holder.itemView.setOnClickListener(view -> {
+                TopPlayersDirections.ActionTopPlayersToProfile action =
+                        TopPlayersDirections.actionTopPlayersToProfile(user.getId());
+                Navigation.findNavController(view).navigate(action);
+            });
         }
 
         @Override

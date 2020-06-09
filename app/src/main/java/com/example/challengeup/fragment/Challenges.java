@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -118,15 +119,20 @@ public class Challenges extends Fragment {
             holder.dataLiked.setText(String.valueOf(challenge.getLikes()));
 
             holder.itemView.setOnClickListener(view -> {
-                // TODO navigate
+                ChallengesDirections.ActionChallengesToChallenge action =
+                        ChallengesDirections.actionChallengesToChallenge(challenge.getId());
+                Navigation.findNavController(view).navigate(action);
             });
 
             mViewModel.getUserById(challenge.getCreator_id(), result -> {
                 if (result instanceof Result.Success) {
                     //noinspection unchecked
-                    Bitmap avatar = ((Result.Success<User>) result).data.getPhoto();
-                    if (avatar != null)
-                        holder.avatar.setImageBitmap(avatar);
+                    User user = ((Result.Success<User>) result).data;
+                    if (user != null) {
+                        Bitmap avatar = user.getPhoto();
+                        if (avatar != null)
+                            holder.avatar.setImageBitmap(avatar);
+                    }
                 }
             });
 
