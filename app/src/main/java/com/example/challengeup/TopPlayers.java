@@ -141,13 +141,20 @@ public class TopPlayers extends Fragment {
 
 
             User user = mDataset.get(position);
+           // User user = mDataset.get(3);
 
-            Bitmap avatar = user.getPhoto();
-            if(avatar!=null)
-                holder.avatar.setImageBitmap(avatar);
-            else{
-                Toast.makeText(TopPlayers.this.getActivity(), "Avatar is null", Toast.LENGTH_LONG).show();//todo remove toast
+            {
+                Bitmap avatar = user.getPhoto();
+                if (avatar != null) {
+                    holder.avatar.setImageBitmap(avatar);
+                    Toast.makeText(TopPlayers.this.getActivity(), "OK" + user.getId(), Toast.LENGTH_LONG).show();//todo remove toast
+                    avatar = null;
+                } else {
+                    Toast.makeText(TopPlayers.this.getActivity(), "Avatar is null" + user.getId(), Toast.LENGTH_LONG).show();//todo remove toast
+                }
             }
+
+            
 
 
             holder.rank.setText(new Integer(position+1).toString());
