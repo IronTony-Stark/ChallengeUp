@@ -1,5 +1,7 @@
 package com.example.myapplication;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -309,17 +312,21 @@ public class Challenge {
                     .put("tags", tags)
                     .put("times_viewed", timesViewed)
                     .put("rewardRp", rewardRp)
-                    .put("rewardTrophhies", rewardTrophies);
+                    .put("rewardTrophies", rewardTrophies);
 
-            RequestBody body = RequestBody.create(jsonObject.toString(), JSON);
+           // RequestBody body = RequestBody.create(jsonObject.toString(), JSON);
+
+            RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                    .addFormDataPart("data", jsonObject.toString())
+                    .build();
 
             Request request = new Request.Builder()
                     .url("https://us-central1-challengeup-49057.cloudfunctions.net/update_challenge")
-                    .post(body)
+                    .post(requestBody)
                     .build();
-
-            client.newCall(request).execute();
+          Response r =   client.newCall(request).execute();
         } catch (JSONException  | IOException e) {
+            Log.d("TITLE", e.getMessage());
             e.printStackTrace();
         }
     }
@@ -390,4 +397,19 @@ public class Challenge {
         this.id = id;
     }
 
+    @Override
+    public String toString() {
+        return "Challenge{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", task='" + task + '\'' +
+                ", creator_id='" + creator_id + '\'' +
+                ", likes=" + likes +
+                ", timesViewed=" + timesViewed +
+                ", rewardRp=" + rewardRp +
+                ", rewardTrophies=" + rewardTrophies +
+                ", tags=" + tags +
+                ", categories=" + categories +
+                '}';
+    }
 }
