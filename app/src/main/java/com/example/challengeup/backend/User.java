@@ -42,6 +42,7 @@ public class User {
     private ArrayList<String> done;
     private ArrayList<String> saved;
     private ArrayList<String> trophies;
+    private ArrayList<String> liked;
 
     private HashMap<String, String> links;
 
@@ -61,6 +62,7 @@ public class User {
         subscriptions = new ArrayList<>();
         saved = new ArrayList<>();
         trophies = new ArrayList<>();
+        liked = new ArrayList<>();
         id = null;
         photo = null;
         rp = 0;
@@ -97,7 +99,8 @@ public class User {
                     .put("saved", user.saved)
                     .put("trophies", user.trophies)
                     .put("rp", user.rp)
-                    .put("totalRp", user.totalRp);
+                    .put("totalRp", user.totalRp)
+                    .put("liked", user.liked);
 
 
 
@@ -166,7 +169,8 @@ public class User {
                     .put("saved", new ArrayList())
                     .put("trophies", new ArrayList())
                     .put("rp", 0)
-                    .put("totalRp", 0);
+                    .put("totalRp", 0)
+                    .put("liked", new ArrayList<>());
 
             RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
                         .addFormDataPart("data", jsonObject.toString())
@@ -192,18 +196,40 @@ public class User {
     public void addChallengeToDone(Challenge challenge){
         done.add(challenge.getId());
     }
+    public void removeChallengeFromDone(Challenge challenge){
+        if (done.contains(challenge.getId())) done.remove(challenge.getId());
+    }
     public void addChallengeToUndone(Challenge challenge){
         undone.add(challenge.getId());
+    }
+    public void removeChallengeFromUndone(Challenge challenge){
+        if (undone.contains(challenge.getId())) undone.remove(challenge.getId());
     }
     public void addChallengeToSaved(Challenge challenge){
         saved.add(challenge.getId());
     }
+    public void removeChallengeFromSaved(Challenge challenge){
+        if (saved.contains(challenge.getId())) saved.remove(challenge.getId());
+    }
     public void addAchievement(Trophy trophy){trophies.add(trophy.getId());};
+    public void addChallengeToLiked(Challenge challenge){
+        liked.add(challenge.getId());
+    }
+    public void removeChallengeFromLiked(Challenge challenge){
+        if (liked.contains(challenge.getId())) liked.remove(challenge.getId());
+    }
 
 
     public ArrayList<Challenge> getDoneChallenges(){
         ArrayList<Challenge> challenges = new ArrayList<>();
         for (String s:done) {
+            challenges.add(Challenge.getChallengeById(s));
+        }
+        return challenges;
+    }
+    public ArrayList<Challenge> getLikedChallenges(){
+        ArrayList<Challenge> challenges = new ArrayList<>();
+        for (String s:liked) {
             challenges.add(Challenge.getChallengeById(s));
         }
         return challenges;
@@ -284,6 +310,13 @@ public class User {
 
                 ArrayList<String> saved = new ArrayList<>();
                 ArrayList<String> achievements = new ArrayList<>();
+
+                ArrayList<String> liked = new ArrayList<>();
+                try{
+                    JSONArray s = new JSONArray(object.getJSONObject(key).getString("liked"));
+                    for (int i = 0; i< s.length(); ++i)liked.add((String) s.get(i));
+                } catch (JSONException ignored){}
+
                 try{
                     JSONArray s = new JSONArray(object.getJSONObject(key).getString("trophies"));
                     for (int i = 0; i< s.length(); ++i)achievements.add((String) s.get(i));
@@ -341,6 +374,7 @@ public class User {
                 user.setTrophies(achievements);
                 user.setRp(Integer.parseInt(object.getJSONObject(key).getString("rp")));
                 user.setTotalRp(Integer.parseInt(object.getJSONObject(key).getString("totalRp")));
+                user.setLiked(liked);
                 if(!object.getJSONObject(key).getString("photo_link").equals("")){
                     user.setPhoto(object.getJSONObject(key).getString("photo_link"));
                 }
@@ -392,6 +426,13 @@ public class User {
 
             ArrayList<String> saved = new ArrayList<>();
             ArrayList<String> achievements = new ArrayList<>();
+
+            ArrayList<String> liked = new ArrayList<>();
+            try{
+                JSONArray s = new JSONArray(object.getJSONObject(id).getString("liked"));
+                for (int i = 0; i< s.length(); ++i)liked.add((String) s.get(i));
+            } catch (JSONException ignored){}
+
             try{
                 JSONArray s = new JSONArray(object.getJSONObject(id).getString("trophies"));
                 for (int i = 0; i< s.length(); ++i)achievements.add((String) s.get(i));
@@ -449,6 +490,7 @@ public class User {
                 user.setTrophies(achievements);
                 user.setRp(Integer.parseInt(object.getJSONObject(id).getString("rp")));
                 user.setTotalRp(Integer.parseInt(object.getJSONObject(id).getString("totalRp")));
+                user.setLiked(liked);
                 if(!object.getJSONObject(id).getString("photo_link").equals("")){
                     user.setPhoto(object.getJSONObject(id).getString("photo_link"));
                 }
@@ -482,7 +524,8 @@ public class User {
                     .put("saved", saved)
                     .put("trophies", trophies)
                     .put("rp", rp)
-                    .put("totalRp", totalRp);
+                    .put("totalRp", totalRp)
+                    .put("liked", liked);
 
             //RequestBody body = RequestBody.create(jsonObject.toString(), JSON);
             RequestBody requestBody;
@@ -637,4 +680,11 @@ public class User {
         this.id = id;
     }
 
+    public ArrayList<String> getLiked() {
+        return liked;
+    }
+
+    public void setLiked(ArrayList<String> liked) {
+        this.liked = liked;
+    }
 }
