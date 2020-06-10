@@ -26,6 +26,7 @@ import com.example.challengeup.backend.User;
 import com.example.challengeup.request.Result;
 import com.example.challengeup.viewModel.ChallengesViewModel;
 import com.example.challengeup.viewModel.factory.ChallengesFactory;
+import com.google.firebase.auth.FirebaseAuth;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -77,24 +78,6 @@ public class Challenges extends Fragment {
 
         private List<Challenge> mDataset;
 
-        public class MyViewHolder extends RecyclerView.ViewHolder {
-
-            ImageView thumbnail, avatar;
-            TextView name, description, dataAccepted, dataCompleted, dataLiked;
-
-            public MyViewHolder(View itemView) {
-                super(itemView);
-
-                thumbnail = itemView.findViewById(R.id.thumbnail);
-                avatar = itemView.findViewById(R.id.avatar);
-                name = itemView.findViewById(R.id.name);
-                description = itemView.findViewById(R.id.description);
-                dataAccepted = itemView.findViewById(R.id.dataAccepted);
-                dataCompleted = itemView.findViewById(R.id.dataCompleted);
-                dataLiked = itemView.findViewById(R.id.dataLiked);
-            }
-        }
-
         public Adapter(@NonNull List<Challenge> myDataset) {
             mDataset = myDataset;
         }
@@ -112,7 +95,7 @@ public class Challenges extends Fragment {
         public void onBindViewHolder(@NotNull MyViewHolder holder, int position) {
             Challenge challenge = mDataset.get(position);
 
-            // holder.thumbnail.setImageBitmap(challenge.// todo image
+            // holder.thumbnail.setImageBitmap(challenge.// todo bookmarkChacked
 
             holder.name.setText(challenge.getName());
             holder.description.setText(challenge.getTask());
@@ -122,6 +105,28 @@ public class Challenges extends Fragment {
                 ChallengesDirections.ActionChallengesToChallenge action =
                         ChallengesDirections.actionChallengesToChallenge(challenge.getId());
                 Navigation.findNavController(view).navigate(action);
+            });
+
+            holder.itemView.findViewById(R.id.iconLiked).setOnClickListener(v -> {
+                holder.dataLiked.setText(String.valueOf(Integer.parseInt(holder.dataLiked.getText().toString()) + 1));
+            });
+
+            ImageView bookmark = holder.itemView.findViewById(R.id.iconSave);
+            ImageView bookmarkChecked = holder.itemView.findViewById(R.id.iconSaveChecked);
+            bookmark.setOnClickListener(v -> {
+                bookmark.setVisibility(View.INVISIBLE);
+                bookmarkChecked.setVisibility(View.VISIBLE);
+                mViewModel.setBookmarked(
+                        User.getUserByEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail()),
+                        challenge, true, result -> {
+                        });
+            });
+            bookmarkChecked.setOnClickListener(v -> {
+                bookmarkChecked.setVisibility(View.INVISIBLE);
+                bookmark.setVisibility(View.VISIBLE);
+                User user = User.getUserByEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+                mViewModel.setBookmarked(user, challenge, false, result -> {
+                });
             });
 
             mViewModel.getUserById(challenge.getCreator_id(), result -> {
@@ -161,6 +166,24 @@ public class Challenges extends Fragment {
         public void setDataset(List<Challenge> newDataset) {
             mDataset = newDataset;
             notifyDataSetChanged();
+        }
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+
+            ImageView thumbnail, avatar;
+            TextView name, description, dataAccepted, dataCompleted, dataLiked;
+
+            public MyViewHolder(View itemView) {
+                super(itemView);
+
+                thumbnail = itemView.findViewById(R.id.thumbnail);
+                avatar = itemView.findViewById(R.id.avatar);
+                name = itemView.findViewById(R.id.name);
+                description = itemView.findViewById(R.id.description);
+                dataAccepted = itemView.findViewById(R.id.dataAccepted);
+                dataCompleted = itemView.findViewById(R.id.dataCompleted);
+                dataLiked = itemView.findViewById(R.id.dataLiked);
+            }
         }
     }
 }
