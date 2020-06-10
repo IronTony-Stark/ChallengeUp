@@ -1,13 +1,12 @@
 package com.example.challengeup.backend;
 
-
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -15,11 +14,14 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-
 public class Utilities {
     public static ArrayList<String> getCategories() {
         try {
-            OkHttpClient client = new OkHttpClient();
+            OkHttpClient client = new OkHttpClient.Builder()
+                    .connectTimeout(30, TimeUnit.SECONDS)
+                    .writeTimeout(30, TimeUnit.SECONDS)
+                    .readTimeout(30, TimeUnit.SECONDS)
+                    .build();
             Request request = new Request.Builder()
                     .url("https://us-central1-challengeup-49057.cloudfunctions.net/get_categories")
                     .get()
@@ -32,14 +34,19 @@ public class Utilities {
             JSONArray array = (JSONArray) object.get("categories");
             ArrayList<String> arrayList = new ArrayList<>();
 
-            for (int i = 0 ; i < array.length(); ++i)arrayList.add((String) array.get(i));
+            for (int i = 0; i < array.length(); ++i) arrayList.add((String) array.get(i));
             return arrayList;
         } catch (JSONException | IOException ignored) {
         }
         return null;
     }
-    public static boolean addNewCategory(String category){
-        OkHttpClient client = new OkHttpClient();
+
+    public static boolean addNewCategory(String category) {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .build();
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         try {
             JSONObject jsonObject = new JSONObject()

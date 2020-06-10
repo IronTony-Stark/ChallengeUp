@@ -6,12 +6,12 @@
     app:startDestination="@id/newsFeed">
     <fragment
         android:id="@+id/timeChallenges"
-        android:name="com.example.challengeup.fragment.TimeChallenges"
+        android:name="com.example.challengeup.fragment.TimeChallengesFragment"
         android:label="fragment_time_challenges"
         tools:layout="@layout/fragment_time_challenges" />
     <fragment
         android:id="@+id/challenges"
-        android:name="com.example.challengeup.fragment.Challenges"
+        android:name="com.example.challengeup.fragment.ChallengesFragment"
         android:label="fragment_challenges"
         tools:layout="@layout/fragment_challenges" >
         <action
@@ -20,12 +20,12 @@
     </fragment>
     <fragment
         android:id="@+id/newsFeed"
-        android:name="com.example.challengeup.fragment.NewsFeed"
+        android:name="com.example.challengeup.fragment.NewsFeedFragment"
         android:label="fragment_news_feed"
         tools:layout="@layout/fragment_news_feed" />
     <fragment
         android:id="@+id/profile"
-        android:name="com.example.challengeup.fragment.Profile"
+        android:name="com.example.challengeup.fragment.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" >
         <argument
@@ -35,23 +35,23 @@
 
     <fragment
         android:id="@+id/createChallenge"
-        android:name="com.example.challengeup.fragment.CreateChallenge"
+        android:name="com.example.challengeup.fragment.CreateChallengeFragment"
         android:label="fragment_create_challenge"
         tools:layout="@layout/fragment_create_challenge" />
 
     <fragment
         android:id="@+id/savedChallenges"
-        android:name="com.example.challengeup.fragment.SavedChallenges"
+        android:name="com.example.challengeup.fragment.SavedChallengesFragment"
         android:label="fragment_saved_challenges"
         tools:layout="@layout/fragment_saved_challenges" />
     <fragment
         android:id="@+id/shop"
-        android:name="com.example.challengeup.fragment.Shop"
+        android:name="com.example.challengeup.fragment.ShopFragment"
         android:label="fragment_shop"
         tools:layout="@layout/fragment_shop" />
     <fragment
         android:id="@+id/topChallenges"
-        android:name="com.example.challengeup.fragment.TopChallenges"
+        android:name="com.example.challengeup.fragment.TopChallengesFragment"
         android:label="fragment_top_challenges"
         tools:layout="@layout/fragment_top_challenges" >
         <action
@@ -60,7 +60,7 @@
     </fragment>
     <fragment
         android:id="@+id/topPlayers"
-        android:name="com.example.challengeup.fragment.TopPlayers"
+        android:name="com.example.challengeup.fragment.TopPlayersFragment"
         android:label="fragment_top_players"
         tools:layout="@layout/fragment_top_players" >
         <action
@@ -69,18 +69,18 @@
     </fragment>
     <fragment
         android:id="@+id/achievements"
-        android:name="com.example.challengeup.fragment.Achievements"
+        android:name="com.example.challengeup.fragment.AchievementsFragment"
         android:label="fragment_achievements"
         tools:layout="@layout/fragment_achievements" />
     <fragment
         android:id="@+id/settings"
-        android:name="com.example.challengeup.fragment.Settings"
+        android:name="com.example.challengeup.fragment.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
 
     <fragment
         android:id="@+id/challenge"
-        android:name="com.example.challengeup.fragment.Challenge"
+        android:name="com.example.challengeup.fragment.ChallengeFragment"
         android:label="fragment_challenge"
         tools:layout="@layout/fragment_challenge" >
         <argument
@@ -89,12 +89,12 @@
     </fragment>
     <fragment
         android:id="@+id/stats"
-        android:name="com.example.challengeup.fragment.Stats"
+        android:name="com.example.challengeup.fragment.StatsFragment"
         android:label="fragment_stats"
         tools:layout="@layout/fragment_stats" />
     <fragment
         android:id="@+id/achievement"
-        android:name="com.example.challengeup.fragment.Achievement"
+        android:name="com.example.challengeup.fragment.AchievementFragment"
         android:label="fragment_achievement"
         tools:layout="@layout/fragment_achievement" />
 </navigation>

@@ -129,16 +129,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/iconLiked" />
 
-        <ImageView
-            android:id="@+id/iconSaveChecked"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="20dp"
-            android:src="@drawable/ic_bookmark_filled"
-            app:layout_constraintBottom_toBottomOf="@+id/iconLiked"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/iconLiked"
-            tools:visibility="invisible" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

@@ -2,8 +2,8 @@ package com.example.challengeup.viewModel;
 
 import androidx.lifecycle.ViewModel;
 
-import com.example.challengeup.backend.Challenge;
-import com.example.challengeup.backend.User;
+import com.example.challengeup.backend.ChallengeEntity;
+import com.example.challengeup.backend.UserEntity;
 import com.example.challengeup.request.ICallback;
 import com.example.challengeup.request.RequestExecutor;
 import com.example.challengeup.request.command.AddBookmarkedCommand;
@@ -29,15 +29,15 @@ public class ChallengesViewModel extends ViewModel {
         mRequestExecutor.execute(new GetUserByIdCommand(uid), callback);
     }
 
-    public void getNumAccepted(Challenge challenge, ICallback callback) {
+    public void getNumAccepted(ChallengeEntity challenge, ICallback callback) {
         mRequestExecutor.execute(new GetNumAcceptedCommand(challenge), callback);
     }
 
-    public void getNumCompleted(Challenge challenge, ICallback callback) {
+    public void getNumCompleted(ChallengeEntity challenge, ICallback callback) {
         mRequestExecutor.execute(new GetNumCompletedCommand(challenge), callback);
     }
 
-    public void setBookmarked(User user, Challenge challenge, boolean isBookmarked, ICallback callback) {
+    public void setBookmarked(UserEntity user, ChallengeEntity challenge, boolean isBookmarked, ICallback callback) {
         if (!isBookmarked)
             mRequestExecutor.execute(new AddBookmarkedCommand(user, challenge), callback);
         else

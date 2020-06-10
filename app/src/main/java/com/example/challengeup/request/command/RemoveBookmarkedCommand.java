@@ -1,7 +1,7 @@
 package com.example.challengeup.request.command;
 
-import com.example.challengeup.backend.Challenge;
-import com.example.challengeup.backend.User;
+import com.example.challengeup.backend.ChallengeEntity;
+import com.example.challengeup.backend.UserEntity;
 import com.example.challengeup.request.IRequestCommand;
 import com.example.challengeup.request.Result;
 
@@ -9,10 +9,10 @@ import java.util.ArrayList;
 
 public class RemoveBookmarkedCommand implements IRequestCommand {
 
-    private final User user;
-    private final Challenge challenge;
+    private final UserEntity user;
+    private final ChallengeEntity challenge;
 
-    public RemoveBookmarkedCommand(User user, Challenge challenge) {
+    public RemoveBookmarkedCommand(UserEntity user, ChallengeEntity challenge) {
         this.challenge = challenge;
         this.user = user;
     }

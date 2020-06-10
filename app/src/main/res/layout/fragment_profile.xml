@@ -8,32 +8,18 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".fragment.Profile">
+        android:layout_height="wrap_content"
+        tools:context=".fragment.ProfileFragment">
 
-        <Button
+        <ImageView
             android:id="@+id/iconSettings"
-            android:layout_width="53dp"
-            android:layout_height="45dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:drawableTop="@drawable/ic_settings"
-            android:scaleX="1.5"
-            android:scaleY="1.5"
+            android:src="@drawable/ic_settings"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-<!--        <ImageView-->
-<!--            android:id="@+id/iconSettings"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="16dp"-->
-<!--            android:layout_marginEnd="16dp"-->
-<!--            android:scaleX="1.5"-->
-<!--            android:scaleY="1.5"-->
-<!--            android:src="@drawable/ic_settings"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent" />-->
 
         <ImageView
             android:id="@+id/avatar"

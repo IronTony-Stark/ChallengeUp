@@ -1,14 +1,14 @@
 package com.example.challengeup.request.command;
 
-import com.example.challengeup.backend.Challenge;
+import com.example.challengeup.backend.ChallengeEntity;
 import com.example.challengeup.request.IRequestCommand;
 import com.example.challengeup.request.Result;
 
 public class GetNumAcceptedCommand implements IRequestCommand {
 
-    private final Challenge mChallenge;
+    private final ChallengeEntity mChallenge;
 
-    public GetNumAcceptedCommand(Challenge challenge) {
+    public GetNumAcceptedCommand(ChallengeEntity challenge) {
         mChallenge = challenge;
     }
 

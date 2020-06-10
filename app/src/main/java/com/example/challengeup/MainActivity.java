@@ -13,7 +13,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.example.challengeup.backend.User;
+import com.example.challengeup.backend.UserEntity;
 import com.example.challengeup.databinding.ActivityMainBinding;
 import com.example.challengeup.databinding.NavDrawerHeaderBinding;
 import com.example.challengeup.request.ICallback;
@@ -101,16 +101,16 @@ public class MainActivity extends AppCompatActivity {
     private void addUserToDbIfAbsent(FirebaseUser firebaseUser) {
         ICallback getUserCallback = result -> {
             if (result instanceof Result.Success) {
-                User user = ((Result.Success<User>) result).data;
+                UserEntity user = ((Result.Success<UserEntity>) result).data;
 
                 if (user == null) {
-                    user = new User("IronTonyStark", "Iron-Tony", firebaseUser.getEmail());
+                    user = new UserEntity("IronTonyStark", "Iron-Tony", firebaseUser.getEmail());
                     mViewModel.addUser(user, ignored -> {});
                 }
 
                 if (user.getPhoto() != null) {
-                    mViewModel.setUserAvatar(user.getPhoto());
-                    mViewModel.saveUserAvatar(user.getPhoto());
+//                    mViewModel.setUserAvatar(user.getPhoto());
+//                    mViewModel.saveUserAvatar(user.getPhoto());
                 } else if (firebaseUser.getPhotoUrl() != null) {
 //                    TODO firebaseUser.getPhotoUrl();
                 }
