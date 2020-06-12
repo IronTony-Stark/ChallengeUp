@@ -54,12 +54,20 @@ public class MainActivityViewModel extends ViewModel {
         return mFirebaseUser;
     }
 
-    public void saveUserToSharedPreferences(@NotNull UserEntity user) {
+    public void saveUserToSharedPreferences(@NotNull UserDTO user) {
         SharedPreferences.Editor editor = mPreferences.edit();
 
         editor.putString(USER_ID, user.getId());
-        editor.putString(USER_NAME, user.getNick());
-        editor.putString(USER_USERNAME, user.getTag());
+        editor.putString(USER_NAME, user.getName());
+        editor.putString(USER_USERNAME, user.getUsername());
+
+        editor.apply();
+    }
+
+    public void saveUserIdToSharedPreferences(@NotNull String id) {
+        SharedPreferences.Editor editor = mPreferences.edit();
+
+        editor.putString(USER_ID, id);
 
         editor.apply();
     }
