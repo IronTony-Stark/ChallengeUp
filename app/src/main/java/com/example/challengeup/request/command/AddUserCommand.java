@@ -1,20 +1,20 @@
 package com.example.challengeup.request.command;
 
-import com.example.challengeup.backend.User;
+import com.example.challengeup.backend.UserEntity;
 import com.example.challengeup.request.IRequestCommand;
 import com.example.challengeup.request.Result;
 
 public class AddUserCommand implements IRequestCommand {
 
-    private final User user;
+    private final UserEntity user;
 
-    public AddUserCommand(User user) {
+    public AddUserCommand(UserEntity user) {
         this.user = user;
     }
 
     @Override
     public Result request() {
-        String userId = User.addNewUser(user);
+        String userId = UserEntity.addNewUser(user);
         return new Result.Success<>(userId);
     }
 }

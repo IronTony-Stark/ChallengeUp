@@ -7,12 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -20,92 +20,68 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.challengeup.ApplicationContainer;
 import com.example.challengeup.Container;
-import com.example.challengeup.MainActivity;
 import com.example.challengeup.R;
-import com.example.challengeup.backend.User;
+import com.example.challengeup.backend.ChallengeEntity;
+import com.example.challengeup.backend.UserEntity;
 import com.example.challengeup.request.Result;
-import com.example.challengeup.viewModel.MainActivityViewModel;
-import com.example.challengeup.viewModel.SavedChallengesViewModel;
-import com.example.challengeup.viewModel.factory.SavedChallengesFactory;
-
-import com.example.challengeup.backend.Challenge;
+import com.example.challengeup.viewModel.ChallengesViewModel;
+import com.example.challengeup.viewModel.factory.ChallengesFactory;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class SavedChallenges extends Fragment {
+public class TopChallengesFragment extends Fragment {
 
-    String id;
-    User user;
-    private SavedChallengesViewModel mViewModel;
-    private MainActivityViewModel mainViewModel;
-    private List<Challenge> mArrayList = new ArrayList<>();
+    private ChallengesViewModel mViewModel;
+    private List<ChallengeEntity> mArrayList = new ArrayList<>();
     private Adapter mAdapter;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_saved_challenges, container, false);
+        return inflater.inflate(R.layout.fragment_top_challenges, container, false);
     }
-
-
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         Container appContainer = ((ApplicationContainer) requireActivity().getApplication()).mContainer;
-        mViewModel = new ViewModelProvider(this, new SavedChallengesFactory(
+        mViewModel = new ViewModelProvider(this, new ChallengesFactory(
                 appContainer.mRequestExecutor
-        )).get(SavedChallengesViewModel.class);
+        )).get(ChallengesViewModel.class);
 
-        //todo get current user id
-        mainViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
+        RecyclerView recyclerView = view.findViewById(R.id.top_challenges_list);
 
-        id = mainViewModel.getUser().getValue().getId();
-        //id = "a";
+        recyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.addItemDecoration(new DividerItemDecoration(view.getContext(), LinearLayoutManager.VERTICAL));
 
-        mViewModel.getUserById(id, result -> {
+        mAdapter = new Adapter(mArrayList);
+        recyclerView.setAdapter(mAdapter);
+
+        mViewModel.getAllChallenges(result -> {
             if (result instanceof Result.Success) {
                 //noinspection unchecked
-                user = ((Result.Success<User>) result).data;
+                mArrayList = ((Result.Success<List<ChallengeEntity>>) result).data;
 
+                Collections.sort(mArrayList, (c1, c2) ->
+                        Integer.compare(c1.getLikes(), c2.getLikes()));
 
-                RecyclerView recyclerView = view.findViewById(R.id.saved_challenges_list);
-
-                recyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
-                recyclerView.setItemAnimator(new DefaultItemAnimator());
-                recyclerView.addItemDecoration(new DividerItemDecoration(view.getContext(), LinearLayoutManager.VERTICAL));
-
-                mAdapter = new Adapter(mArrayList);
-                recyclerView.setAdapter(mAdapter);
-
-                mViewModel.getSavedChallenges(user,result2 -> {
-                    if (result2 instanceof Result.Success) {
-                        //noinspection unchecked
-                        mArrayList = ((Result.Success<List<Challenge>>) result2).data;
-
-                        mAdapter.setDataset(mArrayList);
-                        mAdapter.notifyItemRangeInserted(0, mArrayList.size());
-
-                    }
-
-                });
+                mAdapter.setDataset(mArrayList);
+                mAdapter.notifyItemRangeInserted(0, mArrayList.size());
 
             }
-
         });
-
-
-
     }
-
 
     class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
 
-        private List<com.example.challengeup.backend.Challenge> mDataset;
+        private List<ChallengeEntity> mDataset;
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
 
@@ -124,7 +100,7 @@ public class SavedChallenges extends Fragment {
             }
         }
 
-        public Adapter(@NonNull List<com.example.challengeup.backend.Challenge> myDataset) {
+        public Adapter(@NonNull List<ChallengeEntity> myDataset) {
             mDataset = myDataset;
         }
 
@@ -139,22 +115,27 @@ public class SavedChallenges extends Fragment {
 
         @Override
         public void onBindViewHolder(@NotNull Adapter.MyViewHolder holder, int position) {
-            com.example.challengeup.backend.Challenge challenge = mDataset.get(position);
+            ChallengeEntity challenge = mDataset.get(position);
 
             holder.rank.setText(String.valueOf(position + 1));
             holder.name.setText(challenge.getName());
             holder.dataLiked.setText(String.valueOf(challenge.getLikes()));
 
             holder.itemView.setOnClickListener(view -> {
-                // TODO navigate
+                TopChallengesFragmentDirections.ActionTopChallengesToChallenge action =
+                        TopChallengesFragmentDirections.actionTopChallengesToChallenge(challenge.getId());
+                Navigation.findNavController(view).navigate(action);
             });
 
             mViewModel.getUserById(challenge.getCreator_id(), result -> {
                 if (result instanceof Result.Success) {
                     //noinspection unchecked
-                    Bitmap avatar = ((Result.Success<User>) result).data.getPhoto();
-                    if (avatar != null)
-                        holder.avatar.setImageBitmap(avatar);
+                    UserEntity user = ((Result.Success<UserEntity>) result).data;
+                    if (user != null) {
+//                        Bitmap avatar = user.getPhoto();
+//                        if (avatar != null)
+//                            holder.avatar.setImageBitmap(avatar);
+                    }
                 }
             });
 
@@ -180,7 +161,7 @@ public class SavedChallenges extends Fragment {
             return mDataset.size();
         }
 
-        public void setDataset(List<Challenge> newDataset) {
+        public void setDataset(List<ChallengeEntity> newDataset) {
             mDataset = newDataset;
             notifyDataSetChanged();
         }

@@ -5,19 +5,20 @@ import com.example.challengeup.backend.UserEntity;
 import com.example.challengeup.request.IRequestCommand;
 import com.example.challengeup.request.Result;
 
-import java.util.List;
-
-public class GetSavedChallengesCommand implements IRequestCommand {
+public class AddBookmarkedCommand implements IRequestCommand {
 
     private final UserEntity user;
+    private final ChallengeEntity challenge;
 
-    public GetSavedChallengesCommand(UserEntity user) {
+    public AddBookmarkedCommand(UserEntity user, ChallengeEntity challenge) {
         this.user = user;
+        this.challenge = challenge;
     }
 
     @Override
     public Result request() {
-        List<ChallengeEntity> challenges = user.getSavedChallenges();
-        return new Result.Success<>(challenges);
+        user.addChallengeToSaved(challenge);
+        user.update();
+        return new Result.Success<>(challenge);
     }
 }

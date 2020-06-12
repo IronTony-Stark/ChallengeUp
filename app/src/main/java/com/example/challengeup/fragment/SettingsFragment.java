@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment;
 import com.example.challengeup.utils.LoginUtils;
 import com.example.challengeup.R;
 
-public class Settings extends Fragment {
+public class SettingsFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

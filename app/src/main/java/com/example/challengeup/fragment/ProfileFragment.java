@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.challengeup.R;
 
-public class Profile extends Fragment {
+public class ProfileFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

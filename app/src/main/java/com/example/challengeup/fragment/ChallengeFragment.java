@@ -1,6 +1,5 @@
 package com.example.challengeup.fragment;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,15 +15,15 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.challengeup.ApplicationContainer;
 import com.example.challengeup.Container;
 import com.example.challengeup.R;
-import com.example.challengeup.backend.User;
+import com.example.challengeup.backend.ChallengeEntity;
+import com.example.challengeup.backend.UserEntity;
 import com.example.challengeup.request.Result;
 import com.example.challengeup.viewModel.ChallengeViewModel;
 import com.example.challengeup.viewModel.factory.ChallengeFactory;
 
 import java.util.List;
 
-
-public class Challenge extends Fragment {
+public class ChallengeFragment extends Fragment {
 
     View view;
 
@@ -48,8 +47,8 @@ public class Challenge extends Fragment {
                 appContainer.mRequestExecutor
         )).get(ChallengeViewModel.class);
 
-        String challengeId = ChallengeArgs.fromBundle(getArguments()).getChallengeId();
-
+        String challengeId = ChallengeFragmentArgs
+                .fromBundle(requireArguments()).getChallengeId();
 
         ImageView imageChallenge = view.findViewById(R.id.imageChallenge);
         ImageView avatar = view.findViewById(R.id.avatar);
@@ -64,20 +63,19 @@ public class Challenge extends Fragment {
         //todo accepted/completed/liked
 
 
-
         mViewModel.getChallengeById(challengeId, result -> {
             if (result instanceof Result.Success) {
-                com.example.challengeup.backend.Challenge challenge = ((Result.Success<com.example.challengeup.backend.Challenge>) result).data;
+                ChallengeEntity challenge = ((Result.Success<ChallengeEntity>) result).data;
                 //todo imageChallenge
 
                 mViewModel.getUserById(challenge.getCreator_id(), result2 -> {
                     if (result2 instanceof Result.Success) {
                         //noinspection unchecked
-                        User user = ((Result.Success<User>) result2).data;
+                        UserEntity user = ((Result.Success<UserEntity>) result2).data;
                         if (user != null) {
-                            Bitmap avatarBitmap = user.getPhoto();
-                            if (avatarBitmap != null)
-                                avatar.setImageBitmap(avatarBitmap);
+//                            Bitmap avatarBitmap = user.getPhoto();
+//                            if (avatarBitmap != null)
+//                                avatar.setImageBitmap(avatarBitmap);
 
                             nameUser.setText(user.getNick());
                         }
@@ -90,13 +88,13 @@ public class Challenge extends Fragment {
 
 
                 List<String> tagsList = challenge.getTags();
-                if(tagsList.size()>0){
-                    String tags = "#"+String.join(" #", tagsList);
-                    hashtags.setText(tags);
-                }
+                StringBuilder tags = new StringBuilder();
 
-                revardRP.setText(challenge.getRewardRp()+" RP");
+                for (int i = 0; i < tagsList.size(); i++)
+                    tags.append("#").append(tagsList.get(0));
+                hashtags.setText(tags.toString());
 
+                revardRP.setText(challenge.getRewardRp() + " RP");
             }
         });
     }

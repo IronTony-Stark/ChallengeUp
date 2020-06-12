@@ -7,7 +7,8 @@
     android:elevation="3dp"
     app:cardCornerRadius="10dp"
     app:cardUseCompatPadding="true"
-    tools:targetApi="lollipop">
+    tools:targetApi="lollipop"
+    tools:visibility="visible">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -59,8 +60,8 @@
 
         <ImageView
             android:id="@+id/iconAccepted"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_marginEnd="8dp"
             android:src="@drawable/ic_users"
             app:layout_constraintBottom_toBottomOf="@+id/dataAccepted"
@@ -80,8 +81,8 @@
 
         <ImageView
             android:id="@+id/iconCompleted"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_marginEnd="8dp"
             android:src="@drawable/ic_checkmark"
             app:layout_constraintBottom_toBottomOf="@+id/dataCompleted"
@@ -98,12 +99,26 @@
             app:layout_constraintTop_toTopOf="@+id/dataAccepted"
             tools:text="1M" />
 
-        <ImageView
-            android:id="@+id/iconLiked"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <!--        <ImageView-->
+        <!--            android:id="@+id/iconLiked"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginEnd="8dp"-->
+        <!--            android:src="@drawable/ic_heart"-->
+        <!--            app:layout_constraintBottom_toBottomOf="@+id/dataLiked"-->
+        <!--            app:layout_constraintEnd_toStartOf="@+id/dataLiked"-->
+        <!--            app:layout_constraintTop_toTopOf="@+id/dataLiked" />-->
+
+        <ToggleButton
+            android:id="@+id/button_liked"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_marginEnd="8dp"
-            android:src="@drawable/ic_heart"
+            android:background="@drawable/button_liked"
+            android:checked="false"
+            android:text=""
+            android:textOff=""
+            android:textOn=""
             app:layout_constraintBottom_toBottomOf="@+id/dataLiked"
             app:layout_constraintEnd_toStartOf="@+id/dataLiked"
             app:layout_constraintTop_toTopOf="@+id/dataLiked" />
@@ -112,21 +127,26 @@
             android:id="@+id/dataLiked"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toStartOf="@+id/iconSave"
+            app:layout_constraintEnd_toStartOf="@id/buttonSave"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/dataCompleted"
             app:layout_constraintTop_toTopOf="@+id/dataCompleted"
             tools:text="1M" />
 
-        <ImageView
-            android:id="@+id/iconSave"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
-            android:src="@drawable/ic_bookmark"
-            app:layout_constraintBottom_toBottomOf="@+id/iconLiked"
+        <ToggleButton
+            android:id="@+id/buttonSave"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/button_saved"
+            android:checked="false"
+            android:text=""
+            android:textOff=""
+            android:textOn=""
+            app:layout_constraintBottom_toBottomOf="@+id/button_liked"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/iconLiked" />
+            app:layout_constraintTop_toTopOf="@+id/button_liked" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>
