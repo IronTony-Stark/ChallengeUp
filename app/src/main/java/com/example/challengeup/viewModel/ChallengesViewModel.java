@@ -10,8 +10,11 @@ import com.example.challengeup.request.command.AddBookmarkedCommand;
 import com.example.challengeup.request.command.GetAllChallengesCommand;
 import com.example.challengeup.request.command.GetNumAcceptedCommand;
 import com.example.challengeup.request.command.GetNumCompletedCommand;
+import com.example.challengeup.request.command.GetUserByEmailCommand;
 import com.example.challengeup.request.command.GetUserByIdCommand;
+import com.example.challengeup.request.command.LikedCommand;
 import com.example.challengeup.request.command.RemoveBookmarkedCommand;
+import com.example.challengeup.request.command.UnlikedCommand;
 
 public class ChallengesViewModel extends ViewModel {
 
@@ -29,6 +32,10 @@ public class ChallengesViewModel extends ViewModel {
         mRequestExecutor.execute(new GetUserByIdCommand(uid), callback);
     }
 
+    public void getUserByEmail(String email, ICallback callback) {
+        mRequestExecutor.execute(new GetUserByEmailCommand(email), callback);
+    }
+
     public void getNumAccepted(ChallengeEntity challenge, ICallback callback) {
         mRequestExecutor.execute(new GetNumAcceptedCommand(challenge), callback);
     }
@@ -38,9 +45,16 @@ public class ChallengesViewModel extends ViewModel {
     }
 
     public void setBookmarked(UserEntity user, ChallengeEntity challenge, boolean isBookmarked, ICallback callback) {
-        if (!isBookmarked)
+        if (isBookmarked)
             mRequestExecutor.execute(new AddBookmarkedCommand(user, challenge), callback);
         else
             mRequestExecutor.execute(new RemoveBookmarkedCommand(user, challenge), callback);
+    }
+
+    public void setLiked(UserEntity user, ChallengeEntity challenge, boolean isLiked, ICallback callback) {
+        if (isLiked)
+            mRequestExecutor.execute(new LikedCommand(user, challenge), callback);
+        else
+            mRequestExecutor.execute(new UnlikedCommand(user, challenge), callback);
     }
 }
