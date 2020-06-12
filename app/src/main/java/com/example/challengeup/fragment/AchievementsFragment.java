@@ -15,7 +15,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.challengeup.ApplicationContainer;
@@ -24,9 +23,9 @@ import com.example.challengeup.R;
 import com.example.challengeup.backend.TrophyEntity;
 import com.example.challengeup.backend.UserEntity;
 import com.example.challengeup.request.Result;
-import com.example.challengeup.viewModel.AchievementViewModel;
+import com.example.challengeup.viewModel.AchievementsViewModel;
 import com.example.challengeup.viewModel.MainActivityViewModel;
-import com.example.challengeup.viewModel.factory.AchievementFactory;
+import com.example.challengeup.viewModel.factory.AchievementsFactory;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -35,7 +34,7 @@ import java.util.List;
 
 public class AchievementsFragment extends Fragment {
 
-    private AchievementViewModel mViewModel;
+    private AchievementsViewModel mViewModel;
     private MainActivityViewModel mainViewModel;
     private List<TrophyEntity> mArrayList = new ArrayList<>();
     private Adapter mAdapter;
@@ -58,13 +57,12 @@ public class AchievementsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         Container appContainer = ((ApplicationContainer) requireActivity().getApplication()).mContainer;
-        mViewModel = new ViewModelProvider(this, new AchievementFactory(
+        mViewModel = new ViewModelProvider(this, new AchievementsFactory(
                 appContainer.mRequestExecutor
-        )).get(AchievementViewModel.class);
+        )).get(AchievementsViewModel.class);
 
         RecyclerView recyclerView = view.findViewById(R.id.achievements_list);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
         recyclerView.setLayoutManager(new GridLayoutManager(this.getActivity(), collumnNumber));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(view.getContext(), GridLayoutManager.VERTICAL));

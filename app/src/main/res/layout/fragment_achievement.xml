@@ -41,7 +41,7 @@
         tools:text="God of War Achievement can be obtained by doing awful things, especially playing games from God of War series..   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis suscipit lectus non est elementum congue. Sed at imperdiet quam. Pellentesque ullamcorper dolor nec sem " />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/players"
+        android:id="@+id/players_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
