@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -44,6 +45,8 @@ public class AchievementsFragment extends Fragment {
 
     private static final int collumnNumber = 3;
 
+    private int width;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -69,10 +72,12 @@ public class AchievementsFragment extends Fragment {
         mAdapter = new Adapter(mArrayList);
         recyclerView.setAdapter(mAdapter);
 
+        width = getActivity().getWindow().getDecorView().getWidth();//todo MAYBE there is an easier way?
+
 
         mainViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
         id = mainViewModel.getUser().getValue().getId();
-//        id = "a";
+        id = "a";//todo remove
 
         mViewModel.getUserById(id, result -> {
             if (result instanceof Result.Success) {
@@ -170,7 +175,12 @@ public class AchievementsFragment extends Fragment {
             public MyViewHolder(View itemView) {
                 super(itemView);
 
+                itemView.setLayoutParams(new ConstraintLayout.LayoutParams(width/collumnNumber,width/collumnNumber));
+
                 trophy = itemView.findViewById(R.id.icon);
+//                trophy.setLayoutParams(new ConstraintLayout.LayoutParams(width/collumnNumber/2,width/collumnNumber/2));
+//                trophy.setPadding(width/collumnNumber/4, 15, 0, 0);
+
                 name = itemView.findViewById(R.id.name);
             }
         }
