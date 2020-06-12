@@ -12,7 +12,7 @@
     <string name="preview">Preview</string>
     <string name="name_of_your_challenge">Name of Your Challenge</string>
     <string name="load_image">Load Image</string>
-    <string name="create">Create!</string>
+    <string name="create">Create</string>
     <string name="challenge">Challenge</string>
     <string name="statistics">Statistics</string>
     <string name="profile">Profile</string>
@@ -28,6 +28,7 @@
     <string name="login">Login</string>
     <string name="log_out_text">Log out</string>
     <string name="log_in_text">Log in</string>
+    <string name="create_dialog_title">What do you want to create?</string>
 
     <string-array name="challengesOrderBy">
         <item>None</item>
@@ -39,5 +40,9 @@
     <string-array name="orderDirection">
         <item>Ascending</item>
         <item>Descending</item>
+    </string-array>
+    <string-array name="createDialog">
+        <item>Challenge</item>
+        <item>Post</item>
     </string-array>
 </resources>

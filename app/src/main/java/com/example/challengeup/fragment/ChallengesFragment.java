@@ -4,6 +4,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.ScaleAnimation;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -106,21 +110,55 @@ public class ChallengesFragment extends Fragment {
                 Navigation.findNavController(view).navigate(action);
             });
 
-            holder.itemView.findViewById(R.id.iconLiked).setOnClickListener(v -> {
-                holder.dataLiked.setText(String.valueOf(Integer.parseInt(holder.dataLiked.getText().toString()) + 1));
-            });
+            ScaleAnimation scaleAnimation =
+                    new ScaleAnimation(0.7f, 1.0f, 0.7f, 1.0f,
+                            Animation.RELATIVE_TO_SELF, 0.7f,
+                            Animation.RELATIVE_TO_SELF, 0.7f);
+            scaleAnimation.setDuration(500);
+            BounceInterpolator bounceInterpolator = new BounceInterpolator();
+            scaleAnimation.setInterpolator(bounceInterpolator);
 
-            ImageView bookmark = holder.itemView.findViewById(R.id.iconSave);
-            bookmark.setOnClickListener(v -> {
-                boolean isBookmarked = bookmark.getDrawable() == getResources()
-                        .getDrawable(R.drawable.ic_bookmark_filled, null);
-                bookmark.setImageResource(isBookmarked ?
-                        R.drawable.ic_bookmark :
-                        R.drawable.ic_bookmark_filled);
-                mViewModel.setBookmarked(
-                        UserEntity.getUserByEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail()),
-                        challenge, isBookmarked, result -> {
-                        });
+            CompoundButton likedButton =
+                    (((CompoundButton) (holder.itemView.findViewById(R.id.button_liked))));
+            CompoundButton savedButton =
+                    (((CompoundButton) (holder.itemView.findViewById(R.id.buttonSave))));
+
+            mViewModel.getUserByEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail(), userResult -> {
+                if (userResult instanceof Result.Success) {
+                    UserEntity user = ((Result.Success<UserEntity>) userResult).data;
+                    if (user != null) {
+                        try {
+                            if (user.getLiked().contains(challenge.getId())) {
+//                            likedButton.setChecked(true);
+                                likedButton.setChecked(true);
+                            }
+                        } finally {
+                            likedButton.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+                                //animation
+                                compoundButton.startAnimation(scaleAnimation);
+                                if (isChecked) {
+                                    holder.dataLiked.setText(String.valueOf(Integer.parseInt(holder.dataLiked.getText().toString()) + 1));
+                                } else {
+                                    holder.dataLiked.setText(String.valueOf(Integer.parseInt(holder.dataLiked.getText().toString()) - 1));
+                                }
+                                mViewModel.setLiked(user, challenge, isChecked, r -> {
+                                });
+                            });
+                        }
+                        try {
+                            if (user.getSaved().contains(challenge.getId())) {
+                                savedButton.setChecked(true);
+                            }
+                        } finally {
+                            savedButton.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+                                //animation
+                                compoundButton.startAnimation(scaleAnimation);
+                                mViewModel.setBookmarked(user, challenge, isChecked, r -> {
+                                });
+                            });
+                        }
+                    }
+                }
             });
 
             mViewModel.getUserById(challenge.getCreator_id(), result -> {
@@ -128,6 +166,7 @@ public class ChallengesFragment extends Fragment {
                     //noinspection unchecked
                     UserEntity user = ((Result.Success<UserEntity>) result).data;
                     if (user != null) {
+
 //                        Bitmap avatar = user.getPhoto();
 //                        if (avatar != null)
 //                            holder.avatar.setImageBitmap(avatar);

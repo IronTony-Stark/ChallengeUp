@@ -57,8 +57,8 @@ public class AchievementFragment extends Fragment {
                 appContainer.mRequestExecutor
         )).get(AchievementViewModel.class);
 
-        String trophyId = "";//todo set trophy id       //ChallengeArgs.fromBundle(getArguments()).getChallengeId();
-
+        String trophyId = AchievementFragmentArgs.fromBundle(
+                requireArguments()).getAchievementId();
 
         ImageView icon = view.findViewById(R.id.icon);
         TextView name = view.findViewById(R.id.dataCompleted);

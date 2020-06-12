@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -149,6 +150,11 @@ public class AchievementsFragment extends Fragment {
                 holder.trophy.setImageResource(R.drawable.ic_trophy);
             }
 
+            holder.itemView.setOnClickListener(view -> {
+                AchievementsFragmentDirections.ActionAchievementsToAchievement action =
+                        AchievementsFragmentDirections.actionAchievementsToAchievement(trophy.getId());
+                Navigation.findNavController(view).navigate(action);
+            });
         }
 
         @Override
