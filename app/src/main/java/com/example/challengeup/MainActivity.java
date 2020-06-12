@@ -104,8 +104,9 @@ public class MainActivity extends AppCompatActivity {
                 UserEntity user = ((Result.Success<UserEntity>) result).data;
 
                 if (user == null) {
-                    user = new UserEntity("IronTonyStark", "Iron-Tony", firebaseUser.getEmail());
-                    mViewModel.addUser(user, ignored -> {});
+                    user = new UserEntity("blad200", "blad200", firebaseUser.getEmail());
+                    mViewModel.addUser(user, ignored -> {
+                    });
                 }
 
                 if (user.getPhoto() != null) {
