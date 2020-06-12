@@ -8,7 +8,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.challengeup.backend.User;
+import com.example.challengeup.backend.UserEntity;
 import com.example.challengeup.dto.UserDTO;
 import com.example.challengeup.request.ICallback;
 import com.example.challengeup.request.RequestExecutor;
@@ -57,7 +57,7 @@ public class MainActivityViewModel extends ViewModel {
         return mFirebaseUser;
     }
 
-    public void saveUserToSharedPreferences(@NotNull User user) {
+    public void saveUserToSharedPreferences(@NotNull UserEntity user) {
         SharedPreferences.Editor editor = mPreferences.edit();
 
         editor.putString(USER_ID, user.getId());
@@ -110,7 +110,7 @@ public class MainActivityViewModel extends ViewModel {
         mRequestExecutor.execute(new GetUserByIdCommand(id), callback);
     }
 
-    public void addUser(User newUser, ICallback callback) {
+    public void addUser(UserEntity newUser, ICallback callback) {
         mRequestExecutor.execute(new AddUserCommand(newUser), callback);
     }
 

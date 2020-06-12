@@ -1,12 +1,12 @@
 package com.example.challengeup.backend;
 
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -14,7 +14,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class Comment {
+public class CommentEntity {
     private String id;
     private String message;
     private String user_id;
@@ -24,7 +24,7 @@ public class Comment {
 
     private int likes;
 
-    public Comment(String message, String user_id, String challenge_id, String date)  {
+    public CommentEntity(String message, String user_id, String challenge_id, String date) {
         this.message = message;
         this.user_id = user_id;
         this.challenge_id = challenge_id;
@@ -32,20 +32,25 @@ public class Comment {
         id = null;
         reply_on_id = "";
     }
-    public Comment(String message, String user_id, String challenge_id, String date, String reply_on_id) {
-        this(message,user_id,challenge_id,date);
+
+    public CommentEntity(String message, String user_id, String challenge_id, String date, String reply_on_id) {
+        this(message, user_id, challenge_id, date);
         this.reply_on_id = reply_on_id;
     }
 
-    public static String addNewComment(Comment comment){
-        OkHttpClient client = new OkHttpClient();
+    public static String addNewComment(CommentEntity comment) {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .build();
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         try {
             JSONObject jsonObject = new JSONObject()
                     .put("message", comment.message)
                     .put("user_id", comment.user_id)
-                    .put("challenge_id",comment.challenge_id)
-                    .put("likes",comment.likes)
+                    .put("challenge_id", comment.challenge_id)
+                    .put("likes", comment.likes)
                     .put("date", comment.date)
                     .put("reply_on_id", comment.reply_on_id);
 
@@ -68,14 +73,19 @@ public class Comment {
         }
         return "";
     }
-    public static String addNewComment(String message, String user_id, String challenge_id, String date, String reply_on_id){
-        OkHttpClient client = new OkHttpClient();
+
+    public static String addNewComment(String message, String user_id, String challenge_id, String date, String reply_on_id) {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .build();
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         try {
             JSONObject jsonObject = new JSONObject()
                     .put("message", message)
                     .put("user_id", user_id)
-                    .put("challenge_id",challenge_id)
+                    .put("challenge_id", challenge_id)
                     .put("likes", 0)
                     .put("date", date)
                     .put("reply_on_id", reply_on_id);
@@ -96,9 +106,13 @@ public class Comment {
         return "";
     }
 
-    public static ArrayList<Comment> getAllComments(){
+    public static ArrayList<CommentEntity> getAllComments() {
         try {
-            OkHttpClient client = new OkHttpClient();
+            OkHttpClient client = new OkHttpClient.Builder()
+                    .connectTimeout(30, TimeUnit.SECONDS)
+                    .writeTimeout(30, TimeUnit.SECONDS)
+                    .readTimeout(30, TimeUnit.SECONDS)
+                    .build();
             Request request = new Request.Builder()
                     .url("https://us-central1-challengeup-49057.cloudfunctions.net/get_all_comments")
                     .get()
@@ -109,11 +123,11 @@ public class Comment {
             JSONObject object = new JSONObject(resStr);
             object = new JSONObject(object.getString("comments"));
 
-            ArrayList<Comment> comments = new ArrayList<>();
+            ArrayList<CommentEntity> comments = new ArrayList<>();
             for (Iterator<String> it = object.keys(); it.hasNext(); ) {
                 String key = it.next();
 
-                Comment comment = new Comment(
+                CommentEntity comment = new CommentEntity(
                         object.getJSONObject(key).getString("message"),
                         object.getJSONObject(key).getString("user_id"),
                         object.getJSONObject(key).getString("challenge_id"),
@@ -130,16 +144,20 @@ public class Comment {
         return null;
     }
 
-    public void update(){
-        OkHttpClient client = new OkHttpClient();
+    public void update() {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .build();
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         try {
             JSONObject jsonObject = new JSONObject()
                     .put("comment_id", id)
                     .put("message", message)
                     .put("user_id", user_id)
-                    .put("challenge_id",challenge_id)
-                    .put("likes",likes)
+                    .put("challenge_id", challenge_id)
+                    .put("likes", likes)
                     .put("date", date)
                     .put("reply_on_id", reply_on_id);
 
@@ -152,11 +170,10 @@ public class Comment {
 
             client.newCall(request).execute();
 
-        } catch (JSONException  | IOException e) {
+        } catch (JSONException | IOException e) {
             e.printStackTrace();
         }
     }
-
 
 
     private void setId(String id) {
@@ -170,21 +187,27 @@ public class Comment {
     public String getUser_id() {
         return user_id;
     }
+
     public int getLikes() {
         return likes;
     }
+
     public String getChallenge_id() {
         return challenge_id;
     }
+
     public String getId() {
         return id;
     }
+
     public String getMessage() {
         return message;
     }
+
     public String getDate() {
         return date;
     }
+
     public String getReply_on_id() {
         return reply_on_id;
     }

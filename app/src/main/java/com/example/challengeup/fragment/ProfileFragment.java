@@ -1,11 +1,9 @@
 package com.example.challengeup.fragment;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,10 +11,8 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.challengeup.MainActivity;
 import com.example.challengeup.R;
-import com.example.challengeup.backend.User;
-import com.example.challengeup.databinding.ActivityMainBinding;
+import com.example.challengeup.backend.UserEntity;
 import com.example.challengeup.databinding.FragmentProfileBinding;
 import com.example.challengeup.dto.UserDTO;
 import com.example.challengeup.request.Result;
@@ -27,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-public class Profile extends Fragment {
+public class ProfileFragment extends Fragment {
 
     private FragmentProfileBinding mBinding;
     private MainActivityViewModel mMainActivityViewModel;
@@ -53,20 +49,20 @@ public class Profile extends Fragment {
         mBinding.setViewModel(mProfileViewModel);
         mBinding.setLifecycleOwner(this);
 
-        if (getArguments() != null && ProfileArgs.fromBundle(getArguments()).getUid() != null) {
-            String uid = ProfileArgs.fromBundle(getArguments()).getUid();
+        if (getArguments() != null && ProfileFragmentArgs.fromBundle(getArguments()).getUid() != null) {
+            String uid = ProfileFragmentArgs.fromBundle(getArguments()).getUid();
             setupUI(Objects.requireNonNull(mMainActivityViewModel
                     .getUser().getValue()).getId().equals(uid));
 
             mMainActivityViewModel.getUserById(uid, result -> {
                 if (result instanceof Result.Success) {
                     //noinspection unchecked
-                    User user = ((Result.Success<User>) result).data;
+                    UserEntity user = ((Result.Success<UserEntity>) result).data;
                     UserDTO userDTO = new UserDTO(user.getId(), user.getNick(),
                             user.getTag(), user.getEmail());
-                    Bitmap avatar = user.getPhoto();
                     mProfileViewModel.setUser(userDTO);
-                    mProfileViewModel.setUserAvatar(avatar);
+//                    Bitmap avatar = user.getPhoto();
+//                    mProfileViewModel.setUserAvatar(avatar);
                 }
             });
         } else {

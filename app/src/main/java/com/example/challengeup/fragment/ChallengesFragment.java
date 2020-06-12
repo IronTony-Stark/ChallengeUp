@@ -1,6 +1,5 @@
 package com.example.challengeup.fragment;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,21 +20,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.challengeup.ApplicationContainer;
 import com.example.challengeup.Container;
 import com.example.challengeup.R;
-import com.example.challengeup.backend.Challenge;
-import com.example.challengeup.backend.User;
+import com.example.challengeup.backend.ChallengeEntity;
+import com.example.challengeup.backend.UserEntity;
 import com.example.challengeup.request.Result;
 import com.example.challengeup.viewModel.ChallengesViewModel;
 import com.example.challengeup.viewModel.factory.ChallengesFactory;
+import com.google.firebase.auth.FirebaseAuth;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Challenges extends Fragment {
+public class ChallengesFragment extends Fragment {
 
     private ChallengesViewModel mViewModel;
-    private List<Challenge> mArrayList = new ArrayList<>();
+    private List<ChallengeEntity> mArrayList = new ArrayList<>();
     private Adapter mAdapter;
 
     @Override
@@ -66,7 +66,7 @@ public class Challenges extends Fragment {
         mViewModel.getAllChallenges(result -> {
             if (result instanceof Result.Success) {
                 //noinspection unchecked
-                mArrayList = ((Result.Success<List<Challenge>>) result).data;
+                mArrayList = ((Result.Success<List<ChallengeEntity>>) result).data;
                 mAdapter.setDataset(mArrayList);
                 mAdapter.notifyItemRangeInserted(0, mArrayList.size());
             }
@@ -75,27 +75,9 @@ public class Challenges extends Fragment {
 
     class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
 
-        private List<Challenge> mDataset;
+        private List<ChallengeEntity> mDataset;
 
-        public class MyViewHolder extends RecyclerView.ViewHolder {
-
-            ImageView thumbnail, avatar;
-            TextView name, description, dataAccepted, dataCompleted, dataLiked;
-
-            public MyViewHolder(View itemView) {
-                super(itemView);
-
-                thumbnail = itemView.findViewById(R.id.thumbnail);
-                avatar = itemView.findViewById(R.id.avatar);
-                name = itemView.findViewById(R.id.name);
-                description = itemView.findViewById(R.id.description);
-                dataAccepted = itemView.findViewById(R.id.dataAccepted);
-                dataCompleted = itemView.findViewById(R.id.dataCompleted);
-                dataLiked = itemView.findViewById(R.id.dataLiked);
-            }
-        }
-
-        public Adapter(@NonNull List<Challenge> myDataset) {
+        public Adapter(@NonNull List<ChallengeEntity> myDataset) {
             mDataset = myDataset;
         }
 
@@ -110,28 +92,45 @@ public class Challenges extends Fragment {
 
         @Override
         public void onBindViewHolder(@NotNull MyViewHolder holder, int position) {
-            Challenge challenge = mDataset.get(position);
+            ChallengeEntity challenge = mDataset.get(position);
 
-            // holder.thumbnail.setImageBitmap(challenge.// todo image
+            // holder.thumbnail.setImageBitmap(challenge.// todo bookmarkChacked
 
             holder.name.setText(challenge.getName());
             holder.description.setText(challenge.getTask());
             holder.dataLiked.setText(String.valueOf(challenge.getLikes()));
 
             holder.itemView.setOnClickListener(view -> {
-                ChallengesDirections.ActionChallengesToChallenge action =
-                        ChallengesDirections.actionChallengesToChallenge(challenge.getId());
+                ChallengesFragmentDirections.ActionChallengesToChallenge action =
+                        ChallengesFragmentDirections.actionChallengesToChallenge(challenge.getId());
                 Navigation.findNavController(view).navigate(action);
+            });
+
+            holder.itemView.findViewById(R.id.iconLiked).setOnClickListener(v -> {
+                holder.dataLiked.setText(String.valueOf(Integer.parseInt(holder.dataLiked.getText().toString()) + 1));
+            });
+
+            ImageView bookmark = holder.itemView.findViewById(R.id.iconSave);
+            bookmark.setOnClickListener(v -> {
+                boolean isBookmarked = bookmark.getDrawable() == getResources()
+                        .getDrawable(R.drawable.ic_bookmark_filled, null);
+                bookmark.setImageResource(isBookmarked ?
+                        R.drawable.ic_bookmark :
+                        R.drawable.ic_bookmark_filled);
+                mViewModel.setBookmarked(
+                        UserEntity.getUserByEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail()),
+                        challenge, isBookmarked, result -> {
+                        });
             });
 
             mViewModel.getUserById(challenge.getCreator_id(), result -> {
                 if (result instanceof Result.Success) {
                     //noinspection unchecked
-                    User user = ((Result.Success<User>) result).data;
+                    UserEntity user = ((Result.Success<UserEntity>) result).data;
                     if (user != null) {
-                        Bitmap avatar = user.getPhoto();
-                        if (avatar != null)
-                            holder.avatar.setImageBitmap(avatar);
+//                        Bitmap avatar = user.getPhoto();
+//                        if (avatar != null)
+//                            holder.avatar.setImageBitmap(avatar);
                     }
                 }
             });
@@ -158,9 +157,27 @@ public class Challenges extends Fragment {
             return mDataset.size();
         }
 
-        public void setDataset(List<Challenge> newDataset) {
+        public void setDataset(List<ChallengeEntity> newDataset) {
             mDataset = newDataset;
             notifyDataSetChanged();
+        }
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+
+            ImageView thumbnail, avatar;
+            TextView name, description, dataAccepted, dataCompleted, dataLiked;
+
+            public MyViewHolder(View itemView) {
+                super(itemView);
+
+                thumbnail = itemView.findViewById(R.id.thumbnail);
+                avatar = itemView.findViewById(R.id.avatar);
+                name = itemView.findViewById(R.id.name);
+                description = itemView.findViewById(R.id.description);
+                dataAccepted = itemView.findViewById(R.id.dataAccepted);
+                dataCompleted = itemView.findViewById(R.id.dataCompleted);
+                dataLiked = itemView.findViewById(R.id.dataLiked);
+            }
         }
     }
 }

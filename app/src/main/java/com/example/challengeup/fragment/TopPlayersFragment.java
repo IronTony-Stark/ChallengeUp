@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.challengeup.ApplicationContainer;
 import com.example.challengeup.Container;
 import com.example.challengeup.R;
-import com.example.challengeup.backend.User;
+import com.example.challengeup.backend.UserEntity;
 import com.example.challengeup.request.Result;
 import com.example.challengeup.viewModel.TopPlayersViewModel;
 import com.example.challengeup.viewModel.factory.TopPlayersFactory;
@@ -32,10 +32,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class TopPlayers extends Fragment {
+public class TopPlayersFragment extends Fragment {
 
     private TopPlayersViewModel mViewModel;
-    private List<User> mArrayList = new ArrayList<>();
+    private List<UserEntity> mArrayList = new ArrayList<>();
     private Adapter mAdapter;
 
     @Override
@@ -66,7 +66,7 @@ public class TopPlayers extends Fragment {
         mViewModel.getAllUsers(result -> {
             if (result instanceof Result.Success) {
                 //noinspection unchecked
-                mArrayList = ((Result.Success<List<User>>) result).data;
+                mArrayList = ((Result.Success<List<UserEntity>>) result).data;
 
                 // TODO sometimes values are null
                 Collections.sort(mArrayList, (u1, u2) -> {
@@ -87,7 +87,7 @@ public class TopPlayers extends Fragment {
 
     static class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
 
-        private List<com.example.challengeup.backend.User> mDataset;
+        private List<UserEntity> mDataset;
 
         public static class MyViewHolder extends RecyclerView.ViewHolder {
 
@@ -104,7 +104,7 @@ public class TopPlayers extends Fragment {
             }
         }
 
-        public Adapter(@NonNull List<com.example.challengeup.backend.User> myDataset) {
+        public Adapter(@NonNull List<UserEntity> myDataset) {
             mDataset = myDataset;
         }
 
@@ -119,19 +119,19 @@ public class TopPlayers extends Fragment {
 
         @Override
         public void onBindViewHolder(@NotNull Adapter.MyViewHolder holder, int position) {
-            User user = mDataset.get(position);
+            UserEntity user = mDataset.get(position);
 
-            Bitmap avatar = user.getPhoto();
-            if (avatar != null)
-                holder.avatar.setImageBitmap(avatar);
+//            Bitmap avatar = user.getPhoto();
+//            if (avatar != null)
+//                holder.avatar.setImageBitmap(avatar);
 
             holder.rank.setText(String.valueOf(position + 1));
             holder.name.setText(user.getNick());
             holder.rp.setText(String.valueOf(user.getTotalRp()));
 
             holder.itemView.setOnClickListener(view -> {
-                TopPlayersDirections.ActionTopPlayersToProfile action =
-                        TopPlayersDirections.actionTopPlayersToProfile();
+                TopPlayersFragmentDirections.ActionTopPlayersToProfile action =
+                        TopPlayersFragmentDirections.actionTopPlayersToProfile();
                 action.setUid(user.getId());
                 Navigation.findNavController(view).navigate(action);
             });
@@ -142,7 +142,7 @@ public class TopPlayers extends Fragment {
             return mDataset.size();
         }
 
-        public void setDataset(List<User> newDataset) {
+        public void setDataset(List<UserEntity> newDataset) {
             mDataset = newDataset;
             notifyDataSetChanged();
         }
