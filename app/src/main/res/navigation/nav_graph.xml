@@ -104,5 +104,8 @@
         <argument
             android:name="achievementId"
             app:argType="string" />
+        <action
+            android:id="@+id/action_achievement_to_profile"
+            app:destination="@id/profile" />
     </fragment>
 </navigation>

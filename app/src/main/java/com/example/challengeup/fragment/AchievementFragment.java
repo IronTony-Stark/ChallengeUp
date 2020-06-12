@@ -47,7 +47,6 @@ public class AchievementFragment extends Fragment {
         return view;
     }
 
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -61,7 +60,7 @@ public class AchievementFragment extends Fragment {
                 requireArguments()).getAchievementId();
 
         ImageView icon = view.findViewById(R.id.icon);
-        TextView name = view.findViewById(R.id.dataCompleted);
+        TextView name = view.findViewById(R.id.name);
         TextView description = view.findViewById(R.id.description);
 
         RecyclerView recyclerView = view.findViewById(R.id.players_list);
@@ -98,7 +97,7 @@ public class AchievementFragment extends Fragment {
     }
 
 
-    class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
+    static class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
 
         private List<UserEntity> mDataset;
 
@@ -112,7 +111,7 @@ public class AchievementFragment extends Fragment {
             View itemView = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.item_top_players, parent, false);
 
-            return new Adapter.MyViewHolder(itemView);
+            return new MyViewHolder(itemView);
         }
 
         @Override
@@ -123,16 +122,14 @@ public class AchievementFragment extends Fragment {
 //            if (avatar != null)
 //                holder.avatar.setImageBitmap(avatar);
 
-            holder.rank.setText(String.valueOf(position + 1));
             holder.name.setText(user.getNick());
             holder.rp.setText(String.valueOf(user.getTotalRp()));
 
             holder.itemView.setOnClickListener(view -> {
-                TopPlayersFragmentDirections.ActionTopPlayersToProfile action =
-                        TopPlayersFragmentDirections.actionTopPlayersToProfile(user.getId());
+                AchievementFragmentDirections.ActionAchievementToProfile action =
+                        AchievementFragmentDirections.actionAchievementToProfile(user.getId());
                 Navigation.findNavController(view).navigate(action);
             });
-
         }
 
         @Override
@@ -146,16 +143,15 @@ public class AchievementFragment extends Fragment {
         }
 
 
-        class MyViewHolder extends RecyclerView.ViewHolder {
+        static class MyViewHolder extends RecyclerView.ViewHolder {
 
             ImageView avatar;
-            TextView rank, name, rp;
+            TextView name, rp;
 
             public MyViewHolder(View itemView) {
                 super(itemView);
 
                 avatar = itemView.findViewById(R.id.avatar);
-                rank = itemView.findViewById(R.id.rank);
                 name = itemView.findViewById(R.id.name);
                 rp = itemView.findViewById(R.id.rp);
             }
