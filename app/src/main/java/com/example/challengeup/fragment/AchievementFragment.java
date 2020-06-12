@@ -78,6 +78,11 @@ public class AchievementFragment extends Fragment {
                 //noinspection unchecked
                 TrophyEntity trophy = ((Result.Success<TrophyEntity>) result).data;
 
+                icon.setImageResource(R.drawable.ic_trophy);
+                //todo set background
+                name.setText(trophy.getName());
+                description.setText(trophy.getDescription());
+
                 mViewModel.getUsersWithThisTrophy(trophy, result2 -> {
                     if (result2 instanceof Result.Success) {
                         //noinspection unchecked
