@@ -6,9 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -21,6 +23,7 @@ import com.example.challengeup.request.Result;
 import com.example.challengeup.viewModel.ChallengeViewModel;
 import com.example.challengeup.viewModel.factory.ChallengeFactory;
 import com.google.android.material.chip.Chip;
+import com.volokh.danylo.hashtaghelper.HashTagHelper;
 
 import java.util.List;
 
@@ -29,6 +32,8 @@ public class ChallengeFragment extends Fragment {
     View view;
 
     private ChallengeViewModel mViewModel;
+
+    private HashTagHelper mTextHashTagHelper;
 
 
     @Override
@@ -87,6 +92,13 @@ public class ChallengeFragment extends Fragment {
                 name.setText(challenge.getName());
                 description.setText(challenge.getTask());
                 task.setText(challenge.getTask());
+
+                mTextHashTagHelper = HashTagHelper.Creator.create(ContextCompat.getColor(getContext(), R.color.colorPrimary),
+                        hashTag -> {
+                            Toast.makeText(getContext(), hashTag, Toast.LENGTH_SHORT).show();
+                        }, '_');
+                mTextHashTagHelper.handle(task);
+//                mTextHashTagHelper.handle(description);
 
                 for (String tag : challenge.getCategories()) {
                     Chip chip = new Chip(getContext());
