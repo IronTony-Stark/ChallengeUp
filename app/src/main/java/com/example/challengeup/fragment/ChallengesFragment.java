@@ -10,9 +10,11 @@ import android.view.animation.ScaleAnimation;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
@@ -30,6 +32,7 @@ import com.example.challengeup.request.Result;
 import com.example.challengeup.viewModel.ChallengesViewModel;
 import com.example.challengeup.viewModel.factory.ChallengesFactory;
 import com.google.firebase.auth.FirebaseAuth;
+import com.volokh.danylo.hashtaghelper.HashTagHelper;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -104,6 +107,12 @@ public class ChallengesFragment extends Fragment {
             holder.description.setText(challenge.getTask());
             holder.dataLiked.setText(String.valueOf(challenge.getLikes()));
 
+            HashTagHelper mTextHashTagHelper = HashTagHelper.Creator.create(ContextCompat.getColor(getContext(), R.color.colorPrimary),
+                    hashTag -> {
+                        Toast.makeText(getContext(), hashTag, Toast.LENGTH_SHORT).show();
+                    }, '_');
+            mTextHashTagHelper.handle(holder.description);
+
             holder.itemView.setOnClickListener(view -> {
                 ChallengesFragmentDirections.ActionChallengesToChallenge action =
                         ChallengesFragmentDirections.actionChallengesToChallenge(challenge.getId());
@@ -119,9 +128,9 @@ public class ChallengesFragment extends Fragment {
             scaleAnimation.setInterpolator(bounceInterpolator);
 
             CompoundButton likedButton =
-                    (((CompoundButton) (holder.itemView.findViewById(R.id.button_liked))));
+                    holder.itemView.findViewById(R.id.button_liked);
             CompoundButton savedButton =
-                    (((CompoundButton) (holder.itemView.findViewById(R.id.buttonSave))));
+                    holder.itemView.findViewById(R.id.buttonSave);
 
             mViewModel.getUserByEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail(), userResult -> {
                 if (userResult instanceof Result.Success) {

@@ -3,12 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:context=".fragment.ChallengeFragment">
+
+
+        <!--        <ProgressBar-->
+        <!--            android:id="@+id/progressBar1"-->
+        <!--            style="?android:attr/progressBarStyleLarge"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="match_parent"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintTop_toTopOf="parent"-->
+        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--            android:layout_centerHorizontal="true" />-->
 
         <ImageView
             android:id="@+id/imageChallenge"
@@ -89,10 +101,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="36dp"
+            android:text="@string/description"
             android:textSize="30sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tags"
-            android:text="@string/description" />
+            app:layout_constraintTop_toBottomOf="@+id/tags" />
 
         <TextView
             android:id="@+id/description"
@@ -110,10 +122,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:text="@string/task"
             android:textSize="30sp"
             app:layout_constraintStart_toStartOf="@+id/titleDescription"
-            app:layout_constraintTop_toBottomOf="@+id/description"
-            android:text="@string/task" />
+            app:layout_constraintTop_toBottomOf="@+id/description" />
 
         <TextView
             android:id="@+id/task"
@@ -195,21 +207,28 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
+            android:text="@string/challenge_me"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/statsAccepted"
-            android:text="@string/challenge_me" />
+            app:layout_constraintTop_toBottomOf="@+id/statsAccepted" />
 
         <Button
             android:id="@+id/btnReport"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:text="@string/report"
             app:layout_constraintEnd_toEndOf="@+id/btnAccept"
             app:layout_constraintStart_toStartOf="@+id/btnAccept"
-            app:layout_constraintTop_toBottomOf="@+id/btnAccept"
-            android:text="@string/report" />
+            app:layout_constraintTop_toBottomOf="@+id/btnAccept" />
+
+        <!--        <include-->
+        <!--            layout="@layout/item_loading_spinner"-->
+        <!--            app:layout_constraintTop_toTopOf="parent" />-->
+
+        <!--            xmlns:android="http://schemas.android.com/apk/res/android"-->
+        <!--            xmlns:wheel="http://schemas.android.com/apk/res-auto"-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

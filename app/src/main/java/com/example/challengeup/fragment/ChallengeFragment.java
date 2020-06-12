@@ -1,15 +1,21 @@
 package com.example.challengeup.fragment;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -23,6 +29,7 @@ import com.example.challengeup.request.Result;
 import com.example.challengeup.viewModel.ChallengeViewModel;
 import com.example.challengeup.viewModel.factory.ChallengeFactory;
 import com.google.android.material.chip.Chip;
+import com.pnikosis.materialishprogress.ProgressWheel;
 import com.volokh.danylo.hashtaghelper.HashTagHelper;
 
 import java.util.List;
@@ -48,6 +55,19 @@ public class ChallengeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+//        ConstraintLayout progressBarHolder = view.findViewById(R.id.progress_overlay);
+//        AlphaAnimation inAnimation = new AlphaAnimation(0f, 1f);
+//        inAnimation.setDuration(200);
+//        AlphaAnimation outAnimation = new AlphaAnimation(1f, 0f);
+//        outAnimation.setDuration(200);
+//
+//        progressBarHolder.setAnimation(inAnimation);
+//        progressBarHolder.setVisibility(View.VISIBLE);
+
+//        ProgressWheel wheel = view.findViewById(R.id.progress_wheel);
+//        wheel.setBarColor(Color.BLUE);
+//        wheel.spin();
+
         Container appContainer = ((ApplicationContainer) requireActivity().getApplication()).mContainer;
         mViewModel = new ViewModelProvider(this, new ChallengeFactory(
                 appContainer.mRequestExecutor
@@ -63,7 +83,7 @@ public class ChallengeFragment extends Fragment {
         TextView nameUser = view.findViewById(R.id.nameUser);
         TextView description = view.findViewById(R.id.description);
         TextView task = view.findViewById(R.id.task);
-        ViewGroup tags = ((ViewGroup) view.findViewById(R.id.tags));
+        ViewGroup tags = view.findViewById(R.id.tags);
         TextView hashtags = view.findViewById(R.id.hashTags);
         TextView revardRP = view.findViewById(R.id.rewardRP);//100 RP
 
@@ -98,15 +118,13 @@ public class ChallengeFragment extends Fragment {
                             Toast.makeText(getContext(), hashTag, Toast.LENGTH_SHORT).show();
                         }, '_');
                 mTextHashTagHelper.handle(task);
-//                mTextHashTagHelper.handle(description);
 
                 for (String tag : challenge.getCategories()) {
                     Chip chip = new Chip(getContext());
                     chip.setText(tag);
 //            chip.chipIcon = ContextCompat.getDrawable(requireContext(), baseline_person_black_18)
                     chip.setCloseIconVisible(false);
-// following lines are for the demo
-                    chip.setClickable(false);
+                    chip.setClickable(true);
                     chip.setCheckable(false);
                     tags.addView(chip);
                 }
@@ -119,6 +137,10 @@ public class ChallengeFragment extends Fragment {
                 hashtags.setText(hashtagsBuilder.toString());
 
                 revardRP.setText(challenge.getRewardRp() + " RP");
+
+//                progressBarHolder.setAnimation(outAnimation);
+//                progressBarHolder.setVisibility(View.GONE);
+//                wheel.stopSpinning();
             }
         });
     }

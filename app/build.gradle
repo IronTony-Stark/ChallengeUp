@@ -63,6 +63,9 @@ dependencies {
     // HashTags
     implementation 'com.github.danylovolokh:hashtag-helper:1.1.0'
 
+    // ProgressBar
+    implementation 'com.pnikosis:materialish-progress:1.7'
+
     // Lombok
     //noinspection AnnotationProcessorOnCompilePath
     compileOnly "org.projectlombok:lombok:1.18.12"
