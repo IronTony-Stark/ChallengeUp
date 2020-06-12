@@ -64,6 +64,18 @@ public class ChallengeEntity {
         this.photo = photo;
     }
 
+
+    public ArrayList<VideoConfirmationEntity> getAllConfirmedVideos(){
+        return (ArrayList<VideoConfirmationEntity>) VideoConfirmationEntity.getAllVideos().stream().filter(x->x.getChallenge_id().equals(id) && x.isConfirmed()).collect(Collectors.toList());
+    }
+    public ArrayList<VideoConfirmationEntity> getAllUnconfirmedVideos(){
+        return (ArrayList<VideoConfirmationEntity>) VideoConfirmationEntity.getAllVideos().stream().filter(x->x.getChallenge_id().equals(id) && !x.isConfirmed()).collect(Collectors.toList());
+    }
+    public ArrayList<VideoConfirmationEntity> getAllVideos(){
+        return (ArrayList<VideoConfirmationEntity>) VideoConfirmationEntity.getAllVideos().stream().filter(x->x.getChallenge_id().equals(id)).collect(Collectors.toList());
+    }
+
+
     public static String addNewChallenge(ChallengeEntity challenge) throws IllegalArgumentException {
         Validation.validateTags(challenge.tags);
         Validation.validateTags(challenge.categories);
