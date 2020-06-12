@@ -20,6 +20,7 @@ import com.example.challengeup.backend.UserEntity;
 import com.example.challengeup.request.Result;
 import com.example.challengeup.viewModel.ChallengeViewModel;
 import com.example.challengeup.viewModel.factory.ChallengeFactory;
+import com.google.android.material.chip.Chip;
 
 import java.util.List;
 
@@ -57,6 +58,7 @@ public class ChallengeFragment extends Fragment {
         TextView nameUser = view.findViewById(R.id.nameUser);
         TextView description = view.findViewById(R.id.description);
         TextView task = view.findViewById(R.id.task);
+        ViewGroup tags = ((ViewGroup) view.findViewById(R.id.tags));
         TextView hashtags = view.findViewById(R.id.hashTags);
         TextView revardRP = view.findViewById(R.id.rewardRP);//100 RP
 
@@ -86,13 +88,23 @@ public class ChallengeFragment extends Fragment {
                 description.setText(challenge.getTask());
                 task.setText(challenge.getTask());
 
+                for (String tag : challenge.getCategories()) {
+                    Chip chip = new Chip(getContext());
+                    chip.setText(tag);
+//            chip.chipIcon = ContextCompat.getDrawable(requireContext(), baseline_person_black_18)
+                    chip.setCloseIconVisible(false);
+// following lines are for the demo
+                    chip.setClickable(false);
+                    chip.setCheckable(false);
+                    tags.addView(chip);
+                }
 
                 List<String> tagsList = challenge.getTags();
-                StringBuilder tags = new StringBuilder();
+                StringBuilder hashtagsBuilder = new StringBuilder();
 
                 for (int i = 0; i < tagsList.size(); i++)
-                    tags.append("#").append(tagsList.get(0));
-                hashtags.setText(tags.toString());
+                    hashtagsBuilder.append("#").append(tagsList.get(0));
+                hashtags.setText(hashtagsBuilder.toString());
 
                 revardRP.setText(challenge.getRewardRp() + " RP");
             }

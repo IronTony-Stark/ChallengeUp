@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="350dp"
+    android:layout_height="wrap_content"
     android:elevation="3dp"
     app:cardCornerRadius="10dp"
     app:cardUseCompatPadding="true"
@@ -12,7 +12,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/thumbnail"
@@ -47,16 +47,18 @@
 
         <TextView
             android:id="@+id/description"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
             android:maxLines="4"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/name"
-            tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis suscipit lectus non est elementum congue. Sed at imperdiet quam. Pellentesque ullamcorper dolor nec sem euismod, nec feugiat ex ultricies. Proin ut efficitur ligula. Sed feugiat, metus a sagittis porttitor, ante metus vestibulum mi, sit amet faucibus nibh sapien eget mi. Vestibulum porta est vel volutpat aliquet. Nulla eleifend sem at feugiat porttitor. Mauris vel ligula at leo imperdiet viverra. Fusce nec euismod justo. Etiam cursus purus sed orci maximus eleifend. Sed sodales diam erat, id laoreet ante sollicitudin ut. Nunc congue neque vitae fringilla elementum. In feugiat, lacus non facilisis viverra, diam tortor sodales dui, at dignissim ipsum sem ut tortor.  Vestibulum tristique neque et condimentum varius. Cras feugiat felis vel est luctus, vitae fermentum est congue. Vestibulum nec quam ac nunc fringilla sodales ut et orci. Nulla viverra non libero ac eleifend. Etiam ante diam, placerat ut tempor id, consectetur id ante. Nam vestibulum, ligula a iaculis aliquam, ligula lacus tincidunt turpis, in venenatis sapien sapien non nibh. Maecenas posuere lobortis elit sit amet faucibus. Proin scelerisque iaculis mi, eget viverra diam mattis vitae. Proin nec ligula dictum, volutpat enim eget, pretium ex. In lobortis cursus elit, in aliquet massa tincidunt sit amet. Maecenas ultrices suscipit lacus a gravida. Maecenas vel faucibus massa. Mauris vel ligula vel risus vulputate euismod mollis vel risus. Nam suscipit et tortor et varius. Donec et vestibulum enim, et fringilla velit. " />
+            app:layout_constraintBottom_toTopOf="@id/dataAccepted"
+            tools:text="Lorem elit. " />
 
         <ImageView
             android:id="@+id/iconAccepted"
