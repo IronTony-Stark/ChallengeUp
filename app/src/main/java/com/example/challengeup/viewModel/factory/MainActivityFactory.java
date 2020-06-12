@@ -15,20 +15,17 @@ public class MainActivityFactory implements ViewModelProvider.Factory {
 
     private final RequestExecutor mRequestExecutor;
     private final SharedPreferences mPreferences;
-    private final File mAvatarFile;
 
     public MainActivityFactory(final RequestExecutor requestExecutor,
-                               final SharedPreferences preferences,
-                               final File avatarFile) {
+                               final SharedPreferences preferences) {
         mRequestExecutor = requestExecutor;
         mPreferences = preferences;
-        mAvatarFile = avatarFile;
     }
 
     @SuppressWarnings("unchecked")
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new MainActivityViewModel(mRequestExecutor, mPreferences, mAvatarFile);
+        return (T) new MainActivityViewModel(mRequestExecutor, mPreferences);
     }
 }

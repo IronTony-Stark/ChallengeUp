@@ -1,8 +1,6 @@
 package com.example.challengeup.viewModel;
 
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -19,27 +17,20 @@ import com.google.firebase.auth.FirebaseUser;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 public class MainActivityViewModel extends ViewModel {
 
     private FirebaseUser mFirebaseUser;
     private final MutableLiveData<UserDTO> mUser;
-    private final MutableLiveData<Bitmap> mUserAvatar;
+    private final MutableLiveData<String> mUserAvatar;
     private final RequestExecutor mRequestExecutor;
     private final SharedPreferences mPreferences;
-    private final File mAvatarFile;
 
     public MainActivityViewModel(final RequestExecutor requestExecutor,
-                                 final SharedPreferences preferences,
-                                 final File avatarFile) {
+                                 final SharedPreferences preferences) {
         mUser = new MutableLiveData<>();
         mUserAvatar = new MutableLiveData<>();
         mRequestExecutor = requestExecutor;
         mPreferences = preferences;
-        mAvatarFile = avatarFile;
     }
 
     public boolean isAuthenticated() {
@@ -79,22 +70,22 @@ public class MainActivityViewModel extends ViewModel {
         mUser.setValue(temp);
     }
 
-    public void setUserAvatar(Bitmap photo) {
+    public void setUserAvatar(String photo) {
         mUserAvatar.setValue(photo);
     }
 
-    public void saveUserAvatar(Bitmap photo) {
-        try (FileOutputStream fos = new FileOutputStream(mAvatarFile)) {
-            photo.compress(Bitmap.CompressFormat.PNG, 0, fos);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void saveUserAvatar(String photo) {
+        SharedPreferences.Editor editor = mPreferences.edit();
+
+        editor.putString(USER_AVATAR, photo);
+
+        editor.apply();
     }
 
     public void refreshUserAvatar() {
-        Bitmap bitmap = BitmapFactory.decodeFile(mAvatarFile.getAbsolutePath());
-        if (bitmap != null)
-            setUserAvatar(bitmap);
+        String avatar = mPreferences.getString(USER_AVATAR, null);
+        if (avatar != null)
+            setUserAvatar(avatar);
     }
 
     public void getUserByEmail(String email, ICallback getUserCallback) {
@@ -109,11 +100,12 @@ public class MainActivityViewModel extends ViewModel {
         return mUser;
     }
 
-    public LiveData<Bitmap> getUserAvatar() {
+    public LiveData<String> getUserAvatar() {
         return mUserAvatar;
     }
 
     public static final String USER_ID = "USER_ID";
     public static final String USER_NAME = "USER_NAME";
     public static final String USER_USERNAME = "USER_USERNAME";
+    public static final String USER_AVATAR = "USER_AVATAR";
 }

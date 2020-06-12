@@ -3,6 +3,7 @@ package com.example.challengeup;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -23,7 +24,6 @@ import com.example.challengeup.viewModel.MainActivityViewModel;
 import com.example.challengeup.viewModel.factory.MainActivityFactory;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -47,11 +47,9 @@ public class MainActivity extends AppCompatActivity {
 
         Container container = ((ApplicationContainer) getApplication()).mContainer;
         SharedPreferences preferences = getSharedPreferences(USER_DATA_KEY, MODE_PRIVATE);
-        File file = new File(getFilesDir(), AVATAR_FILE);
         mViewModel = new ViewModelProvider(this, new MainActivityFactory(
                 container.mRequestExecutor,
-                preferences,
-                file)
+                preferences)
         ).get(MainActivityViewModel.class);
 
         drawerLayout = binding.drawerLayout;
@@ -109,8 +107,9 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 if (user.getPhoto() != null) {
-//                    mViewModel.setUserAvatar(user.getPhoto());
-//                    mViewModel.saveUserAvatar(user.getPhoto());
+                    Toast.makeText(this, user.getPhoto(), Toast.LENGTH_SHORT).show();
+                    mViewModel.setUserAvatar(user.getPhoto());
+                    mViewModel.saveUserAvatar(user.getPhoto());
                 } else if (firebaseUser.getPhotoUrl() != null) {
 //                    TODO firebaseUser.getPhotoUrl();
                 }
@@ -159,5 +158,4 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static final String USER_DATA_KEY = "com.example.challengeup.userdata";
-    public static final String AVATAR_FILE = "AVATAR_FILE";
 }
