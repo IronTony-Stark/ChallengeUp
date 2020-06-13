@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.challengeup.backend;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -208,7 +208,7 @@ public class UserEntity {
     }
 
     public void removeChallengeFromDone(ChallengeEntity challenge) {
-        if (done.contains(challenge.getId())) done.remove(challenge.getId());
+        done.remove(challenge.getId());
     }
 
     public void addChallengeToUndone(ChallengeEntity challenge) {
@@ -216,7 +216,7 @@ public class UserEntity {
     }
 
     public void removeChallengeFromUndone(ChallengeEntity challenge) {
-        if (undone.contains(challenge.getId())) undone.remove(challenge.getId());
+        undone.remove(challenge.getId());
     }
 
     public void addChallengeToSaved(ChallengeEntity challenge) {
@@ -224,21 +224,19 @@ public class UserEntity {
     }
 
     public void removeChallengeFromSaved(ChallengeEntity challenge) {
-        if (saved.contains(challenge.getId())) saved.remove(challenge.getId());
+        saved.remove(challenge.getId());
     }
 
     public void addAchievement(TrophyEntity trophy) {
         trophies.add(trophy.getId());
     }
 
-    ;
-
     public void addChallengeToLiked(ChallengeEntity challenge) {
         liked.add(challenge.getId());
     }
 
     public void removeChallengeFromLiked(ChallengeEntity challenge) {
-        if (liked.contains(challenge.getId())) liked.remove(challenge.getId());
+        liked.remove(challenge.getId());
     }
 
 

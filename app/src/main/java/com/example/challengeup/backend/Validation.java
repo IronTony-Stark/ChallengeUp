@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.challengeup.backend;
 
 import java.util.ArrayList;
 
@@ -20,7 +20,6 @@ public class Validation {
 
     public static boolean validateDescription(String description) throws IllegalArgumentException {
         if (description == null) throw new IllegalArgumentException("description can`t be null");
-        ;
         if (description.equals(""))
             throw new IllegalArgumentException("description can`t be empty");
         if (description.length() >= 128)
@@ -30,7 +29,6 @@ public class Validation {
 
     public static boolean validateTask(String task) throws IllegalArgumentException {
         if (task == null) throw new IllegalArgumentException("task can`t be null");
-        ;
         if (task.equals("")) throw new IllegalArgumentException("task can`t be empty");
         return true;
     }
