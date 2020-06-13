@@ -63,8 +63,8 @@ public class ProfileFragment extends Fragment {
                     UserDTO userDTO = new UserDTO(user.getId(), user.getNick(),
                             user.getTag(), user.getInfo());
                     mProfileViewModel.setUser(userDTO);
-//                    Bitmap avatar = user.getPhoto();
-//                    mProfileViewModel.setUserAvatar(avatar);
+                    String avatar = user.getPhoto();
+                    mProfileViewModel.setUserAvatar(avatar);
                 }
             });
         } else {

@@ -1,14 +1,15 @@
 package com.example.challengeup.utils;
 
-import android.graphics.Bitmap;
 import android.widget.ImageView;
 
 import androidx.databinding.BindingAdapter;
 
+import com.bumptech.glide.Glide;
+
 public class ImageDataBindingAdapter {
 
-    @BindingAdapter("imageBitmap")
-    public static void setImageResource(ImageView imageView, Bitmap resource) {
-        imageView.setImageBitmap(resource);
+    @BindingAdapter("roundImageUrl")
+    public static void setImageResource(ImageView imageView, String url) {
+        Glide.with(imageView).load(url).circleCrop().into(imageView);
     }
 }

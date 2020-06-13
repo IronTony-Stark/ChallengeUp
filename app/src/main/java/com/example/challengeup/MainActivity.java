@@ -2,6 +2,7 @@ package com.example.challengeup;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,7 +33,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -58,11 +58,9 @@ public class MainActivity extends AppCompatActivity
 
         Container container = ((ApplicationContainer) getApplication()).mContainer;
         SharedPreferences preferences = getSharedPreferences(USER_DATA_KEY, MODE_PRIVATE);
-        File file = new File(getFilesDir(), AVATAR_FILE);
         mViewModel = new ViewModelProvider(this, new MainActivityFactory(
                 container.mRequestExecutor,
-                preferences,
-                file)
+                preferences)
         ).get(MainActivityViewModel.class);
 
         mDrawerLayout = binding.drawerLayout;
@@ -147,6 +145,7 @@ public class MainActivity extends AppCompatActivity
                 if (user == null) {
                     user = new UserEntity("IronTony",
                             "IronTonyStark", firebaseUser.getEmail());
+                    user.setInfo("Most useful info ever");
                     mViewModel.addUser(user, addUserResult -> {
                         if (addUserResult instanceof Result.Success) {
                             //noinspection unchecked
@@ -157,12 +156,15 @@ public class MainActivity extends AppCompatActivity
                     });
                 }
 
-//                if (user.getPhoto() != null) {
-//                    mViewModel.setUserAvatar(user.getPhoto());
-//                    mViewModel.saveUserAvatar(user.getPhoto());
-//                } else {
-//                    TODO firebaseUser.getPhotoUrl();
-//                }
+                if (user.getPhoto() != null) {
+                    String userPhoto = user.getPhoto();
+                    mViewModel.setUserAvatar(userPhoto);
+                    mViewModel.saveUserAvatar(userPhoto);
+                } else if (firebaseUser.getPhotoUrl() != null) {
+                    String firebaseUserPhoto = firebaseUser.getPhotoUrl().toString();
+                    mViewModel.setUserAvatar(firebaseUserPhoto);
+                    mViewModel.saveUserAvatar(firebaseUserPhoto);
+                }
 
                 UserDTO userDTO = new UserDTO(user.getId(),
                         user.getNick(), user.getTag(), user.getInfo());
@@ -210,10 +212,8 @@ public class MainActivity extends AppCompatActivity
 
         mViewModel.refreshUserFromSharedPreferences();
         mViewModel.refreshUserAvatar();
-        // TODO if avatar is absent set placeholder image
     }
 
     public static final String USER_DATA_KEY = "com.example.challengeup.userdata";
-    public static final String AVATAR_FILE = "AVATAR_FILE";
     public static final String CREATE_DIALOG_TAG = "CREATE_DIALOG_TAG";
 }
