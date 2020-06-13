@@ -101,7 +101,7 @@ public class MainActivityViewModel extends ViewModel {
         if (photoUrl != null)
             mUserAvatar.setValue(photoUrl);
         else
-            mUserAvatar.setValue(DEFAULT_AVATAR);
+            mUserAvatar.setValue(DEFAULT_AVATAR_URL);
     }
 
     public void getUserByEmail(String email, ICallback getUserCallback) {
@@ -142,5 +142,5 @@ public class MainActivityViewModel extends ViewModel {
     public static final String USER_INFO = "USER_INFO";
     public static final String USER_AVATAR = "USER_AVATAR";
 
-    public static final String DEFAULT_AVATAR = "https://firebasestorage.googleapis.com/v0/b/challengeup-49057.appspot.com/o/user_photos%2Fdefault.jpg?alt=media";
+    public static final String DEFAULT_AVATAR_URL = "https://firebasestorage.googleapis.com/v0/b/challengeup-49057.appspot.com/o/user_photos%2Fdefault.jpg?alt=media";
 }

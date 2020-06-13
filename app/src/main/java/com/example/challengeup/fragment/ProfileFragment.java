@@ -67,7 +67,7 @@ public class ProfileFragment extends Fragment {
                     if (avatar != null)
                         mProfileViewModel.setUserAvatar(avatar);
                     else
-                        mProfileViewModel.setUserAvatar(MainActivityViewModel.DEFAULT_AVATAR);
+                        mProfileViewModel.setUserAvatar(MainActivityViewModel.DEFAULT_AVATAR_URL);
                 }
             });
         } else {

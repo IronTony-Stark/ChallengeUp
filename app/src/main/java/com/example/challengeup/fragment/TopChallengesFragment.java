@@ -1,15 +1,13 @@
 package com.example.challengeup.fragment;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
@@ -23,8 +21,11 @@ import com.example.challengeup.Container;
 import com.example.challengeup.R;
 import com.example.challengeup.backend.ChallengeEntity;
 import com.example.challengeup.backend.UserEntity;
+import com.example.challengeup.databinding.ItemTopChallengesBinding;
+import com.example.challengeup.dto.TopChallengeDTO;
 import com.example.challengeup.request.Result;
 import com.example.challengeup.viewModel.ChallengesViewModel;
+import com.example.challengeup.viewModel.MainActivityViewModel;
 import com.example.challengeup.viewModel.factory.ChallengesFactory;
 
 import org.jetbrains.annotations.NotNull;
@@ -70,7 +71,7 @@ public class TopChallengesFragment extends Fragment {
                 mArrayList = ((Result.Success<List<ChallengeEntity>>) result).data;
 
                 Collections.sort(mArrayList, (c1, c2) ->
-                        Integer.compare(c1.getLikes(), c2.getLikes()));
+                        -Integer.compare(c1.getLikes(), c2.getLikes()));
 
                 mAdapter.setDataset(mArrayList);
                 mAdapter.notifyItemRangeInserted(0, mArrayList.size());
@@ -79,26 +80,9 @@ public class TopChallengesFragment extends Fragment {
         });
     }
 
-    class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
+    class Adapter extends RecyclerView.Adapter<Adapter.ChallengeViewHolder> {
 
         private List<ChallengeEntity> mDataset;
-
-        public class MyViewHolder extends RecyclerView.ViewHolder {
-
-            ImageView avatar;
-            TextView rank, name, dataAccepted, dataCompleted, dataLiked;
-
-            public MyViewHolder(View itemView) {
-                super(itemView);
-
-                avatar = itemView.findViewById(R.id.avatar);
-                rank = itemView.findViewById(R.id.rank);
-                name = itemView.findViewById(R.id.name);
-                dataAccepted = itemView.findViewById(R.id.dataAccepted);
-                dataCompleted = itemView.findViewById(R.id.dataCompleted);
-                dataLiked = itemView.findViewById(R.id.dataLiked);
-            }
-        }
 
         public Adapter(@NonNull List<ChallengeEntity> myDataset) {
             mDataset = myDataset;
@@ -106,35 +90,39 @@ public class TopChallengesFragment extends Fragment {
 
         @NotNull
         @Override
-        public Adapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_top_challenges, parent, false);
+        public ChallengeViewHolder onCreateViewHolder(@NotNull ViewGroup parent,
+                                                      int viewType) {
+            ItemTopChallengesBinding binding = DataBindingUtil.inflate(
+                    LayoutInflater.from(parent.getContext()),
+                    R.layout.item_top_challenges, parent, false);
 
-            return new Adapter.MyViewHolder(itemView);
+            return new TopChallengesFragment.Adapter.ChallengeViewHolder(binding);
         }
 
         @Override
-        public void onBindViewHolder(@NotNull Adapter.MyViewHolder holder, int position) {
+        public void onBindViewHolder(@NotNull ChallengeViewHolder holder, int position) {
             ChallengeEntity challenge = mDataset.get(position);
 
-            holder.rank.setText(String.valueOf(position + 1));
-            holder.name.setText(challenge.getName());
-            holder.dataLiked.setText(String.valueOf(challenge.getLikes()));
+            String rank = String.valueOf(position + 1);
+            String name = challenge.getName();
+            String liked = String.valueOf(challenge.getLikes());
 
-            holder.itemView.setOnClickListener(view -> {
-                TopChallengesFragmentDirections.ActionTopChallengesToChallenge action =
-                        TopChallengesFragmentDirections.actionTopChallengesToChallenge(challenge.getId());
-                Navigation.findNavController(view).navigate(action);
-            });
+            TopChallengeDTO topChallenge = new TopChallengeDTO();
+            topChallenge.setRank(rank);
+            topChallenge.setName(name);
+            topChallenge.setLiked(liked);
+
+            holder.bind(topChallenge);
 
             mViewModel.getUserById(challenge.getCreator_id(), result -> {
                 if (result instanceof Result.Success) {
                     //noinspection unchecked
                     UserEntity user = ((Result.Success<UserEntity>) result).data;
                     if (user != null) {
-//                        Bitmap avatar = user.getPhoto();
-//                        if (avatar != null)
-//                            holder.avatar.setImageBitmap(avatar);
+                        String userPhoto = user.getPhoto() != null ?
+                                user.getPhoto() : MainActivityViewModel.DEFAULT_AVATAR_URL;
+                        topChallenge.setAvatar(userPhoto);
+                        holder.bind(topChallenge);
                     }
                 }
             });
@@ -143,7 +131,8 @@ public class TopChallengesFragment extends Fragment {
                 if (result instanceof Result.Success) {
                     //noinspection unchecked
                     Long num = ((Result.Success<Long>) result).data;
-                    holder.dataAccepted.setText(String.format("%s", num));
+                    topChallenge.setAccepted(String.valueOf(num));
+                    holder.bind(topChallenge);
                 }
             });
 
@@ -151,8 +140,15 @@ public class TopChallengesFragment extends Fragment {
                 if (result instanceof Result.Success) {
                     //noinspection unchecked
                     Long num = ((Result.Success<Long>) result).data;
-                    holder.dataCompleted.setText(String.format("%s", num));
+                    topChallenge.setCompleted(String.valueOf(num));
+                    holder.bind(topChallenge);
                 }
+            });
+
+            holder.itemView.setOnClickListener(view -> {
+                TopChallengesFragmentDirections.ActionTopChallengesToChallenge action =
+                        TopChallengesFragmentDirections.actionTopChallengesToChallenge(challenge.getId());
+                Navigation.findNavController(view).navigate(action);
             });
         }
 
@@ -164,6 +160,22 @@ public class TopChallengesFragment extends Fragment {
         public void setDataset(List<ChallengeEntity> newDataset) {
             mDataset = newDataset;
             notifyDataSetChanged();
+        }
+
+        class ChallengeViewHolder extends RecyclerView.ViewHolder {
+
+            private final ItemTopChallengesBinding mBinding;
+
+            public ChallengeViewHolder(ItemTopChallengesBinding binding) {
+                super(binding.getRoot());
+                mBinding = binding;
+                // TODO avatar click listener
+            }
+
+            public void bind(TopChallengeDTO topChallengeDTO) {
+                mBinding.setChallenge(topChallengeDTO);
+                mBinding.executePendingBindings();
+            }
         }
     }
 }

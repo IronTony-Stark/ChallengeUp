@@ -117,4 +117,9 @@
             android:id="@+id/action_achievement_to_profile"
             app:destination="@id/profile" />
     </fragment>
+    <fragment
+        android:id="@+id/likedChallenges"
+        android:name="com.example.challengeup.fragment.LikedChallengesFragment"
+        android:label="fragment_liked_challenges"
+        tools:layout="@layout/fragment_liked_challenges" />
 </navigation>
