@@ -18,6 +18,7 @@ public class AddBookmarkedCommand implements IRequestCommand {
     @Override
     public Result request() {
         user.addChallengeToSaved(challenge);
+        user.update();
         return new Result.Success<>(challenge);
     }
 }

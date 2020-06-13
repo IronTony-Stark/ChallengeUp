@@ -5,22 +5,22 @@ import com.example.challengeup.backend.UserEntity;
 import com.example.challengeup.request.IRequestCommand;
 import com.example.challengeup.request.Result;
 
-import java.util.ArrayList;
-
-public class RemoveBookmarkedCommand implements IRequestCommand {
+public class UnlikedCommand implements IRequestCommand {
 
     private final UserEntity user;
     private final ChallengeEntity challenge;
 
-    public RemoveBookmarkedCommand(UserEntity user, ChallengeEntity challenge) {
-        this.challenge = challenge;
+    public UnlikedCommand(UserEntity user, ChallengeEntity challenge) {
         this.user = user;
+        this.challenge = challenge;
     }
 
     @Override
     public Result request() {
         user.removeChallengeFromLiked(challenge);
         user.update();
+        challenge.setLikes(challenge.getLikes() - 1);
+        challenge.update();
         return new Result.Success<>(challenge);
     }
 }

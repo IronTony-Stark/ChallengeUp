@@ -3,8 +3,12 @@ package com.example.challengeup;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -17,6 +21,8 @@ import androidx.navigation.ui.NavigationUI;
 import com.example.challengeup.backend.UserEntity;
 import com.example.challengeup.databinding.ActivityMainBinding;
 import com.example.challengeup.databinding.NavDrawerHeaderBinding;
+import com.example.challengeup.dto.UserDTO;
+import com.example.challengeup.fragment.CreateDialogFragment;
 import com.example.challengeup.request.ICallback;
 import com.example.challengeup.request.Result;
 import com.example.challengeup.utils.LoginUtils;
@@ -31,7 +37,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements CreateDialogFragment.CreateDialogListener {
 
     private static final int RC_SIGN_IN = 123;
 
@@ -39,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private BottomNavigationView mBottomNav;
     private NavigationView mNavView;
-    private AppBarConfiguration mAppBarConfiguration;
     private NavController mNavController;
 
     @Override
@@ -63,16 +69,18 @@ public class MainActivity extends AppCompatActivity {
         mBottomNav = binding.bottomNavigationView;
         mNavView = binding.navView;
 
-        mAppBarConfiguration = new AppBarConfiguration
+        setSupportActionBar(binding.toolbar);
+
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration
                 .Builder(R.id.timeChallenges, R.id.challenges, R.id.newsFeed, R.id.profile)
                 .setOpenableLayout(mDrawerLayout)
                 .build();
 
         mNavController = Navigation.findNavController(this, R.id.navHostFragment);
 
-        NavigationUI.setupActionBarWithNavController(this, mNavController, mAppBarConfiguration);
-        NavigationUI.setupWithNavController(mNavView, mNavController);
-        NavigationUI.setupWithNavController(mBottomNav, mNavController);
+        NavigationUI.setupWithNavController(binding.toolbar, mNavController, appBarConfiguration);
+        NavigationUI.setupWithNavController(binding.navView, mNavController);
+        NavigationUI.setupWithNavController(binding.bottomNavigationView, mNavController);
 
         setupDestinations();
         setupNavDrawer();
@@ -89,8 +97,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onSupportNavigateUp() {
-        return NavigationUI.navigateUp(mNavController, mAppBarConfiguration);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        //noinspection SwitchStatementWithTooFewBranches
+        switch (item.getItemId()) {
+            case R.id.addMenuItem: {
+                CreateDialogFragment dialog = new CreateDialogFragment();
+                dialog.show(getSupportFragmentManager(), CREATE_DIALOG_TAG);
+                return true;
+            }
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onChallengeClick() {
+        mNavController.navigate(R.id.createChallenge);
+    }
+
+    @Override
+    public void onPostClick() {
+        Toast.makeText(this, "Feature is in progress", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -107,23 +140,33 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressWarnings("unchecked")
     private void addUserToDbIfAbsent(FirebaseUser firebaseUser) {
-        ICallback getUserCallback = result -> {
-            if (result instanceof Result.Success) {
-                UserEntity user = ((Result.Success<UserEntity>) result).data;
+        ICallback getUserCallback = getUserResult -> {
+            if (getUserResult instanceof Result.Success) {
+                UserEntity user = ((Result.Success<UserEntity>) getUserResult).data;
 
                 if (user == null) {
-                    user = new UserEntity("IronTonyStark", "Iron-Tony", firebaseUser.getEmail());
-                    mViewModel.addUser(user, ignored -> {});
+                    user = new UserEntity("IronTony",
+                            "IronTonyStark", firebaseUser.getEmail());
+                    mViewModel.addUser(user, addUserResult -> {
+                        if (addUserResult instanceof Result.Success) {
+                            String userId = ((Result.Success<String>) addUserResult).data;
+                            mViewModel.saveUserIdToSharedPreferences(userId);
+                            mViewModel.refreshUserFromSharedPreferences();
+                        }
+                    });
                 }
 
-                if (user.getPhoto() != null) {
+//                if (user.getPhoto() != null) {
 //                    mViewModel.setUserAvatar(user.getPhoto());
 //                    mViewModel.saveUserAvatar(user.getPhoto());
-                } else if (firebaseUser.getPhotoUrl() != null) {
+//                } else {
 //                    TODO firebaseUser.getPhotoUrl();
-                }
+//                }
 
-                mViewModel.saveUserToSharedPreferences(user);
+                UserDTO userDTO = new UserDTO(user.getId(),
+                        user.getNick(), user.getTag(), user.getTag());
+
+                mViewModel.saveUserToSharedPreferences(userDTO);
                 mViewModel.refreshUserFromSharedPreferences();
             }
         };
@@ -171,4 +214,5 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String USER_DATA_KEY = "com.example.challengeup.userdata";
     public static final String AVATAR_FILE = "AVATAR_FILE";
+    public static final String CREATE_DIALOG_TAG = "CREATE_DIALOG_TAG";
 }
