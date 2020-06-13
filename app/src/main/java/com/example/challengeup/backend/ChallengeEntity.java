@@ -33,6 +33,8 @@ public class ChallengeEntity {
     private ArrayList<String> tags;
     private ArrayList<String> categories;
 
+    private String photo;
+
     public ChallengeEntity(String name, String task, String creator_id, ArrayList<String> tags, ArrayList<String> categories) {
         this(name, task, creator_id);
 
@@ -51,7 +53,28 @@ public class ChallengeEntity {
         rewardRp = 0;
         rewardTrophies = new ArrayList<>();
         id = null;
+        photo = null;
     }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
+
+    public ArrayList<VideoConfirmationEntity> getAllConfirmedVideos(){
+        return (ArrayList<VideoConfirmationEntity>) VideoConfirmationEntity.getAllVideos().stream().filter(x->x.getChallenge_id().equals(id) && x.isConfirmed()).collect(Collectors.toList());
+    }
+    public ArrayList<VideoConfirmationEntity> getAllUnconfirmedVideos(){
+        return (ArrayList<VideoConfirmationEntity>) VideoConfirmationEntity.getAllVideos().stream().filter(x->x.getChallenge_id().equals(id) && !x.isConfirmed()).collect(Collectors.toList());
+    }
+    public ArrayList<VideoConfirmationEntity> getAllVideos(){
+        return (ArrayList<VideoConfirmationEntity>) VideoConfirmationEntity.getAllVideos().stream().filter(x->x.getChallenge_id().equals(id)).collect(Collectors.toList());
+    }
+
 
     public static String addNewChallenge(ChallengeEntity challenge) throws IllegalArgumentException {
         Validation.validateTags(challenge.tags);
@@ -196,6 +219,9 @@ public class ChallengeEntity {
                 challenge.setTimesViewed(Integer.parseInt(object.getJSONObject(key).getString("times_viewed")));
                 challenge.setRewardRp(Integer.parseInt(object.getJSONObject(key).getString("rewardRp")));
                 challenge.setRewardTrophies(trophiesArray);
+                if (!object.getJSONObject(key).getString("photo_link").equals("")) {
+                    challenge.setPhoto(object.getJSONObject(key).getString("photo_link"));
+                }
                 challenges.add(challenge);
             }
             return challenges;
@@ -257,6 +283,9 @@ public class ChallengeEntity {
             challenge.setTimesViewed(Integer.parseInt(object.getJSONObject(id).getString("times_viewed")));
             challenge.setRewardRp(Integer.parseInt(object.getJSONObject(id).getString("rewardRp")));
             challenge.setRewardTrophies(trophiesArray);
+            if (!object.getJSONObject(id).getString("photo_link").equals("")) {
+                challenge.setPhoto(object.getJSONObject(id).getString("photo_link"));
+            }
 
             return challenge;
         } catch (IOException | JSONException e) {
@@ -435,7 +464,7 @@ public class ChallengeEntity {
 
     @Override
     public String toString() {
-        return "Challenge{" +
+        return "ChallengeEntity{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", task='" + task + '\'' +
@@ -446,6 +475,7 @@ public class ChallengeEntity {
                 ", rewardTrophies=" + rewardTrophies +
                 ", tags=" + tags +
                 ", categories=" + categories +
+                ", photo='" + photo + '\'' +
                 '}';
     }
 }

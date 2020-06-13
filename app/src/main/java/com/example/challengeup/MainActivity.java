@@ -20,6 +20,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.example.challengeup.backend.UserEntity;
 import com.example.challengeup.databinding.ActivityMainBinding;
 import com.example.challengeup.databinding.NavDrawerHeaderBinding;
+import com.example.challengeup.dto.UserDTO;
 import com.example.challengeup.fragment.CreateDialogFragment;
 import com.example.challengeup.request.ICallback;
 import com.example.challengeup.request.Result;
@@ -131,24 +132,33 @@ public class MainActivity extends AppCompatActivity
 
     @SuppressWarnings("unchecked")
     private void addUserToDbIfAbsent(FirebaseUser firebaseUser) {
-        ICallback getUserCallback = result -> {
-            if (result instanceof Result.Success) {
-                UserEntity user = ((Result.Success<UserEntity>) result).data;
+        ICallback getUserCallback = getUserResult -> {
+            if (getUserResult instanceof Result.Success) {
+                UserEntity user = ((Result.Success<UserEntity>) getUserResult).data;
 
                 if (user == null) {
-                    user = new UserEntity("blad200", "blad200", firebaseUser.getEmail());
-                    mViewModel.addUser(user, ignored -> {
+                    user = new UserEntity("IronTony",
+                            "IronTonyStark", firebaseUser.getEmail());
+                    mViewModel.addUser(user, addUserResult -> {
+                        if (addUserResult instanceof Result.Success) {
+                            String userId = ((Result.Success<String>) addUserResult).data;
+                            mViewModel.saveUserIdToSharedPreferences(userId);
+                            mViewModel.refreshUserFromSharedPreferences();
+                        }
                     });
                 }
 
-                if (user.getPhoto() != null) {
+//                if (user.getPhoto() != null) {
 //                    mViewModel.setUserAvatar(user.getPhoto());
 //                    mViewModel.saveUserAvatar(user.getPhoto());
-                } else if (firebaseUser.getPhotoUrl() != null) {
+//                } else {
 //                    TODO firebaseUser.getPhotoUrl();
-                }
+//                }
 
-                mViewModel.saveUserToSharedPreferences(user);
+                UserDTO userDTO = new UserDTO(user.getId(),
+                        user.getNick(), user.getTag());
+
+                mViewModel.saveUserToSharedPreferences(userDTO);
                 mViewModel.refreshUserFromSharedPreferences();
             }
         };
