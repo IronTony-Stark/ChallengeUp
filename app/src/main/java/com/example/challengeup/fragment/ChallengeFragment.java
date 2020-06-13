@@ -15,23 +15,27 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager.widget.ViewPager;
 
 import com.example.challengeup.ApplicationContainer;
 import com.example.challengeup.Container;
 import com.example.challengeup.R;
 import com.example.challengeup.backend.ChallengeEntity;
 import com.example.challengeup.backend.UserEntity;
-import com.example.challengeup.backend.VideoConfirmationEntity;
 import com.example.challengeup.request.Result;
 import com.example.challengeup.viewModel.ChallengeViewModel;
 import com.example.challengeup.viewModel.factory.ChallengeFactory;
 import com.google.android.material.chip.Chip;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.volokh.danylo.hashtaghelper.HashTagHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -187,7 +191,52 @@ public class ChallengeFragment extends Fragment {
 //                wheel.stopSpinning();
             }
         });
+
+
+        // Locate the viewpager in activity_main.xml
+        ViewPager viewPager = (ViewPager) view.findViewById(R.id.pager);
+
+        // Set the ViewPagerAdapter into ViewPager
+        ViewPagerAdapter adapter = new ViewPagerAdapter(requireActivity().getSupportFragmentManager()/*getChildFragmentManager()*//*getActivity().getSupportFragmentManager()*/);
+        adapter.addFrag(new ChallengePlayersFragment(), "Players");
+        adapter.addFrag(new ChallengeChallengesFragment(), "Challenges");
+
+        viewPager.setAdapter(adapter);
+
+        TabLayout mTabLayout = (TabLayout) view.findViewById(R.id.pager_header);
+        mTabLayout.setupWithViewPager(viewPager);
     }
+
+
+    class ViewPagerAdapter extends FragmentStatePagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        public ViewPagerAdapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        public void addFrag(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
+    }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

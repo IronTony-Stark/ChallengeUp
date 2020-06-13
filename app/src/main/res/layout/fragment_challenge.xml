@@ -226,6 +226,33 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/statsAccepted" />
 
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/pager_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+
+            android:layout_gravity="center"
+            android:minHeight="40dp"
+            app:tabGravity="fill"
+            app:tabIndicatorColor="@color/colorTabs"
+            app:tabMode="fixed"
+            app:tabSelectedTextColor="@color/colorTabsText"
+            tools:ignore="MissingConstraints"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnLoadVideo"/>
+
+        <androidx.viewpager.widget.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_below="@+id/pager_header"
+        />
+
         <!--        <include-->
         <!--            layout="@layout/item_loading_spinner"-->
         <!--            app:layout_constraintTop_toTopOf="parent" />-->
