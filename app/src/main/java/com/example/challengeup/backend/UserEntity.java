@@ -46,6 +46,7 @@ public class UserEntity {
     private ArrayList<String> saved;
     private ArrayList<String> trophies;
     private ArrayList<String> liked;
+    private ArrayList<String> waitingConfirmation;
 
     private HashMap<String, String> links;
 
@@ -65,6 +66,7 @@ public class UserEntity {
         saved = new ArrayList<>();
         trophies = new ArrayList<>();
         liked = new ArrayList<>();
+        waitingConfirmation = new ArrayList<>();
         id = null;
         photo = null;
         rp = 0;
@@ -116,7 +118,8 @@ public class UserEntity {
                     .put("rp", user.rp)
                     .put("totalRp", user.totalRp)
                     .put("liked", user.liked)
-                    .put("info",user.info);
+                    .put("info",user.info)
+                    .put("waitingConfirmation", user.waitingConfirmation);
 
 
             RequestBody requestBody;
@@ -210,7 +213,8 @@ public class UserEntity {
                     .put("rp", 0)
                     .put("totalRp", 0)
                     .put("liked", new ArrayList<>())
-                    .put("info", "");
+                    .put("info", "")
+                    .put("waitingConfirmation",new ArrayList<>());
 
             RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
                     .addFormDataPart("data", jsonObject.toString())
@@ -238,6 +242,14 @@ public class UserEntity {
 
     public void removeChallengeFromDone(ChallengeEntity challenge) {
         if (done.contains(challenge.getId())) done.remove(challenge.getId());
+    }
+
+    public void addChallengeToWaitingConfirmation(ChallengeEntity challenge) {
+        waitingConfirmation.add(challenge.getId());
+    }
+
+    public void removeChallengeFromWaitingConfirmation(ChallengeEntity challenge) {
+        if (waitingConfirmation.contains(challenge.getId())) waitingConfirmation.remove(challenge.getId());
     }
 
     public void addChallengeToUndone(ChallengeEntity challenge) {
@@ -274,6 +286,14 @@ public class UserEntity {
     public ArrayList<ChallengeEntity> getDoneChallenges() {
         ArrayList<ChallengeEntity> challenges = new ArrayList<>();
         for (String s : done) {
+            challenges.add(ChallengeEntity.getChallengeById(s));
+        }
+        return challenges;
+    }
+
+    public ArrayList<ChallengeEntity> getWaitingConfirmationChallenges() {
+        ArrayList<ChallengeEntity> challenges = new ArrayList<>();
+        for (String s : waitingConfirmation) {
             challenges.add(ChallengeEntity.getChallengeById(s));
         }
         return challenges;
@@ -376,6 +396,13 @@ public class UserEntity {
                 ArrayList<String> achievements = new ArrayList<>();
 
                 ArrayList<String> liked = new ArrayList<>();
+
+                ArrayList<String> waitingConfirmation = new ArrayList<>();
+                try {
+                    JSONArray s = new JSONArray(object.getJSONObject(key).getString("waitingConfirmation"));
+                    for (int i = 0; i < s.length(); ++i) waitingConfirmation.add((String) s.get(i));
+                } catch (JSONException ignored) {
+                }
                 try {
                     JSONArray s = new JSONArray(object.getJSONObject(key).getString("liked"));
                     for (int i = 0; i < s.length(); ++i) liked.add((String) s.get(i));
@@ -451,6 +478,7 @@ public class UserEntity {
                 user.setTotalRp(Integer.parseInt(object.getJSONObject(key).getString("totalRp")));
                 user.setLiked(liked);
                 user.setInfo(object.getJSONObject(key).getString("info"));
+                user.setWaitingConfirmation(waitingConfirmation);
                 if (!object.getJSONObject(key).getString("photo_link").equals("")) {
                     user.setPhoto(object.getJSONObject(key).getString("photo_link"));
                 }
@@ -504,6 +532,12 @@ public class UserEntity {
             ArrayList<String> achievements = new ArrayList<>();
 
             ArrayList<String> liked = new ArrayList<>();
+
+            ArrayList<String> waitingConfirmation = new ArrayList<>();
+            try {
+                JSONArray s = new JSONArray(object.getJSONObject(id).getString("waitingConfirmation"));
+                for (int i = 0; i < s.length(); ++i) waitingConfirmation.add((String) s.get(i));
+            } catch (JSONException ignored) {}
             try {
                 JSONArray s = new JSONArray(object.getJSONObject(id).getString("liked"));
                 for (int i = 0; i < s.length(); ++i) liked.add((String) s.get(i));
@@ -578,6 +612,7 @@ public class UserEntity {
             user.setTotalRp(Integer.parseInt(object.getJSONObject(id).getString("totalRp")));
             user.setLiked(liked);
             user.setInfo(object.getJSONObject(id).getString("info"));
+            user.setWaitingConfirmation(waitingConfirmation);
             if (!object.getJSONObject(id).getString("photo_link").equals("")) {
                 user.setPhoto(object.getJSONObject(id).getString("photo_link"));
             }
@@ -613,7 +648,8 @@ public class UserEntity {
                     .put("rp", rp)
                     .put("totalRp", totalRp)
                     .put("liked", liked)
-                    .put("info", info);
+                    .put("info", info)
+                    .put("waitingConfirmation", waitingConfirmation);
 
             //RequestBody body = RequestBody.create(jsonObject.toString(), JSON);
             RequestBody requestBody;
@@ -811,5 +847,13 @@ public class UserEntity {
 
     public void setInfo(String info) {
         this.info = info;
+    }
+
+    public ArrayList<String> getWaitingConfirmation() {
+        return waitingConfirmation;
+    }
+
+    public void setWaitingConfirmation(ArrayList<String> waitingConfirmation) {
+        this.waitingConfirmation = waitingConfirmation;
     }
 }
