@@ -1,4 +1,4 @@
-package com.example.challengeup.backend;
+package com.example.myapplication;
 
 import org.json.JSONArray;
 import org.json.JSONException;

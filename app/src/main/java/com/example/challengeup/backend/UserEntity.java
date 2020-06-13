@@ -1,4 +1,4 @@
-package com.example.challengeup.backend;
+package com.example.myapplication;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -73,6 +73,18 @@ public class UserEntity {
         this(tag, nick, email);
         this.categories = categories;
     }
+
+
+    public ArrayList<VideoConfirmationEntity> getAllConfirmedVideos(){
+        return (ArrayList<VideoConfirmationEntity>) VideoConfirmationEntity.getAllVideos().stream().filter(x->x.getUser_id().equals(id) && x.isConfirmed()).collect(Collectors.toList());
+    }
+    public ArrayList<VideoConfirmationEntity> getAllUnconfirmedVideos(){
+        return (ArrayList<VideoConfirmationEntity>) VideoConfirmationEntity.getAllVideos().stream().filter(x->x.getUser_id().equals(id) && !x.isConfirmed()).collect(Collectors.toList());
+    }
+    public ArrayList<VideoConfirmationEntity> getAllVideos(){
+        return (ArrayList<VideoConfirmationEntity>) VideoConfirmationEntity.getAllVideos().stream().filter(x->x.getUser_id().equals(id)).collect(Collectors.toList());
+    }
+
 
     public static String addNewUser(UserEntity user) throws IllegalArgumentException {
         Validation.validateUserTagToBeUnique(user.tag);
