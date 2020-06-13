@@ -209,7 +209,7 @@
             android:layout_marginTop="32dp"
             android:text="@string/challenge_me"
             android:textSize="18sp"
-            android:visibility="visible"
+            android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/statsAccepted" />

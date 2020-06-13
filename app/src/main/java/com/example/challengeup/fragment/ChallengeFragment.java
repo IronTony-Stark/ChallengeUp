@@ -1,22 +1,18 @@
 package com.example.challengeup.fragment;
 
-import android.graphics.Color;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -26,16 +22,20 @@ import com.example.challengeup.Container;
 import com.example.challengeup.R;
 import com.example.challengeup.backend.ChallengeEntity;
 import com.example.challengeup.backend.UserEntity;
+import com.example.challengeup.backend.VideoConfirmationEntity;
 import com.example.challengeup.request.Result;
 import com.example.challengeup.viewModel.ChallengeViewModel;
 import com.example.challengeup.viewModel.factory.ChallengeFactory;
 import com.google.android.material.chip.Chip;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.pnikosis.materialishprogress.ProgressWheel;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.volokh.danylo.hashtaghelper.HashTagHelper;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static android.app.Activity.RESULT_OK;
 
 public class ChallengeFragment extends Fragment {
 
@@ -44,6 +44,7 @@ public class ChallengeFragment extends Fragment {
     private ChallengeViewModel mViewModel;
 
     private HashTagHelper mTextHashTagHelper;
+    private static final int GET_VIDEO_REQUEST = 1;
 
 
     @Override
@@ -53,6 +54,10 @@ public class ChallengeFragment extends Fragment {
 
         return view;
     }
+
+    private StorageReference mStorage;
+    private String userIDToConfirm;
+    private String challengeIDToConfirm;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -78,6 +83,8 @@ public class ChallengeFragment extends Fragment {
 
         String challengeId = ChallengeFragmentArgs
                 .fromBundle(requireArguments()).getChallengeId();
+
+        mStorage = FirebaseStorage.getInstance().getReference();
 
         ImageView imageChallenge = view.findViewById(R.id.imageChallenge);
         ImageView avatar = view.findViewById(R.id.avatar);
@@ -142,21 +149,37 @@ public class ChallengeFragment extends Fragment {
                 rewardRP.setText(challenge.getRewardRp() + " RP");
 
                 Button accept = view.findViewById(R.id.btnAccept);
-                accept.setOnClickListener(l -> {
-                    mViewModel.getUserByEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail(), u -> {
-                        if (u instanceof Result.Success) {
-                            //noinspection unchecked
-                            UserEntity user = ((Result.Success<UserEntity>) u).data;
-                            if (user != null) {
-                                user.addChallengeToUndone(challenge);
-                                accept.setVisibility(View.INVISIBLE);
-                                Button uploadComfirm = view.findViewById(R.id.btnLoadVideo);
-                                uploadComfirm.setOnClickListener(v -> {
-
-                                });
+                Button uploadConfirm = view.findViewById(R.id.btnLoadVideo);
+                AtomicReference<UserEntity> user = new AtomicReference<>();
+                mViewModel.getUserByEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail(), u -> {
+                    if (u instanceof Result.Success) {
+                        //noinspection unchecked
+                        user.set(((Result.Success<UserEntity>) u).data);
+                        if (user.get() != null) {
+                            for (String acceptedId : user.get().getUndone()) {
+                                if (acceptedId.equals(challengeId))
+                                    uploadConfirm.setVisibility(View.VISIBLE);
+                                else accept.setVisibility(View.VISIBLE);
                             }
                         }
+                    }
+                });
+
+                accept.setOnClickListener(l -> {
+                    mViewModel.addChallengeToUndone(user.get(), challenge, r -> {
                     });
+                    accept.setVisibility(View.INVISIBLE);
+                    uploadConfirm.setVisibility(View.VISIBLE);
+                });
+
+                uploadConfirm.setOnClickListener(v -> {
+                    Intent intent = new Intent();
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                    intent.setType("video/*");
+                    userIDToConfirm = user.get().getId();
+                    challengeIDToConfirm = challengeId;
+                    if (intent.resolveActivity(requireActivity().getPackageManager()) != null)
+                        startActivityForResult(intent, GET_VIDEO_REQUEST);
                 });
 
 //                progressBarHolder.setAnimation(outAnimation);
@@ -164,5 +187,35 @@ public class ChallengeFragment extends Fragment {
 //                wheel.stopSpinning();
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == GET_VIDEO_REQUEST && resultCode == RESULT_OK &&
+                data != null && data.getData() != null) {
+            Uri photoUri = data.getData();
+            Intent intent = getActivity().getIntent();
+            mViewModel.createVideoConfirmation(userIDToConfirm, challengeIDToConfirm, result -> {
+                if (result instanceof Result.Success) {
+                    String fileId = ((Result.Success<String>) result).data;
+                    view.findViewById(R.id.btnLoadVideo).setEnabled(false);
+                    uploadVideo(photoUri, challengeIDToConfirm, fileId);
+                } else
+                    Toast.makeText(getContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
+            });
+        }
+    }
+
+    private void uploadVideo(Uri videoUri, String challengeId, String fileId) {
+        if (videoUri != null) {
+            StorageReference file = mStorage.child("challenge_confirmation_videos/" + challengeId + "/" + fileId + "_video");
+            file.putFile(videoUri)
+                    .addOnSuccessListener(taskSnapshot -> Toast.makeText(getContext(),
+                            "Uploaded Successfully", Toast.LENGTH_SHORT).show())
+                    .addOnFailureListener(e -> Toast.makeText(getContext(),
+                            "Upload Failed", Toast.LENGTH_SHORT).show());
+        } else {
+            Toast.makeText(getContext(), "No file selected", Toast.LENGTH_SHORT).show();
+        }
     }
 }
