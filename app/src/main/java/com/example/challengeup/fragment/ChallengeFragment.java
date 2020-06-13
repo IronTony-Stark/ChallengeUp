@@ -15,10 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -38,7 +35,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.volokh.danylo.hashtaghelper.HashTagHelper;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -195,7 +191,7 @@ public class ChallengeFragment extends Fragment {
             }
         });
 
-        ViewPagerAdapter adapter = new ViewPagerAdapter(this);
+        ViewPagerAdapter adapter = new ViewPagerAdapter(this, challengeId);
         ViewPager2 viewPager = (ViewPager2) view.findViewById(R.id.viewPager);
         viewPager.setAdapter(adapter);
 
@@ -204,10 +200,10 @@ public class ChallengeFragment extends Fragment {
                 (tab, position) -> {
                     switch (position) {
                         case 0:
-                            tab.setText("News Feed");
+                            tab.setText("Users");
                             break;
                         case 1:
-                            tab.setText("Shop");
+                            tab.setText("Challenges");
                             break;
                     }
                 }
@@ -216,8 +212,11 @@ public class ChallengeFragment extends Fragment {
 
     static class ViewPagerAdapter extends FragmentStateAdapter {
 
-        public ViewPagerAdapter(Fragment fragment) {
+        private String challengeId;
+
+        public ViewPagerAdapter(Fragment fragment, String challengeId) {
             super(fragment);
+            this.challengeId = challengeId;
         }
 
         @NonNull
@@ -227,10 +226,10 @@ public class ChallengeFragment extends Fragment {
 
             switch (position) {
                 case 0:
-                    fragment = new NewsFeedFragment();
+                    fragment = new ChallengePlayersFragment(challengeId);
                     break;
                 case 1:
-                    fragment = new ShopFragment();
+                    fragment = new ChallengeChallengesFragment(challengeId);
                     break;
             }
 

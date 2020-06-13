@@ -6,14 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -22,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.challengeup.ApplicationContainer;
 import com.example.challengeup.Container;
 import com.example.challengeup.R;
+import com.example.challengeup.backend.ChallengeEntity;
 import com.example.challengeup.backend.UserEntity;
 import com.example.challengeup.request.Result;
 import com.example.challengeup.viewModel.ChallengePlayersViewModel;
@@ -38,6 +36,12 @@ public class ChallengePlayersFragment extends Fragment {
     private ChallengePlayersViewModel mViewModel;
     private List<UserEntity> mArrayList = new ArrayList<>();
     private Adapter mAdapter;
+
+    private String challengeId;
+
+    public ChallengePlayersFragment(String challengeId) {
+        this.challengeId = challengeId;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -64,24 +68,29 @@ public class ChallengePlayersFragment extends Fragment {
         mAdapter = new Adapter(mArrayList);
         recyclerView.setAdapter(mAdapter);
 
-
-        //todo change method
-        mViewModel.getAllUsers(result -> {
+        mViewModel.getChallengeById(challengeId, result -> {
             if (result instanceof Result.Success) {
-                //noinspection unchecked
 
-                mArrayList = ((Result.Success<List<UserEntity>>) result).data;
+                ChallengeEntity challenge = ((Result.Success<ChallengeEntity>) result).data;
 
-                Toast.makeText(this.getContext(),new Integer(mArrayList.size()).toString(),Toast.LENGTH_LONG).show();//todo remove toast
+                mViewModel.peopleWhoAccepted(challenge, result2 -> {
+                    if (result2 instanceof Result.Success) {
+                        //noinspection unchecked
+                        mArrayList = ((Result.Success<List<UserEntity>>) result2).data;
 
+                        Collections.sort(mArrayList, (u1, u2) ->
+                                Integer.compare(u1.getTotalRp(), u2.getTotalRp()));
 
-                Collections.sort(mArrayList, (u1, u2) ->
-                        Integer.compare(u1.getTotalRp(), u2.getTotalRp()));
+                        mAdapter.setDataset(mArrayList);
+                        mAdapter.notifyItemRangeInserted(0, mArrayList.size());
+                    }
+                });
 
-                mAdapter.setDataset(mArrayList);
-                mAdapter.notifyItemRangeInserted(0, mArrayList.size());
             }
-        });
+            });
+
+
+
     }
 
     static class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
@@ -124,14 +133,17 @@ public class ChallengePlayersFragment extends Fragment {
 //            if (avatar != null)
 //                holder.avatar.setImageBitmap(avatar);
 
+            //todo set image
+
             holder.rank.setText(String.valueOf(position + 1));
             holder.name.setText(user.getNick());
             holder.rp.setText(String.valueOf(user.getTotalRp()));
 
             holder.itemView.setOnClickListener(view -> {
-                TopPlayersFragmentDirections.ActionTopPlayersToProfile action =
-                        TopPlayersFragmentDirections.actionTopPlayersToProfile(user.getId());
-                Navigation.findNavController(view).navigate(action);
+                //todo navigation
+//                TopPlayersFragmentDirections.ActionTopPlayersToProfile action =
+//                        TopPlayersFragmentDirections.actionTopPlayersToProfile(user.getId());
+//                Navigation.findNavController(view).navigate(action);
             });
         }
 
