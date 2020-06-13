@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.challengeup.backend;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
