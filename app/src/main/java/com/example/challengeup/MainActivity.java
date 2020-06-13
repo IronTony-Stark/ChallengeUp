@@ -138,10 +138,10 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @SuppressWarnings("unchecked")
     private void addUserToDbIfAbsent(FirebaseUser firebaseUser) {
         ICallback getUserCallback = getUserResult -> {
             if (getUserResult instanceof Result.Success) {
+                //noinspection unchecked
                 UserEntity user = ((Result.Success<UserEntity>) getUserResult).data;
 
                 if (user == null) {
@@ -149,6 +149,7 @@ public class MainActivity extends AppCompatActivity
                             "IronTonyStark", firebaseUser.getEmail());
                     mViewModel.addUser(user, addUserResult -> {
                         if (addUserResult instanceof Result.Success) {
+                            //noinspection unchecked
                             String userId = ((Result.Success<String>) addUserResult).data;
                             mViewModel.saveUserIdToSharedPreferences(userId);
                             mViewModel.refreshUserFromSharedPreferences();
@@ -164,7 +165,7 @@ public class MainActivity extends AppCompatActivity
 //                }
 
                 UserDTO userDTO = new UserDTO(user.getId(),
-                        user.getNick(), user.getTag(), user.getTag());
+                        user.getNick(), user.getTag(), user.getInfo());
 
                 mViewModel.saveUserToSharedPreferences(userDTO);
                 mViewModel.refreshUserFromSharedPreferences();

@@ -1,385 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".fragment.StatsFragment">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
-        android:layout_width="120dp"
-        android:layout_height="150dp"
-        android:layout_marginTop="32dp"
-        app:layout_constraintEnd_toStartOf="@+id/cardView4"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+    <data>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <import type="androidx.lifecycle.LiveData" />
 
-            <TextView
-                android:id="@+id/data"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="47"
-                android:textSize="24sp"
-                app:layout_constraintBottom_toTopOf="@+id/description"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/icon" />
+        <import type="com.example.challengeup.dto.StatsDTO" />
 
-            <TextView
-                android:id="@+id/description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="Rank"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+        <variable
+            name="stats"
+            type="LiveData&lt;StatsDTO>" />
+    </data>
 
-            <ImageView
-                android:id="@+id/icon"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="8dp"
-                android:src="@drawable/ic_rank"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
+        <include
+            android:id="@+id/rank"
+            layout="@layout/item_stats"
+            android:layout_width="120dp"
+            android:layout_height="150dp"
+            bind:statsData="@{stats.rank}"
+            bind:statsDescription='@{"Rank"}'
+            bind:statsIcon='@{@drawable/ic_rank}'
+            bind:layout_constraintBottom_toTopOf="@+id/challengesCreated"
+            bind:layout_constraintEnd_toStartOf="@+id/totalRpEarned"
+            bind:layout_constraintHorizontal_bias="0.5"
+            bind:layout_constraintStart_toStartOf="parent"
+            bind:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView4"
-        android:layout_width="120dp"
-        android:layout_height="150dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/cardView"
-        app:layout_constraintTop_toTopOf="@+id/cardView">
+        <include
+            android:id="@+id/totalRpEarned"
+            layout="@layout/item_stats"
+            android:layout_width="120dp"
+            android:layout_height="150dp"
+            bind:statsData="@{stats.totalRpEarned}"
+            bind:statsDescription='@{"Total RP Earned"}'
+            bind:statsIcon='@{@drawable/ic_coin}'
+            bind:layout_constraintBottom_toTopOf="@+id/challengesCompleted"
+            bind:layout_constraintEnd_toEndOf="parent"
+            bind:layout_constraintHorizontal_bias="0.5"
+            bind:layout_constraintStart_toEndOf="@+id/rank"
+            bind:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <include
+            android:id="@+id/challengesCreated"
+            layout="@layout/item_stats"
+            android:layout_width="120dp"
+            android:layout_height="150dp"
+            bind:statsData="@{stats.challengesCreated}"
+            bind:statsDescription='@{"Challenges Created"}'
+            bind:statsIcon='@{@drawable/ic_creation}'
+            bind:layout_constraintBottom_toTopOf="@+id/followers"
+            bind:layout_constraintStart_toStartOf="@+id/rank"
+            bind:layout_constraintTop_toBottomOf="@+id/rank" />
 
-            <TextView
-                android:id="@+id/data"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="1203187"
-                android:textSize="24sp"
-                app:layout_constraintBottom_toTopOf="@+id/description"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView31" />
+        <include
+            android:id="@+id/challengesCompleted"
+            layout="@layout/item_stats"
+            android:layout_width="120dp"
+            android:layout_height="150dp"
+            bind:statsData="@{stats.challengesCompleted}"
+            bind:statsDescription='@{"Challenges Completed"}'
+            bind:statsIcon='@{@drawable/ic_checkmark}'
+            bind:layout_constraintBottom_toTopOf="@+id/following"
+            bind:layout_constraintEnd_toEndOf="@+id/totalRpEarned"
+            bind:layout_constraintTop_toBottomOf="@+id/totalRpEarned" />
 
-            <TextView
-                android:id="@+id/description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="Total  RP\nEarned"
-                android:textAlignment="center"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+        <include
+            android:id="@+id/followers"
+            layout="@layout/item_stats"
+            android:layout_width="120dp"
+            android:layout_height="150dp"
+            bind:statsData="@{stats.followers}"
+            bind:statsDescription='@{"Followers"}'
+            bind:statsIcon='@{@drawable/ic_users}'
+            bind:layout_constraintBottom_toTopOf="@+id/achievements"
+            bind:layout_constraintStart_toStartOf="@+id/challengesCreated"
+            bind:layout_constraintTop_toBottomOf="@+id/challengesCreated" />
 
-            <ImageView
-                android:id="@+id/imageView31"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="8dp"
-                android:src="@drawable/ic_coin"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <include
+            android:id="@+id/following"
+            layout="@layout/item_stats"
+            android:layout_width="120dp"
+            android:layout_height="150dp"
+            bind:statsData="@{stats.following}"
+            bind:statsDescription='@{"Following"}'
+            bind:statsIcon='@{@drawable/ic_follow}'
+            bind:layout_constraintBottom_toTopOf="@+id/challengesInProgress"
+            bind:layout_constraintEnd_toEndOf="@+id/challengesCompleted"
+            bind:layout_constraintTop_toBottomOf="@+id/challengesCompleted" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
+        <include
+            android:id="@+id/achievements"
+            layout="@layout/item_stats"
+            android:layout_width="120dp"
+            android:layout_height="150dp"
+            bind:statsData="@{stats.achievements}"
+            bind:statsDescription='@{"Achievements"}'
+            bind:statsIcon='@{@drawable/ic_trophy}'
+            bind:layout_constraintBottom_toBottomOf="parent"
+            bind:layout_constraintStart_toStartOf="@+id/followers"
+            bind:layout_constraintTop_toBottomOf="@+id/followers" />
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView7"
-        android:layout_width="120dp"
-        android:layout_height="150dp"
-        android:layout_marginTop="32dp"
-        app:layout_constraintStart_toStartOf="@+id/cardView"
-        app:layout_constraintTop_toBottomOf="@+id/cardView">
+        <include
+            android:id="@+id/challengesInProgress"
+            layout="@layout/item_stats"
+            android:layout_width="120dp"
+            android:layout_height="150dp"
+            bind:statsData="@{stats.challengesInProgress}"
+            bind:statsDescription='@{"Challenges In Progress"}'
+            bind:statsIcon='@{@drawable/ic_loader}'
+            bind:layout_constraintBottom_toBottomOf="parent"
+            bind:layout_constraintEnd_toEndOf="@+id/following"
+            bind:layout_constraintTop_toBottomOf="@+id/following" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <TextView
-                android:id="@+id/data"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="32"
-                android:textSize="24sp"
-                app:layout_constraintBottom_toTopOf="@+id/description"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <TextView
-                android:id="@+id/description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="Challenges \nCreated"
-                android:textAlignment="center"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <ImageView
-                android:id="@+id/imageView32"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="8dp"
-                android:src="@drawable/ic_creation"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView8"
-        android:layout_width="120dp"
-        android:layout_height="150dp"
-        app:layout_constraintEnd_toEndOf="@+id/cardView4"
-        app:layout_constraintTop_toTopOf="@+id/cardView7">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/data"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="1761"
-                android:textSize="24sp"
-                app:layout_constraintBottom_toTopOf="@+id/description"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <TextView
-                android:id="@+id/description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="Challenges \nCompleted"
-                android:textAlignment="center"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <ImageView
-                android:id="@+id/imageView33"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="8dp"
-                android:src="@drawable/ic_checkmark"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView9"
-        android:layout_width="120dp"
-        android:layout_height="150dp"
-        app:layout_constraintEnd_toEndOf="@+id/cardView20"
-        app:layout_constraintTop_toTopOf="@+id/cardView22">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/data"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="5"
-                android:textSize="24sp"
-                app:layout_constraintBottom_toTopOf="@+id/description"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <TextView
-                android:id="@+id/description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="Challenges \nIn Progress"
-                android:textAlignment="center"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <ImageView
-                android:id="@+id/imageView34"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="8dp"
-                android:src="@drawable/ic_loader"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView10"
-        android:layout_width="120dp"
-        android:layout_height="150dp"
-        android:layout_marginTop="32dp"
-        app:layout_constraintStart_toStartOf="@+id/cardView7"
-        app:layout_constraintTop_toBottomOf="@+id/cardView7">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/data"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:text="10255"
-                android:textSize="24sp"
-                app:layout_constraintBottom_toTopOf="@+id/description"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <TextView
-                android:id="@+id/description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="Followers"
-                android:textAlignment="center"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <ImageView
-                android:id="@+id/imageView35"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="16dp"
-                android:src="@drawable/ic_users"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView20"
-        android:layout_width="120dp"
-        android:layout_height="150dp"
-        app:layout_constraintEnd_toEndOf="@+id/cardView8"
-        app:layout_constraintTop_toTopOf="@+id/cardView10">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/data"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:text="732"
-                android:textSize="24sp"
-                app:layout_constraintBottom_toTopOf="@+id/description"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <TextView
-                android:id="@+id/description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="Following"
-                android:textAlignment="center"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <ImageView
-                android:id="@+id/imageView38"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="16dp"
-                android:src="@drawable/ic_follow"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView22"
-        android:layout_width="120dp"
-        android:layout_height="150dp"
-        android:layout_marginTop="32dp"
-        app:layout_constraintStart_toStartOf="@+id/cardView10"
-        app:layout_constraintTop_toBottomOf="@+id/cardView10">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/data"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:text="1021"
-                android:textSize="24sp"
-                app:layout_constraintBottom_toTopOf="@+id/description"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <TextView
-                android:id="@+id/description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="Achievements"
-                android:textAlignment="center"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <ImageView
-                android:id="@+id/imageView37"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="16dp"
-                android:src="@drawable/ic_trophy"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

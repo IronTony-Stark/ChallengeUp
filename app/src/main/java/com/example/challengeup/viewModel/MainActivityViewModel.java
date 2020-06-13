@@ -8,12 +8,14 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-
 import com.example.challengeup.backend.UserEntity;
 import com.example.challengeup.dto.UserDTO;
 import com.example.challengeup.request.ICallback;
 import com.example.challengeup.request.RequestExecutor;
 import com.example.challengeup.request.command.AddUserCommand;
+import com.example.challengeup.request.command.GetCreatedChallengesCommand;
+import com.example.challengeup.request.command.GetRankCommand;
+import com.example.challengeup.request.command.GetSubscribersCommand;
 import com.example.challengeup.request.command.GetUserByEmailCommand;
 import com.example.challengeup.request.command.GetUserByIdCommand;
 import com.google.firebase.auth.FirebaseAuth;
@@ -64,6 +66,7 @@ public class MainActivityViewModel extends ViewModel {
         editor.putString(USER_ID, user.getId());
         editor.putString(USER_NAME, user.getName());
         editor.putString(USER_USERNAME, user.getUsername());
+        editor.putString(USER_INFO, user.getInfo());
 
         editor.apply();
     }
@@ -88,7 +91,7 @@ public class MainActivityViewModel extends ViewModel {
     }
 
     public void setLoadingUser() {
-        UserDTO temp = new UserDTO("-1", "Loading...", "Loading...", "");
+        UserDTO temp = new UserDTO("", "Loading...", "Loading...", "");
         mUser.setValue(temp);
     }
 
@@ -120,6 +123,18 @@ public class MainActivityViewModel extends ViewModel {
 
     public void addUser(UserEntity newUser, ICallback callback) {
         mRequestExecutor.execute(new AddUserCommand(newUser), callback);
+    }
+
+    public void getCreatedChallenges(UserEntity user, ICallback callback) {
+        mRequestExecutor.execute(new GetCreatedChallengesCommand(user), callback);
+    }
+
+    public void getSubscribers(UserEntity user, ICallback callback) {
+        mRequestExecutor.execute(new GetSubscribersCommand(user), callback);
+    }
+
+    public void getRank(UserEntity user, ICallback callback) {
+        mRequestExecutor.execute(new GetRankCommand(user), callback);
     }
 
     public LiveData<UserDTO> getUser() {
