@@ -2,6 +2,8 @@ package com.example.myapplication;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
+import android.util.TimingLogger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,6 +14,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -30,6 +33,7 @@ public class UserEntity {
     private String tag;
     private String nick;
     private String email;
+    private String info;
 
 
     private int rp;
@@ -52,7 +56,7 @@ public class UserEntity {
         this.tag = tag;
         this.nick = nick;
         this.email = email;
-
+        info = "";
 
         undone = new ArrayList<>();
         done = new ArrayList<>();
@@ -111,7 +115,8 @@ public class UserEntity {
                     .put("trophies", user.trophies)
                     .put("rp", user.rp)
                     .put("totalRp", user.totalRp)
-                    .put("liked", user.liked);
+                    .put("liked", user.liked)
+                    .put("info",user.info);
 
 
             RequestBody requestBody;
@@ -181,7 +186,8 @@ public class UserEntity {
                     .put("trophies", new ArrayList())
                     .put("rp", 0)
                     .put("totalRp", 0)
-                    .put("liked", new ArrayList<>());
+                    .put("liked", new ArrayList<>())
+                    .put("info", "");
 
             RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
                     .addFormDataPart("data", jsonObject.toString())
@@ -311,6 +317,9 @@ public class UserEntity {
 
     public static ArrayList<UserEntity> getAllUsers() {
         try {
+
+
+
             OkHttpClient client = new OkHttpClient.Builder()
                     .connectTimeout(30, TimeUnit.SECONDS)
                     .writeTimeout(30, TimeUnit.SECONDS)
@@ -320,7 +329,11 @@ public class UserEntity {
                     .url("https://us-central1-challengeup-49057.cloudfunctions.net/get_all_users")
                     .get()
                     .build();
+
+
             Response response = client.newCall(request).execute();
+
+
             String resStr = response.body().string();
             JSONObject object = new JSONObject(resStr);
             object = new JSONObject(object.getString("users"));
@@ -414,6 +427,7 @@ public class UserEntity {
                 user.setRp(Integer.parseInt(object.getJSONObject(key).getString("rp")));
                 user.setTotalRp(Integer.parseInt(object.getJSONObject(key).getString("totalRp")));
                 user.setLiked(liked);
+                user.setInfo(object.getJSONObject(key).getString("info"));
                 if (!object.getJSONObject(key).getString("photo_link").equals("")) {
                     user.setPhoto(object.getJSONObject(key).getString("photo_link"));
                 }
@@ -540,6 +554,7 @@ public class UserEntity {
             user.setRp(Integer.parseInt(object.getJSONObject(id).getString("rp")));
             user.setTotalRp(Integer.parseInt(object.getJSONObject(id).getString("totalRp")));
             user.setLiked(liked);
+            user.setInfo(object.getJSONObject(id).getString("info"));
             if (!object.getJSONObject(id).getString("photo_link").equals("")) {
                 user.setPhoto(object.getJSONObject(id).getString("photo_link"));
             }
@@ -574,7 +589,8 @@ public class UserEntity {
                     .put("trophies", trophies)
                     .put("rp", rp)
                     .put("totalRp", totalRp)
-                    .put("liked", liked);
+                    .put("liked", liked)
+                    .put("info", info);
 
             //RequestBody body = RequestBody.create(jsonObject.toString(), JSON);
             RequestBody requestBody;
@@ -764,5 +780,13 @@ public class UserEntity {
 
     public void setLiked(ArrayList<String> liked) {
         this.liked = liked;
+    }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
     }
 }
