@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -29,6 +30,8 @@ import com.example.challengeup.request.Result;
 import com.example.challengeup.viewModel.ChallengeViewModel;
 import com.example.challengeup.viewModel.factory.ChallengeFactory;
 import com.google.android.material.chip.Chip;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.pnikosis.materialishprogress.ProgressWheel;
 import com.volokh.danylo.hashtaghelper.HashTagHelper;
 
@@ -85,7 +88,7 @@ public class ChallengeFragment extends Fragment {
         TextView task = view.findViewById(R.id.task);
         ViewGroup tags = view.findViewById(R.id.tags);
         TextView hashtags = view.findViewById(R.id.hashTags);
-        TextView revardRP = view.findViewById(R.id.rewardRP);//100 RP
+        TextView rewardRP = view.findViewById(R.id.rewardRP);//100 RP
 
         //todo accepted/completed/liked
 
@@ -136,7 +139,25 @@ public class ChallengeFragment extends Fragment {
                     hashtagsBuilder.append("#").append(tagsList.get(0));
                 hashtags.setText(hashtagsBuilder.toString());
 
-                revardRP.setText(challenge.getRewardRp() + " RP");
+                rewardRP.setText(challenge.getRewardRp() + " RP");
+
+                Button accept = view.findViewById(R.id.btnAccept);
+                accept.setOnClickListener(l -> {
+                    mViewModel.getUserByEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail(), u -> {
+                        if (u instanceof Result.Success) {
+                            //noinspection unchecked
+                            UserEntity user = ((Result.Success<UserEntity>) u).data;
+                            if (user != null) {
+                                user.addChallengeToUndone(challenge);
+                                accept.setVisibility(View.INVISIBLE);
+                                Button uploadComfirm = view.findViewById(R.id.btnLoadVideo);
+                                uploadComfirm.setOnClickListener(v -> {
+
+                                });
+                            }
+                        }
+                    });
+                });
 
 //                progressBarHolder.setAnimation(outAnimation);
 //                progressBarHolder.setVisibility(View.GONE);

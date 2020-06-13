@@ -209,19 +209,22 @@
             android:layout_marginTop="32dp"
             android:text="@string/challenge_me"
             android:textSize="18sp"
+            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/statsAccepted" />
 
         <Button
-            android:id="@+id/btnReport"
+            android:id="@+id/btnLoadVideo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/report"
-            app:layout_constraintEnd_toEndOf="@+id/btnAccept"
-            app:layout_constraintStart_toStartOf="@+id/btnAccept"
-            app:layout_constraintTop_toBottomOf="@+id/btnAccept" />
+            android:layout_marginTop="32dp"
+            android:text="@string/upload_video_confirmation"
+            android:textSize="18sp"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/statsAccepted" />
 
         <!--        <include-->
         <!--            layout="@layout/item_loading_spinner"-->
