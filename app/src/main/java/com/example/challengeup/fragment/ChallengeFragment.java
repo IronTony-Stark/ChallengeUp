@@ -19,6 +19,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.challengeup.ApplicationContainer;
 import com.example.challengeup.Container;
@@ -30,6 +32,7 @@ import com.example.challengeup.viewModel.ChallengeViewModel;
 import com.example.challengeup.viewModel.factory.ChallengeFactory;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -192,51 +195,54 @@ public class ChallengeFragment extends Fragment {
             }
         });
 
-
-        // Locate the viewpager in activity_main.xml
-        ViewPager viewPager = (ViewPager) view.findViewById(R.id.pager);
-
-        // Set the ViewPagerAdapter into ViewPager
-        ViewPagerAdapter adapter = new ViewPagerAdapter(requireActivity().getSupportFragmentManager()/*getChildFragmentManager()*//*getActivity().getSupportFragmentManager()*/);
-        adapter.addFrag(new ChallengePlayersFragment(), "Players");
-        adapter.addFrag(new ChallengeChallengesFragment(), "Challenges");
-
+        ViewPagerAdapter adapter = new ViewPagerAdapter(this);
+        ViewPager2 viewPager = (ViewPager2) view.findViewById(R.id.viewPager);
         viewPager.setAdapter(adapter);
 
-        TabLayout mTabLayout = (TabLayout) view.findViewById(R.id.pager_header);
-        mTabLayout.setupWithViewPager(viewPager);
+        TabLayout tabLayout = view.findViewById(R.id.tab_layout);
+        new TabLayoutMediator(tabLayout, viewPager,
+                (tab, position) -> {
+                    switch (position) {
+                        case 0:
+                            tab.setText("News Feed");
+                            break;
+                        case 1:
+                            tab.setText("Shop");
+                            break;
+                    }
+                }
+        ).attach();
     }
 
+    static class ViewPagerAdapter extends FragmentStateAdapter {
 
-    class ViewPagerAdapter extends FragmentStatePagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
+        public ViewPagerAdapter(Fragment fragment) {
+            super(fragment);
+        }
 
-        public ViewPagerAdapter(FragmentManager manager) {
-            super(manager);
+        @NonNull
+        @Override
+        public Fragment createFragment(int position) {
+            Fragment fragment = null;
+
+            switch (position) {
+                case 0:
+                    fragment = new NewsFeedFragment();
+                    break;
+                case 1:
+                    fragment = new ShopFragment();
+                    break;
+            }
+
+            //noinspection ConstantConditions
+            return fragment;
         }
 
         @Override
-        public Fragment getItem(int position) {
-            return mFragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
-        }
-
-        public void addFrag(Fragment fragment, String title) {
-            mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
+        public int getItemCount() {
+            return 2;
         }
     }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
