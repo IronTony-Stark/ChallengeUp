@@ -6,14 +6,14 @@
     tools:context=".fragment.AchievementsFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/achievements"
+        android:id="@+id/achievements_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:listitem="@layout/item_achievements"
+        tools:itemCount="20"
 
         tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         tools:layout_gravity="center"
-        tools:itemCount="20"
+        tools:listitem="@layout/item_achievements"
         tools:spanCount="3" />
 
 </FrameLayout>

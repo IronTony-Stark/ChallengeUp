@@ -76,7 +76,11 @@
         android:id="@+id/achievements"
         android:name="com.example.challengeup.fragment.AchievementsFragment"
         android:label="fragment_achievements"
-        tools:layout="@layout/fragment_achievements" />
+        tools:layout="@layout/fragment_achievements" >
+        <action
+            android:id="@+id/action_achievements_to_achievement"
+            app:destination="@id/achievement" />
+    </fragment>
     <fragment
         android:id="@+id/settings"
         android:name="com.example.challengeup.fragment.SettingsFragment"
@@ -105,5 +109,12 @@
         android:id="@+id/achievement"
         android:name="com.example.challengeup.fragment.AchievementFragment"
         android:label="fragment_achievement"
-        tools:layout="@layout/fragment_achievement" />
+        tools:layout="@layout/fragment_achievement" >
+        <argument
+            android:name="achievementId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_achievement_to_profile"
+            app:destination="@id/profile" />
+    </fragment>
 </navigation>

@@ -64,7 +64,10 @@ public class ProfileFragment extends Fragment {
                             user.getTag(), user.getInfo());
                     mProfileViewModel.setUser(userDTO);
                     String avatar = user.getPhoto();
-                    mProfileViewModel.setUserAvatar(avatar);
+                    if (avatar != null)
+                        mProfileViewModel.setUserAvatar(avatar);
+                    else
+                        mProfileViewModel.setUserAvatar(MainActivityViewModel.DEFAULT_AVATAR);
                 }
             });
         } else {
