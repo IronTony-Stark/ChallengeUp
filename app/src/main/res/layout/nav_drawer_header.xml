@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
+
     <data>
+
         <variable
             name="viewModel"
             type="com.example.challengeup.viewModel.MainActivityViewModel" />
@@ -16,9 +18,9 @@
 
         <ImageView
             android:id="@+id/avatar"
+            roundImageUrl="@{viewModel.userAvatar}"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            imageBitmap="@{viewModel.userAvatar}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

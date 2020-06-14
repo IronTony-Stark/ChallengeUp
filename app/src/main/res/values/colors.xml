@@ -5,4 +5,5 @@
     <color name="colorAccent">#03DAC5</color>
     <color name="colorTabs">#3700B3</color>
     <color name="colorTabsText">#03DAC5</color>
+    <color name="trophyColor">#FFD814</color>
 </resources>

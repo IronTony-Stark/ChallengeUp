@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDTO {
-    private String id;
+public class TopPlayerDTO {
+    private String rank;
+    private String avatar;
     private String name;
-    private String username;
-    private String info;
+    private String rp;
 }

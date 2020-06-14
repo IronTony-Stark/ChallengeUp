@@ -4,9 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <variable name="iconVar" type="java.lang.String"/>
-        <variable name="dataVar" type="java.lang.String"/>
-        <variable name="descriptionVar" type="java.lang.String"/>
+
+        <variable
+            name="statsIcon"
+            type="android.graphics.drawable.Drawable" />
+
+        <variable
+            name="statsData"
+            type="java.lang.String" />
+
+        <variable
+            name="statsDescription"
+            type="java.lang.String" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -22,7 +31,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="8dp"
-                android:src="@{iconVar}"
+                android:src="@{statsIcon}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -32,8 +41,8 @@
                 android:id="@+id/data"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@{statsData}"
                 android:textSize="24sp"
-                android:text="@{dataVar}"
                 app:layout_constraintBottom_toTopOf="@+id/description"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -45,7 +54,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="@{descriptionVar}"
+                android:text="@{statsDescription}"
+                android:textAlignment="center"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
