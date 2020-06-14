@@ -1,8 +1,11 @@
 package com.example.challengeup;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -37,8 +40,11 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity
         implements CreateDialogFragment.CreateDialogListener {
 
+    public static final String USER_DATA_KEY = "com.example.challengeup.userdata";
+    public static final String AVATAR_FILE = "AVATAR_FILE";
+    public static final String CREATE_DIALOG_TAG = "CREATE_DIALOG_TAG";
     private static final int RC_SIGN_IN = 123;
-
+    private static final int MY_PERMISSIONS_REQUEST = 124;
     private ActivityMainBinding binding;
     private MainActivityViewModel mViewModel;
     private DrawerLayout drawerLayout;
@@ -76,6 +82,9 @@ public class MainActivity extends AppCompatActivity
 
         setupDestinations();
         setupNavDrawer();
+
+        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST);
     }
 
     @Override
@@ -127,6 +136,26 @@ public class MainActivity extends AppCompatActivity
                 FirebaseUser user = mViewModel.getFirebaseUser();
                 addUserToDbIfAbsent(user);
             }
+        }
+    }
+
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.w("Main", "Permission granted");
+                } else {
+                    Log.w("Main", "Permission denied");
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+
+                }
+                return;
+            }
+            // other 'case' lines to check for other
+            // permissions this app might request
         }
     }
 
@@ -200,8 +229,4 @@ public class MainActivity extends AppCompatActivity
         mViewModel.refreshUserAvatar();
         // TODO if avatar is absent set placeholder image
     }
-
-    public static final String USER_DATA_KEY = "com.example.challengeup.userdata";
-    public static final String AVATAR_FILE = "AVATAR_FILE";
-    public static final String CREATE_DIALOG_TAG = "CREATE_DIALOG_TAG";
 }

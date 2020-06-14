@@ -164,6 +164,7 @@ public class ChallengeFragment extends Fragment {
                                     uploadConfirm.setVisibility(View.VISIBLE);
                                 else accept.setVisibility(View.VISIBLE);
                             }
+//                            for (String waitingConfirmId: user.get)
                         }
                     }
                 });
