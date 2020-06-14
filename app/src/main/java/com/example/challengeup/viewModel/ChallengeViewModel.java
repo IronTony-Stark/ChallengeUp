@@ -12,6 +12,8 @@ import com.example.challengeup.request.command.GetChallengeByIdCommand;
 import com.example.challengeup.request.command.GetUserByEmailCommand;
 import com.example.challengeup.request.command.GetUserByIdCommand;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 public class ChallengeViewModel extends ViewModel {
 
     private final RequestExecutor mRequestExecutor;
@@ -36,7 +38,7 @@ public class ChallengeViewModel extends ViewModel {
         mRequestExecutor.execute(new AddChallengeToUndone(user, challenge), callback);
     }
 
-    public void createVideoConfirmation(String user, String challenge, ICallback callback) {
+    public void createVideoConfirmation(AtomicReference<UserEntity> user, String challenge, ICallback callback) {
         mRequestExecutor.execute(new CreateVideoConfirmation(user, challenge), callback);
     }
 

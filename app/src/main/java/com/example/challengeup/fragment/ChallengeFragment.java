@@ -49,8 +49,9 @@ public class ChallengeFragment extends Fragment {
     private ChallengeViewModel mViewModel;
     private HashTagHelper mTextHashTagHelper;
     private StorageReference mStorage;
-    private String userIDToConfirm;
+    AtomicReference<UserEntity> user;
     private String challengeIDToConfirm;
+    IBlockingLoadable loadable;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -89,7 +90,7 @@ public class ChallengeFragment extends Fragment {
 
         //todo accepted/completed/liked
 
-        IBlockingLoadable loadable = (IBlockingLoadable) requireActivity();
+        loadable = (IBlockingLoadable) requireActivity();
         loadable.startBlockingLoading(5000);
 
         mViewModel.getChallengeById(challengeId, result -> {
@@ -142,7 +143,7 @@ public class ChallengeFragment extends Fragment {
 
                 Button accept = view.findViewById(R.id.btnAccept);
                 Button uploadConfirm = view.findViewById(R.id.btnLoadVideo);
-                AtomicReference<UserEntity> user = new AtomicReference<>();
+                user = new AtomicReference<>();
                 mViewModel.getUserByEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail(), u -> {
                     if (u instanceof Result.Success) {
                         //noinspection unchecked
@@ -175,7 +176,6 @@ public class ChallengeFragment extends Fragment {
                     Intent intent = new Intent();
                     intent.setAction(Intent.ACTION_GET_CONTENT);
                     intent.setType("video/*");
-                    userIDToConfirm = user.get().getId();
                     challengeIDToConfirm = challengeId;
                     if (intent.resolveActivity(requireActivity().getPackageManager()) != null)
                         startActivityForResult(intent, GET_VIDEO_REQUEST);
@@ -214,10 +214,11 @@ public class ChallengeFragment extends Fragment {
                 data != null && data.getData() != null) {
             Uri photoUri = data.getData();
             Intent intent = getActivity().getIntent();
-            mViewModel.createVideoConfirmation(userIDToConfirm, challengeIDToConfirm, result -> {
+            mViewModel.createVideoConfirmation(user, challengeIDToConfirm, result -> {
                 if (result instanceof Result.Success) {
                     String fileId = ((Result.Success<String>) result).data;
                     view.findViewById(R.id.btnLoadVideo).setEnabled(false);
+                    loadable.startBlockingLoading(20000);
                     uploadVideo(photoUri, challengeIDToConfirm, fileId);
                 } else
                     Toast.makeText(getContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
@@ -229,10 +230,16 @@ public class ChallengeFragment extends Fragment {
         if (videoUri != null) {
             StorageReference file = mStorage.child("challenge_confirmation_videos/" + challengeId + "/" + fileId + "_video");
             file.putFile(videoUri)
-                    .addOnSuccessListener(taskSnapshot -> Toast.makeText(getContext(),
-                            "Uploaded Successfully", Toast.LENGTH_SHORT).show())
-                    .addOnFailureListener(e -> Toast.makeText(getContext(),
-                            "Upload Failed", Toast.LENGTH_SHORT).show());
+                    .addOnSuccessListener(taskSnapshot -> {
+                        Toast.makeText(getContext(),
+                                "Uploaded Successfully", Toast.LENGTH_SHORT).show();
+                        loadable.finishBlockingLoading();
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(getContext(),
+                                "Upload Failed", Toast.LENGTH_SHORT).show();
+                        loadable.finishBlockingLoading();
+                    });
         } else {
             Toast.makeText(getContext(), "No file selected", Toast.LENGTH_SHORT).show();
         }

@@ -241,12 +241,5 @@
             app:layout_constraintTop_toBottomOf="@id/tab_layout"
             tools:layout_editor_absoluteX="0dp" />
 
-        <!--        <include-->
-        <!--            layout="@layout/item_loading_spinner"-->
-        <!--            app:layout_constraintTop_toTopOf="parent" />-->
-
-        <!--            xmlns:android="http://schemas.android.com/apk/res/android"-->
-        <!--            xmlns:wheel="http://schemas.android.com/apk/res-auto"-->
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
