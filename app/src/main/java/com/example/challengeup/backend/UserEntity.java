@@ -492,11 +492,124 @@ public class UserEntity {
     }
 
     public static UserEntity getUserByEmail(String email) {
-        ArrayList<UserEntity> users = getAllUsers();
         try {
-            UserEntity a = users.stream().filter(x -> x.getEmail().equals(email)).collect(Collectors.toList()).get(0);
-            return a;
-        } catch (IndexOutOfBoundsException e) {
+            OkHttpClient client = new OkHttpClient.Builder()
+                    .connectTimeout(30, TimeUnit.SECONDS)
+                    .writeTimeout(30, TimeUnit.SECONDS)
+                    .readTimeout(30, TimeUnit.SECONDS)
+                    .build();
+
+            Request request = new Request.Builder()
+                    .url("https://us-central1-challengeup-49057.cloudfunctions.net/get_user_by_email?email=" + email)
+                    .get()
+                    .build();
+            Response response = client.newCall(request).execute();
+            String resStr = response.body().string();
+            Log.d("TITLE", resStr);
+
+            JSONObject object = new JSONObject(resStr);
+
+            String id = object.getString("user_id");
+
+            object = new JSONObject(object.getString("user"));
+
+            ArrayList<String> undoneArray = new ArrayList<>();
+            ArrayList<String> doneArray = new ArrayList<>();
+            ArrayList<String> categoriesArray = new ArrayList<>();
+            ArrayList<String> subscriptionsArray = new ArrayList<>();
+
+            HashMap<String, String> links = new HashMap<>();
+
+            ArrayList<String> saved = new ArrayList<>();
+            ArrayList<String> achievements = new ArrayList<>();
+
+            ArrayList<String> liked = new ArrayList<>();
+
+            ArrayList<String> waitingConfirmation = new ArrayList<>();
+            try {
+                JSONArray s = new JSONArray(object.getJSONObject(id).getString("waitingConfirmation"));
+                for (int i = 0; i < s.length(); ++i) waitingConfirmation.add((String) s.get(i));
+            } catch (JSONException ignored) {}
+            try {
+                JSONArray s = new JSONArray(object.getJSONObject(id).getString("liked"));
+                for (int i = 0; i < s.length(); ++i) liked.add((String) s.get(i));
+            } catch (JSONException ignored) {
+            }
+
+            try {
+                JSONArray s = new JSONArray(object.getJSONObject(id).getString("trophies"));
+                for (int i = 0; i < s.length(); ++i) achievements.add((String) s.get(i));
+            } catch (JSONException ignored) {
+            }
+
+            try {
+                JSONArray s = new JSONArray(object.getJSONObject(id).getString("saved"));
+                for (int i = 0; i < s.length(); ++i) saved.add((String) s.get(i));
+            } catch (JSONException ignored) {
+            }
+
+            try {
+                JSONObject l = new JSONObject(object.getJSONObject(id).getString("links"));
+                if (l.has("facebook"))
+                    links.put("facebook", l.getString("facebook"));
+
+                if (l.has("instagram"))
+                    links.put("instagram", l.getString("instagram"));
+
+                if (l.has("youtube"))
+                    links.put("youtube", l.getString("youtube"));
+            } catch (JSONException ignored) {
+            }
+
+            try {
+                JSONArray subscriptions = new JSONArray(object.getJSONObject(id).getString("subscriptions"));
+                for (int i = 0; i < subscriptions.length(); ++i)
+                    subscriptionsArray.add((String) subscriptions.get(i));
+            } catch (JSONException ignored) {
+            }
+
+
+            try {
+                JSONArray categories = new JSONArray(object.getJSONObject(id).getJSONArray("categories"));
+                for (int i = 0; i < categories.length(); ++i)
+                    categoriesArray.add((String) categories.get(i));
+            } catch (JSONException ignored) {
+            }
+
+            try {
+                JSONArray undone = new JSONArray(object.getJSONObject(id).getString("undone"));
+                for (int i = 0; i < undone.length(); ++i) undoneArray.add((String) undone.get(i));
+            } catch (JSONException ignored) {
+            }
+
+            try {
+
+                JSONArray done = new JSONArray(object.getJSONObject(id).getString("done"));
+                for (int i = 0; i < done.length(); ++i) doneArray.add((String) done.get(i));
+            } catch (JSONException ignored) {
+            }
+
+            UserEntity user = new UserEntity(object.getJSONObject(id).getString("tag"),
+                    object.getJSONObject(id).getString("nick"),
+                    object.getJSONObject(id).getString("email"),
+                    categoriesArray);
+            user.setId(id);
+            user.setUndone(undoneArray);
+            user.setDone(doneArray);
+            user.setSubscriptions(subscriptionsArray);
+            user.setLinks(links);
+            user.setSaved(saved);
+            user.setTrophies(achievements);
+            user.setRp(Integer.parseInt(object.getJSONObject(id).getString("rp")));
+            user.setTotalRp(Integer.parseInt(object.getJSONObject(id).getString("totalRp")));
+            user.setLiked(liked);
+            user.setInfo(object.getJSONObject(id).getString("info"));
+            user.setWaitingConfirmation(waitingConfirmation);
+            if (!object.getJSONObject(id).getString("photo_link").equals("")) {
+                user.setPhoto(object.getJSONObject(id).getString("photo_link"));
+            }
+            return user;
+        } catch (IOException | JSONException e) {
             return null;
         }
     }
@@ -855,5 +968,28 @@ public class UserEntity {
 
     public void setWaitingConfirmation(ArrayList<String> waitingConfirmation) {
         this.waitingConfirmation = waitingConfirmation;
+    }
+
+    @Override
+    public String toString() {
+        return "UserEntity{" +
+                "id='" + id + '\'' +
+                ", tag='" + tag + '\'' +
+                ", nick='" + nick + '\'' +
+                ", email='" + email + '\'' +
+                ", info='" + info + '\'' +
+                ", rp=" + rp +
+                ", totalRp=" + totalRp +
+                ", categories=" + categories +
+                ", subscriptions=" + subscriptions +
+                ", undone=" + undone +
+                ", done=" + done +
+                ", saved=" + saved +
+                ", trophies=" + trophies +
+                ", liked=" + liked +
+                ", waitingConfirmation=" + waitingConfirmation +
+                ", links=" + links +
+                ", photo='" + photo + '\'' +
+                '}';
     }
 }
