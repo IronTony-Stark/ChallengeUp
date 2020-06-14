@@ -8,6 +8,7 @@ import com.example.challengeup.request.ICallback;
 import com.example.challengeup.request.RequestExecutor;
 import com.example.challengeup.request.command.AddBookmarkedCommand;
 import com.example.challengeup.request.command.GetAllChallengesCommand;
+import com.example.challengeup.request.command.GetCategories;
 import com.example.challengeup.request.command.GetNumAcceptedCommand;
 import com.example.challengeup.request.command.GetNumCompletedCommand;
 import com.example.challengeup.request.command.GetUserByEmailCommand;
@@ -56,5 +57,9 @@ public class ChallengesViewModel extends ViewModel {
             mRequestExecutor.execute(new LikedCommand(user, challenge), callback);
         else
             mRequestExecutor.execute(new UnlikedCommand(user, challenge), callback);
+    }
+
+    public void getCategories(ICallback callback) {
+        mRequestExecutor.execute(new GetCategories(), callback);
     }
 }

@@ -1,40 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="320dp">
+    android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/textView56"
-        android:layout_width="wrap_content"
+    <HorizontalScrollView
+        android:id="@+id/chipFilterHolder"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Social Life"
+        app:layout_constraintBottom_toTopOf="@id/textView22"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/textView55"
-        app:layout_constraintTop_toTopOf="@+id/textView55" />
-
-    <TextView
-        android:id="@+id/textView55"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Programming"
-        app:layout_constraintEnd_toStartOf="@+id/textView56"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/textView53"
-        app:layout_constraintTop_toTopOf="@+id/textView53" />
-
-    <TextView
-        android:id="@+id/textView54"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Fitness"
-        app:layout_constraintEnd_toStartOf="@+id/textView53"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
+        app:layout_constraintTop_toBottomOf="@id/editText">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipFilter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            app:singleLine="true">
+
+        </com.google.android.material.chip.ChipGroup>
+    </HorizontalScrollView>
 
     <Spinner
         android:id="@+id/spinner2"
@@ -201,7 +189,7 @@
         app:layout_constraintEnd_toStartOf="@+id/textView37"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView54" />
+        app:layout_constraintTop_toBottomOf="@+id/chipFilterHolder" />
 
     <EditText
         android:id="@+id/editTextNumber"
@@ -228,15 +216,5 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/textView52"
         app:layout_constraintTop_toTopOf="@+id/textView52" />
-
-    <TextView
-        android:id="@+id/textView53"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Adult"
-        app:layout_constraintEnd_toStartOf="@+id/textView55"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/textView54"
-        app:layout_constraintTop_toTopOf="@+id/textView54" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

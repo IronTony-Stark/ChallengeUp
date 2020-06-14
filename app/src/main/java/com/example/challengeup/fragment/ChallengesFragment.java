@@ -10,6 +10,7 @@ import android.view.animation.ScaleAnimation;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,6 +30,8 @@ import com.example.challengeup.backend.UserEntity;
 import com.example.challengeup.request.Result;
 import com.example.challengeup.viewModel.ChallengesViewModel;
 import com.example.challengeup.viewModel.factory.ChallengesFactory;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipDrawable;
 import com.google.firebase.auth.FirebaseAuth;
 
 import org.jetbrains.annotations.NotNull;
@@ -41,12 +44,14 @@ public class ChallengesFragment extends Fragment {
     private ChallengesViewModel mViewModel;
     private List<ChallengeEntity> mArrayList = new ArrayList<>();
     private Adapter mAdapter;
+    private View view;
 
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_challenges, container, false);
+        view = inflater.inflate(R.layout.fragment_challenges, container, false);
+        return view;
     }
 
     @Override
@@ -99,6 +104,28 @@ public class ChallengesFragment extends Fragment {
             ChallengeEntity challenge = mDataset.get(position);
 
             // holder.thumbnail.setImageBitmap(challenge.// todo bookmarkChacked
+
+            ViewGroup chips = view.findViewById(R.id.searchArea).findViewById(R.id.chipFilter);
+
+            mViewModel.getCategories(result -> {
+                if (result instanceof Result.Success) {
+                    ArrayList<String> categories = (ArrayList<String>) ((Result.Success) result).data;
+                    if (categories != null) {
+                        for (int i = 0; i < categories.size(); i++) {
+                            String category = categories.get(i);
+                            Chip chip = new Chip(getContext());
+                            chip.setChipDrawable(ChipDrawable.createFromResource(getContext(), R.xml.item_chip_filter));
+                            chip.setText(category);
+                            chip.setOnClickListener(v -> {
+                                //TODO Implement filtering logic hire
+                                Toast.makeText(getContext(), chip.getText(), Toast.LENGTH_LONG).show();
+                            });
+                            chips.addView(chip);
+//                            chips.add
+                        }
+                    }
+                }
+            });
 
             holder.name.setText(challenge.getName());
             holder.description.setText(challenge.getTask());
