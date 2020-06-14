@@ -1,10 +1,18 @@
 package com.example.challengeup.backend;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -64,6 +72,12 @@ public class Utilities {
         } catch (JSONException | IOException e) {
             return false;
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public  static  void downloadFile(String download, String fileName) throws IOException {
+        InputStream inputStream = new URL(download).openStream();
+        Files.copy(inputStream, Paths.get(fileName));
     }
 }
 
