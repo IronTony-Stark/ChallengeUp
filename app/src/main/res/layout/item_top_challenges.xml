@@ -1,104 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="100dp">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <data>
+
+        <variable
+            name="challenge"
+            type="com.example.challengeup.dto.TopChallengeDTO" />
+    </data>
+
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="100dp">
 
-        <TextView
-            android:id="@+id/rank"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="30sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/name"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="1" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="72dp"
-            android:layout_marginTop="16dp"
-            android:textSize="30sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Challenge Name" />
+            <TextView
+                android:id="@+id/rank"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@{challenge.rank}"
+                android:textAlignment="center"
+                android:textSize="30sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="1" />
 
-        <ImageView
-            android:id="@+id/avatar"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/name"
-            tools:srcCompat="@tools:sample/avatars" />
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@{challenge.name}"
+                android:textSize="30sp"
+                app:layout_constraintStart_toEndOf="@+id/rank"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Challenge Name" />
 
-        <ImageView
-            android:id="@+id/iconAccepted"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:src="@drawable/ic_users"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/iconCompleted"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent" />
+            <ImageView
+                android:id="@+id/avatar"
+                roundImageUrl="@{challenge.avatar}"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/name"
+                tools:srcCompat="@tools:sample/avatars" />
 
-        <TextView
-            android:id="@+id/dataAccepted"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            app:layout_constraintBottom_toBottomOf="@+id/iconAccepted"
-            app:layout_constraintStart_toEndOf="@+id/iconAccepted"
-            app:layout_constraintTop_toTopOf="@+id/iconAccepted"
-            tools:text="2M" />
+            <ImageView
+                android:id="@+id/iconAccepted"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_users"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/name"
+                app:layout_constraintTop_toBottomOf="@+id/name" />
 
-        <ImageView
-            android:id="@+id/iconCompleted"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_checkmark"
-            app:layout_constraintEnd_toStartOf="@+id/iconLiked"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/iconAccepted"
-            app:layout_constraintTop_toTopOf="@+id/iconAccepted" />
+            <TextView
+                android:id="@+id/dataAccepted"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@{challenge.accepted}"
+                app:layout_constraintBottom_toBottomOf="@+id/iconAccepted"
+                app:layout_constraintStart_toEndOf="@+id/iconAccepted"
+                app:layout_constraintTop_toTopOf="@+id/iconAccepted"
+                tools:text="2M" />
 
-        <TextView
-            android:id="@+id/dataCompleted"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            app:layout_constraintBottom_toBottomOf="@+id/iconCompleted"
-            app:layout_constraintStart_toEndOf="@+id/iconCompleted"
-            app:layout_constraintTop_toTopOf="@+id/iconCompleted"
-            tools:text="1M" />
+            <ImageView
+                android:id="@+id/iconCompleted"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_checkmark"
+                app:layout_constraintBottom_toBottomOf="@+id/iconAccepted"
+                app:layout_constraintEnd_toStartOf="@+id/iconLiked"
+                app:layout_constraintStart_toEndOf="@+id/iconAccepted"
+                app:layout_constraintTop_toTopOf="@+id/iconAccepted" />
 
-        <ImageView
-            android:id="@+id/iconLiked"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_heart"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/iconCompleted"
-            app:layout_constraintTop_toTopOf="@+id/iconCompleted" />
+            <TextView
+                android:id="@+id/dataCompleted"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@{challenge.completed}"
+                app:layout_constraintBottom_toBottomOf="@+id/iconCompleted"
+                app:layout_constraintStart_toEndOf="@+id/iconCompleted"
+                app:layout_constraintTop_toTopOf="@+id/iconCompleted"
+                tools:text="1M" />
 
-        <TextView
-            android:id="@+id/dataLiked"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="7dp"
-            app:layout_constraintBottom_toBottomOf="@+id/iconLiked"
-            app:layout_constraintStart_toEndOf="@+id/iconLiked"
-            app:layout_constraintTop_toTopOf="@+id/iconLiked"
-            tools:text="1M" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <ImageView
+                android:id="@+id/iconLiked"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/ic_heart"
+                app:layout_constraintBottom_toBottomOf="@+id/iconCompleted"
+                app:layout_constraintEnd_toStartOf="@+id/dataLiked"
+                app:layout_constraintTop_toTopOf="@+id/iconCompleted" />
 
-</androidx.cardview.widget.CardView>
+            <TextView
+                android:id="@+id/dataLiked"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:text="@{challenge.liked}"
+                app:layout_constraintBottom_toBottomOf="@+id/iconLiked"
+                app:layout_constraintEnd_toStartOf="@+id/avatar"
+                app:layout_constraintTop_toTopOf="@+id/iconLiked"
+                tools:text="1M" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+</layout>

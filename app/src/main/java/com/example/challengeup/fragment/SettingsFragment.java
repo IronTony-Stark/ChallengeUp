@@ -10,8 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.challengeup.utils.LoginUtils;
 import com.example.challengeup.R;
+import com.example.challengeup.utils.LoginUtils;
 
 public class SettingsFragment extends Fragment {
 

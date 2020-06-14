@@ -162,6 +162,29 @@ public class UserEntity {
         return "";
     }
 
+    public int getRank(){
+        try {
+            OkHttpClient client = new OkHttpClient.Builder()
+                    .connectTimeout(30, TimeUnit.SECONDS)
+                    .writeTimeout(30, TimeUnit.SECONDS)
+                    .readTimeout(30, TimeUnit.SECONDS)
+                    .build();
+
+            Request request = new Request.Builder()
+                    .url("https://us-central1-challengeup-49057.cloudfunctions.net/get_user_rank?user_id=" + id)
+                    .get()
+                    .build();
+            Response response = client.newCall(request).execute();
+            String resStr = response.body().string();
+
+            JSONObject object = new JSONObject(resStr);
+            int res  = object.getInt("rank");
+           return res;
+        } catch (IOException | JSONException e) {
+            return -1;
+        }
+    }
+
     public static String addNewUser(String tag, String nick, String email, ArrayList<String> categories) throws IllegalArgumentException {
         Validation.validateNickTagPassword(nick);
         Validation.validateNickTagPassword(tag);

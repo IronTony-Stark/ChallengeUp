@@ -7,9 +7,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDTO {
-    private String id;
+public class TopChallengeDTO {
+    private String rank;
     private String name;
-    private String username;
-    private String info;
+    private String avatar;
+    private String accepted;
+    private String completed;
+    private String liked;
 }

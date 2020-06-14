@@ -1,15 +1,13 @@
 package com.example.challengeup.fragment;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
@@ -22,7 +20,10 @@ import com.example.challengeup.ApplicationContainer;
 import com.example.challengeup.Container;
 import com.example.challengeup.R;
 import com.example.challengeup.backend.UserEntity;
+import com.example.challengeup.databinding.ItemTopPlayersBinding;
+import com.example.challengeup.dto.TopPlayerDTO;
 import com.example.challengeup.request.Result;
+import com.example.challengeup.viewModel.MainActivityViewModel;
 import com.example.challengeup.viewModel.TopPlayersViewModel;
 import com.example.challengeup.viewModel.factory.TopPlayersFactory;
 
@@ -34,7 +35,6 @@ import java.util.List;
 
 public class TopPlayersFragment extends Fragment {
 
-    private TopPlayersViewModel mViewModel;
     private List<UserEntity> mArrayList = new ArrayList<>();
     private Adapter mAdapter;
 
@@ -50,7 +50,7 @@ public class TopPlayersFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         Container appContainer = ((ApplicationContainer) requireActivity().getApplication()).mContainer;
-        mViewModel = new ViewModelProvider(this, new TopPlayersFactory(
+        TopPlayersViewModel viewModel = new ViewModelProvider(this, new TopPlayersFactory(
                 appContainer.mRequestExecutor
         )).get(TopPlayersViewModel.class);
 
@@ -63,13 +63,21 @@ public class TopPlayersFragment extends Fragment {
         mAdapter = new Adapter(mArrayList);
         recyclerView.setAdapter(mAdapter);
 
-        mViewModel.getAllUsers(result -> {
+        viewModel.getAllUsers(result -> {
             if (result instanceof Result.Success) {
                 //noinspection unchecked
                 mArrayList = ((Result.Success<List<UserEntity>>) result).data;
 
-                Collections.sort(mArrayList, (u1, u2) ->
-                        Integer.compare(u1.getTotalRp(), u2.getTotalRp()));
+                // TODO sometimes values are null
+                Collections.sort(mArrayList, (u1, u2) -> {
+                    if (u1 == null && u2 == null)
+                        return 0;
+                    else if (u1 == null)
+                        return 1;
+                    else if (u2 == null)
+                        return -1;
+                    else return -Integer.compare(u1.getTotalRp(), u2.getTotalRp());
+                });
 
                 mAdapter.setDataset(mArrayList);
                 mAdapter.notifyItemRangeInserted(0, mArrayList.size());
@@ -77,24 +85,9 @@ public class TopPlayersFragment extends Fragment {
         });
     }
 
-    static class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
+    static class Adapter extends RecyclerView.Adapter<Adapter.PlayerViewHolder> {
 
         private List<UserEntity> mDataset;
-
-        public static class MyViewHolder extends RecyclerView.ViewHolder {
-
-            ImageView avatar;
-            TextView rank, name, rp;
-
-            public MyViewHolder(View itemView) {
-                super(itemView);
-
-                avatar = itemView.findViewById(R.id.avatar);
-                rank = itemView.findViewById(R.id.rank);
-                name = itemView.findViewById(R.id.name);
-                rp = itemView.findViewById(R.id.rp);
-            }
-        }
 
         public Adapter(@NonNull List<UserEntity> myDataset) {
             mDataset = myDataset;
@@ -102,28 +95,32 @@ public class TopPlayersFragment extends Fragment {
 
         @NotNull
         @Override
-        public Adapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_top_players, parent, false);
+        public PlayerViewHolder onCreateViewHolder(@NotNull ViewGroup parent,
+                                                   int viewType) {
+            ItemTopPlayersBinding binding = DataBindingUtil.inflate(
+                    LayoutInflater.from(parent.getContext()),
+                    R.layout.item_top_players, parent, false);
 
-            return new MyViewHolder(itemView);
+            return new PlayerViewHolder(binding);
         }
 
         @Override
-        public void onBindViewHolder(@NotNull Adapter.MyViewHolder holder, int position) {
+        public void onBindViewHolder(@NotNull PlayerViewHolder holder, int position) {
             UserEntity user = mDataset.get(position);
 
-//            Bitmap avatar = user.getPhoto();
-//            if (avatar != null)
-//                holder.avatar.setImageBitmap(avatar);
+            String rank = String.valueOf(position + 1);
+            String userPhoto = user.getPhoto() != null ?
+                    user.getPhoto() : MainActivityViewModel.DEFAULT_AVATAR_URL;
+            String name = user.getNick();
+            String rp = String.valueOf(user.getTotalRp());
 
-            holder.rank.setText(String.valueOf(position + 1));
-            holder.name.setText(user.getNick());
-            holder.rp.setText(String.valueOf(user.getTotalRp()));
+            TopPlayerDTO topPlayer = new TopPlayerDTO(rank, userPhoto, name, rp);
+            holder.bind(topPlayer);
 
             holder.itemView.setOnClickListener(view -> {
                 TopPlayersFragmentDirections.ActionTopPlayersToProfile action =
-                        TopPlayersFragmentDirections.actionTopPlayersToProfile(user.getId());
+                        TopPlayersFragmentDirections.actionTopPlayersToProfile();
+                action.setUid(user.getId());
                 Navigation.findNavController(view).navigate(action);
             });
         }
@@ -136,6 +133,21 @@ public class TopPlayersFragment extends Fragment {
         public void setDataset(List<UserEntity> newDataset) {
             mDataset = newDataset;
             notifyDataSetChanged();
+        }
+
+        static class PlayerViewHolder extends RecyclerView.ViewHolder {
+
+            private final ItemTopPlayersBinding mBinding;
+
+            public PlayerViewHolder(ItemTopPlayersBinding binding) {
+                super(binding.getRoot());
+                mBinding = binding;
+            }
+
+            public void bind(TopPlayerDTO topPlayerDTO) {
+                mBinding.setPlayer(topPlayerDTO);
+                mBinding.executePendingBindings();
+            }
         }
     }
 }
