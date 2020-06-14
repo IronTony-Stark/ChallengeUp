@@ -34,10 +34,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-
 public class MainActivity extends AppCompatActivity implements
         CreateDialogFragment.CreateDialogListener,
         ILoadable, IBlockingLoadable {
@@ -46,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements
     private DrawerLayout mDrawerLayout;
     private BottomNavigationView mBottomNav;
     private NavigationView mNavView;
+    private AppBarConfiguration mAppBarConfiguration;
     private NavController mNavController;
 
     @Override
@@ -72,14 +69,14 @@ public class MainActivity extends AppCompatActivity implements
 
         setSupportActionBar(binding.toolbar);
 
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration
-                .Builder(R.id.timeChallenges, R.id.challenges, R.id.newsFeed, R.id.profile)
+        mAppBarConfiguration = new AppBarConfiguration
+                .Builder(R.id.timeChallenges, R.id.challenges, R.id.newsFeed)
                 .setOpenableLayout(mDrawerLayout)
                 .build();
 
         mNavController = Navigation.findNavController(this, R.id.navHostFragment);
 
-        NavigationUI.setupWithNavController(binding.toolbar, mNavController, appBarConfiguration);
+        NavigationUI.setupWithNavController(binding.toolbar, mNavController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, mNavController);
         NavigationUI.setupWithNavController(binding.bottomNavigationView, mNavController);
 
@@ -202,21 +199,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void setupDestinations() {
-        final List<Integer> navDrawerUnlockedFragmentIds = new LinkedList<Integer>() {
-            {
-                add(Objects.requireNonNull(mNavController
-                        .getGraph().findNode(R.id.timeChallenges)).getId());
-                add(Objects.requireNonNull(mNavController
-                        .getGraph().findNode(R.id.challenges)).getId());
-                add(Objects.requireNonNull(mNavController
-                        .getGraph().findNode(R.id.newsFeed)).getId());
-                add(Objects.requireNonNull(mNavController
-                        .getGraph().findNode(R.id.profile)).getId());
-            }
-        };
-
         mNavController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-            if (navDrawerUnlockedFragmentIds.contains(destination.getId())) {
+            if (mAppBarConfiguration.getTopLevelDestinations().contains(destination.getId())) {
                 mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
                 mBottomNav.setVisibility(View.VISIBLE);
             } else {
