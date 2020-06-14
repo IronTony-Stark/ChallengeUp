@@ -2,11 +2,11 @@ package com.example.challengeup;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -23,7 +23,8 @@ import com.example.challengeup.backend.UserEntity;
 import com.example.challengeup.databinding.ActivityMainBinding;
 import com.example.challengeup.databinding.NavDrawerHeaderBinding;
 import com.example.challengeup.dto.UserDTO;
-import com.example.challengeup.fragment.CreateDialogFragment;
+import com.example.challengeup.fragment.dialog.BlockingLoaderDialog;
+import com.example.challengeup.fragment.dialog.CreateDialogFragment;
 import com.example.challengeup.request.ICallback;
 import com.example.challengeup.request.Result;
 import com.example.challengeup.utils.LoginUtils;
@@ -37,10 +38,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity
-        implements CreateDialogFragment.CreateDialogListener {
-
-    private static final int RC_SIGN_IN = 123;
+public class MainActivity extends AppCompatActivity implements
+        CreateDialogFragment.CreateDialogListener,
+        ILoadable, IBlockingLoadable {
 
     private MainActivityViewModel mViewModel;
     private DrawerLayout mDrawerLayout;
@@ -51,6 +51,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mBlockingLoader = new BlockingLoaderDialog(this);
 
         ActivityMainBinding binding = DataBindingUtil
                 .setContentView(this, R.layout.activity_main);
@@ -66,6 +68,7 @@ public class MainActivity extends AppCompatActivity
         mDrawerLayout = binding.drawerLayout;
         mBottomNav = binding.bottomNavigationView;
         mNavView = binding.navView;
+        mLoader = binding.progressBar;
 
         setSupportActionBar(binding.toolbar);
 
@@ -122,6 +125,26 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onPostClick() {
         Toast.makeText(this, "Feature is in progress", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void startLoading() {
+        mLoader.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void finishLoading() {
+        mLoader.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void startBlockingLoading(int timeoutMillis) {
+        mBlockingLoader.startBlockingLoading(timeoutMillis);
+    }
+
+    @Override
+    public void finishBlockingLoading() {
+        mBlockingLoader.finishBlockingLoading();
     }
 
     @Override
@@ -214,6 +237,10 @@ public class MainActivity extends AppCompatActivity
         mViewModel.refreshUserAvatar();
     }
 
+    private ProgressBar mLoader;
+    private BlockingLoaderDialog mBlockingLoader;
+
+    public static final int RC_SIGN_IN = 123;
     public static final String USER_DATA_KEY = "com.example.challengeup.userdata";
     public static final String CREATE_DIALOG_TAG = "CREATE_DIALOG_TAG";
 }

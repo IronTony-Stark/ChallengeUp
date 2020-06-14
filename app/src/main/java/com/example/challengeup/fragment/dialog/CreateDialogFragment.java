@@ -1,4 +1,4 @@
-package com.example.challengeup.fragment;
+package com.example.challengeup.fragment.dialog;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
