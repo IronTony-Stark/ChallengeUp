@@ -21,6 +21,8 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.challengeup.ApplicationContainer;
 import com.example.challengeup.Container;
+import com.example.challengeup.IBlockingLoadable;
+import com.example.challengeup.ILoadable;
 import com.example.challengeup.R;
 import com.example.challengeup.backend.ChallengeEntity;
 import com.example.challengeup.backend.UserEntity;
@@ -42,13 +44,13 @@ import static android.app.Activity.RESULT_OK;
 
 public class ChallengeFragment extends Fragment {
 
-    View view;
-
-    private ChallengeViewModel mViewModel;
-
-    private HashTagHelper mTextHashTagHelper;
     private static final int GET_VIDEO_REQUEST = 1;
-
+    View view;
+    private ChallengeViewModel mViewModel;
+    private HashTagHelper mTextHashTagHelper;
+    private StorageReference mStorage;
+    private String userIDToConfirm;
+    private String challengeIDToConfirm;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,26 +60,9 @@ public class ChallengeFragment extends Fragment {
         return view;
     }
 
-    private StorageReference mStorage;
-    private String userIDToConfirm;
-    private String challengeIDToConfirm;
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-//        ConstraintLayout progressBarHolder = view.findViewById(R.id.progress_overlay);
-//        AlphaAnimation inAnimation = new AlphaAnimation(0f, 1f);
-//        inAnimation.setDuration(200);
-//        AlphaAnimation outAnimation = new AlphaAnimation(1f, 0f);
-//        outAnimation.setDuration(200);
-//
-//        progressBarHolder.setAnimation(inAnimation);
-//        progressBarHolder.setVisibility(View.VISIBLE);
-
-//        ProgressWheel wheel = view.findViewById(R.id.progress_wheel);
-//        wheel.setBarColor(Color.BLUE);
-//        wheel.spin();
 
         Container appContainer = ((ApplicationContainer) requireActivity().getApplication()).mContainer;
         mViewModel = new ViewModelProvider(this, new ChallengeFactory(
@@ -100,15 +85,19 @@ public class ChallengeFragment extends Fragment {
         TextView hashtags = view.findViewById(R.id.hashTags);
         TextView rewardRP = view.findViewById(R.id.rewardRP);//100 RP
 
+        AtomicReference<ChallengeEntity> challenge = new AtomicReference<>();
+
         //todo accepted/completed/liked
 
+        IBlockingLoadable loadable = (IBlockingLoadable) requireActivity();
+        loadable.startBlockingLoading(5000);
 
         mViewModel.getChallengeById(challengeId, result -> {
             if (result instanceof Result.Success) {
-                ChallengeEntity challenge = ((Result.Success<ChallengeEntity>) result).data;
+                challenge.set(((Result.Success<ChallengeEntity>) result).data);
                 //todo imageChallenge
 
-                mViewModel.getUserById(challenge.getCreator_id(), result2 -> {
+                mViewModel.getUserById(challenge.get().getCreator_id(), result2 -> {
                     if (result2 instanceof Result.Success) {
                         //noinspection unchecked
                         UserEntity user = ((Result.Success<UserEntity>) result2).data;
@@ -122,9 +111,9 @@ public class ChallengeFragment extends Fragment {
                     }
                 });
 
-                name.setText(challenge.getName());
-                description.setText(challenge.getTask());
-                task.setText(challenge.getTask());
+                name.setText(challenge.get().getName());
+                description.setText(challenge.get().getTask());
+                task.setText(challenge.get().getTask());
 
                 mTextHashTagHelper = HashTagHelper.Creator.create(ContextCompat.getColor(getContext(), R.color.colorPrimary),
                         hashTag -> {
@@ -132,7 +121,7 @@ public class ChallengeFragment extends Fragment {
                         }, '_');
                 mTextHashTagHelper.handle(task);
 
-                for (String tag : challenge.getCategories()) {
+                for (String tag : challenge.get().getCategories()) {
                     Chip chip = new Chip(getContext());
                     chip.setText(tag);
 //            chip.chipIcon = ContextCompat.getDrawable(requireContext(), baseline_person_black_18)
@@ -142,14 +131,14 @@ public class ChallengeFragment extends Fragment {
                     tags.addView(chip);
                 }
 
-                List<String> tagsList = challenge.getTags();
+                List<String> tagsList = challenge.get().getTags();
                 StringBuilder hashtagsBuilder = new StringBuilder();
 
                 for (int i = 0; i < tagsList.size(); i++)
                     hashtagsBuilder.append("#").append(tagsList.get(0));
                 hashtags.setText(hashtagsBuilder.toString());
 
-                rewardRP.setText(challenge.getRewardRp() + " RP");
+                rewardRP.setText(challenge.get().getRewardRp() + " RP");
 
                 Button accept = view.findViewById(R.id.btnAccept);
                 Button uploadConfirm = view.findViewById(R.id.btnLoadVideo);
@@ -159,18 +148,24 @@ public class ChallengeFragment extends Fragment {
                         //noinspection unchecked
                         user.set(((Result.Success<UserEntity>) u).data);
                         if (user.get() != null) {
+                            boolean isAccepted = false;
                             for (String acceptedId : user.get().getUndone()) {
                                 if (acceptedId.equals(challengeId))
-                                    uploadConfirm.setVisibility(View.VISIBLE);
-                                else accept.setVisibility(View.VISIBLE);
+                                    isAccepted = true;
                             }
-//                            for (String waitingConfirmId: user.get)
+                            if (isAccepted)
+                                uploadConfirm.setVisibility(View.VISIBLE);
+                            else accept.setVisibility(View.VISIBLE);
+                            for (String waitingConfirmId : user.get().getWaitingConfirmation()) {
+                                if (waitingConfirmId.equals(challengeId))
+                                    uploadConfirm.setEnabled(false);
+                            }
                         }
                     }
                 });
 
                 accept.setOnClickListener(l -> {
-                    mViewModel.addChallengeToUndone(user.get(), challenge, r -> {
+                    mViewModel.addChallengeToUndone(user.get(), challenge.get(), r -> {
                     });
                     accept.setVisibility(View.INVISIBLE);
                     uploadConfirm.setVisibility(View.VISIBLE);
@@ -186,68 +181,31 @@ public class ChallengeFragment extends Fragment {
                         startActivityForResult(intent, GET_VIDEO_REQUEST);
                 });
 
-//                progressBarHolder.setAnimation(outAnimation);
-//                progressBarHolder.setVisibility(View.GONE);
-//                wheel.stopSpinning();
             }
-        });
 
-        ViewPagerAdapter adapter = new ViewPagerAdapter(this, challengeId);
-        ViewPager2 viewPager = (ViewPager2) view.findViewById(R.id.viewPager);
-        viewPager.setAdapter(adapter);
+            ViewPagerAdapter adapter = new ViewPagerAdapter(this, challenge.get());
+            ViewPager2 viewPager = (ViewPager2) view.findViewById(R.id.viewPager);
+            viewPager.setAdapter(adapter);
 
-        TabLayout tabLayout = view.findViewById(R.id.tab_layout);
-        new TabLayoutMediator(tabLayout, viewPager,
-                (tab, position) -> {
-                    switch (position) {
-                        case 0:
-                            tab.setText("Users");
-                            break;
-                        case 1:
-                            tab.setText("Challenges Unconfirmed");
-                            break;
-                        case 2:
-                            tab.setText("Challenges Confirmed");
-                            break;
+            TabLayout tabLayout = view.findViewById(R.id.tab_layout);
+            new TabLayoutMediator(tabLayout, viewPager,
+                    (tab, position) -> {
+                        switch (position) {
+                            case 0:
+                                tab.setText("Users");
+                                break;
+                            case 1:
+                                tab.setText("Challenges Unconfirmed");
+                                break;
+                            case 2:
+                                tab.setText("Challenges Confirmed");
+                                break;
+                        }
                     }
-                }
-        ).attach();
-    }
+            ).attach();
 
-    static class ViewPagerAdapter extends FragmentStateAdapter {
-
-        private String challengeId;
-
-        public ViewPagerAdapter(Fragment fragment, String challengeId) {
-            super(fragment);
-            this.challengeId = challengeId;
-        }
-
-        @NonNull
-        @Override
-        public Fragment createFragment(int position) {
-            Fragment fragment = null;
-
-            switch (position) {
-                case 0:
-                    fragment = new ChallengePlayersFragment(challengeId);
-                    break;
-                case 1:
-                    fragment = new ChallengeUnconfirmedFragment(challengeId);
-                    break;
-                case 2:
-                    fragment = new ChallengeConfirmedFragment(challengeId);
-                    break;
-            }
-
-            //noinspection ConstantConditions
-            return fragment;
-        }
-
-        @Override
-        public int getItemCount() {
-            return 3;
-        }
+            loadable.finishBlockingLoading();
+        });
     }
 
     @Override
@@ -277,6 +235,42 @@ public class ChallengeFragment extends Fragment {
                             "Upload Failed", Toast.LENGTH_SHORT).show());
         } else {
             Toast.makeText(getContext(), "No file selected", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    class ViewPagerAdapter extends FragmentStateAdapter {
+
+        private ChallengeEntity challenge;
+
+        public ViewPagerAdapter(Fragment fragment, ChallengeEntity challenge) {
+            super(fragment);
+            this.challenge = challenge;
+        }
+
+        @NonNull
+        @Override
+        public Fragment createFragment(int position) {
+            Fragment fragment = null;
+
+            switch (position) {
+                case 0:
+                    fragment = new ChallengePlayersFragment(challenge.getId());
+                    break;
+                case 1:
+                    fragment = new ChallengeUnconfirmedFragment(challenge);
+                    break;
+                case 2:
+                    fragment = new ChallengeConfirmedFragment(challenge.getId());
+                    break;
+            }
+
+            //noinspection ConstantConditions
+            return fragment;
+        }
+
+        @Override
+        public int getItemCount() {
+            return 3;
         }
     }
 }

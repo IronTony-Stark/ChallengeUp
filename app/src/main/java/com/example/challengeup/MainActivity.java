@@ -256,8 +256,4 @@ public class MainActivity extends AppCompatActivity implements
 
     private ProgressBar mLoader;
     private BlockingLoaderDialog mBlockingLoader;
-
-    public static final int RC_SIGN_IN = 123;
-    public static final String USER_DATA_KEY = "com.example.challengeup.userdata";
-    public static final String CREATE_DIALOG_TAG = "CREATE_DIALOG_TAG";
 }
