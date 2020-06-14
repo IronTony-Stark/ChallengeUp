@@ -322,14 +322,29 @@ public class ChallengeEntity {
         return users.stream().filter(x -> x.getUndone().contains(id)).count();
     }
 
+    public ArrayList<UserEntity> peopleWhoAccepted() {
+        ArrayList<UserEntity> users = UserEntity.getAllUsers();
+        return (ArrayList<UserEntity>) users.stream().filter(x -> x.getUndone().contains(id)).collect(Collectors.toList());
+    }
+
     public long numberOfPeopleWhoComplete() {
         ArrayList<UserEntity> users = UserEntity.getAllUsers();
         return users.stream().filter(x -> x.getDone().contains(id)).count();
     }
 
+    public ArrayList<UserEntity> peopleWhoComplete() {
+        ArrayList<UserEntity> users = UserEntity.getAllUsers();
+        return (ArrayList<UserEntity>) users.stream().filter(x -> x.getDone().contains(id)).collect(Collectors.toList());
+    }
+
     public long numberOfPeopleWhoCompleteAndAccepted() {
         ArrayList<UserEntity> users = UserEntity.getAllUsers();
         return users.stream().filter(x -> x.getDone().contains(id) || x.getUndone().contains(id)).count();
+    }
+
+    public ArrayList<UserEntity> peopleWhoCompleteAndAccepted() {
+        ArrayList<UserEntity> users = UserEntity.getAllUsers();
+        return (ArrayList<UserEntity>) users.stream().filter(x -> x.getDone().contains(id) || x.getUndone().contains(id)).collect(Collectors.toList());
     }
 
     public ArrayList<CommentEntity> getAllComments() {

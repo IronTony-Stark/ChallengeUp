@@ -27,6 +27,7 @@ import com.example.challengeup.backend.StorageFolders;
 import com.example.challengeup.backend.UserEntity;
 import com.example.challengeup.databinding.FragmentFtueBinding;
 import com.example.challengeup.dto.UserDTO;
+import com.example.challengeup.request.ICallback;
 import com.example.challengeup.request.Result;
 import com.example.challengeup.viewModel.MainActivityViewModel;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
@@ -34,10 +35,12 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+import java.util.function.Consumer;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -120,22 +123,23 @@ public class FTUEFragment extends Fragment {
                     String userId = ((Result.Success<String>) addUserResult).data;
 
                     if (!mAvatarUrl.equals(MainActivityViewModel.DEFAULT_AVATAR_URL)) {
-                        uploadImage(userId, mAvatarUrl);
-                        mAvatarUrl = avatarDbUrl +
+                        String avatarDbUrl = userAvatarsDbUrl +
                                 StorageFolders.user_photos.toString() +
                                 "%2F" +
                                 userId +
                                 "_photo" +
                                 "?alt=media";
+                        
+                        uploadImage(userId, mAvatarUrl, taskSnapshot -> {
+                            mMainActivityViewModel.saveUserAvatar(avatarDbUrl);
+                            mMainActivityViewModel.setUserAvatar(avatarDbUrl);
+                        });
                     }
 
                     UserDTO userDTO = new UserDTO(userId, name, username, info);
 
                     mMainActivityViewModel.saveUserToSharedPreferences(userDTO);
-                    mMainActivityViewModel.saveUserAvatar(mAvatarUrl);
-
                     mMainActivityViewModel.setUser(userDTO);
-                    mMainActivityViewModel.setUserAvatar(mAvatarUrl);
 
                     NavDirections action = FTUEFragmentDirections.actionFtueToNewsFeed();
                     Navigation.findNavController(view).navigate(action);
@@ -164,9 +168,11 @@ public class FTUEFragment extends Fragment {
         }
     }
 
-    private void uploadImage(String userId, String imageUri) {
+    private void uploadImage(String userId, String imageUri,
+                             Consumer<UploadTask.TaskSnapshot> consumer) {
         StorageReference file = mStorage.child(userId + "_photo");
-        file.putFile(Uri.parse(imageUri));
+        file.putFile(Uri.parse(imageUri))
+                .addOnSuccessListener(consumer::accept);
     }
 
     private void updateAvatar() {
@@ -174,5 +180,5 @@ public class FTUEFragment extends Fragment {
     }
 
     private static final int GET_IMAGE_REQUEST = 1;
-    private static final String avatarDbUrl = "https://firebasestorage.googleapis.com/v0/b/challengeup-49057.appspot.com/o/";
+    private static final String userAvatarsDbUrl = "https://firebasestorage.googleapis.com/v0/b/challengeup-49057.appspot.com/o/";
 }

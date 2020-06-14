@@ -12,7 +12,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
@@ -44,7 +43,6 @@ public class MainActivity extends AppCompatActivity implements
     private DrawerLayout mDrawerLayout;
     private BottomNavigationView mBottomNav;
     private NavigationView mNavView;
-    private Toolbar mToolbar;
     private AppBarConfiguration mAppBarConfiguration;
     private NavController mNavController;
 
@@ -68,7 +66,6 @@ public class MainActivity extends AppCompatActivity implements
         mDrawerLayout = binding.drawerLayout;
         mBottomNav = binding.bottomNavigationView;
         mNavView = binding.navView;
-        mToolbar = binding.toolbar;
         mLoader = binding.progressBar;
 
         setSupportActionBar(binding.toolbar);
