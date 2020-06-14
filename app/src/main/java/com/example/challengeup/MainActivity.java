@@ -2,7 +2,6 @@ package com.example.challengeup;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
