@@ -3,7 +3,7 @@
 buildscript {
 
     ext {
-        version_navigation = "2.3.0-beta01"
+        version_navigation = "2.3.0-rc01"
         version_material = "1.1.0"
     }
 

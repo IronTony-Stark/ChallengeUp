@@ -79,9 +79,8 @@ public class MainActivityViewModel extends ViewModel {
         mUser.setValue(userDTO);
     }
 
-    public void setLoadingUser() {
-        UserDTO temp = new UserDTO("", "Loading...", "Loading...", "");
-        mUser.setValue(temp);
+    public void setUser(UserDTO dto) {
+        mUser.setValue(dto);
     }
 
     public void setUserAvatar(String photoUrl) {

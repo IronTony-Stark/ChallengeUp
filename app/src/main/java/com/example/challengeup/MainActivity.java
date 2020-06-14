@@ -10,7 +10,9 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
@@ -36,12 +38,13 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity implements
         CreateDialogFragment.CreateDialogListener,
-        ILoadable, IBlockingLoadable {
+        ILoadable, IBlockingLoadable, IUIConfig {
 
     private MainActivityViewModel mViewModel;
     private DrawerLayout mDrawerLayout;
     private BottomNavigationView mBottomNav;
     private NavigationView mNavView;
+    private Toolbar mToolbar;
     private AppBarConfiguration mAppBarConfiguration;
     private NavController mNavController;
 
@@ -65,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements
         mDrawerLayout = binding.drawerLayout;
         mBottomNav = binding.bottomNavigationView;
         mNavView = binding.navView;
+        mToolbar = binding.toolbar;
         mLoader = binding.progressBar;
 
         setSupportActionBar(binding.toolbar);
@@ -145,57 +149,73 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void setAppBarVisibility(boolean show) {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            if (show) actionBar.show();
+            else actionBar.hide();
+        }
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
                 FirebaseUser user = mViewModel.getFirebaseUser();
-                addUserToDbIfAbsent(user);
+                getUserFromDbOrNavigateToFTUE(user);
             }
         }
     }
 
-    private void addUserToDbIfAbsent(FirebaseUser firebaseUser) {
+    private void getUserFromDbOrNavigateToFTUE(FirebaseUser firebaseUser) {
         ICallback getUserCallback = getUserResult -> {
             if (getUserResult instanceof Result.Success) {
                 //noinspection unchecked
                 UserEntity user = ((Result.Success<UserEntity>) getUserResult).data;
 
-                if (user == null) {
-                    user = new UserEntity("IronTony",
-                            "IronTonyStark", firebaseUser.getEmail());
-                    user.setInfo("Most useful info ever");
-                    mViewModel.addUser(user, addUserResult -> {
-                        if (addUserResult instanceof Result.Success) {
-                            //noinspection unchecked
-                            String userId = ((Result.Success<String>) addUserResult).data;
-                            mViewModel.saveUserIdToSharedPreferences(userId);
-                            mViewModel.refreshUserFromSharedPreferences();
-                        }
-                    });
+                finishBlockingLoading();
+
+                if (user != null) {
+                    if (user.getPhoto() != null) {
+                        String userPhoto = user.getPhoto();
+                        mViewModel.setUserAvatar(userPhoto);
+                        mViewModel.saveUserAvatar(userPhoto);
+                    } else if (firebaseUser.getPhotoUrl() != null) {
+                        String firebaseUserPhoto = firebaseUser.getPhotoUrl().toString();
+                        mViewModel.setUserAvatar(firebaseUserPhoto);
+                        mViewModel.saveUserAvatar(firebaseUserPhoto);
+                    }
+
+                    UserDTO userDTO = new UserDTO(user.getId(),
+                            user.getNick(), user.getTag(), user.getInfo());
+
+                    mViewModel.saveUserToSharedPreferences(userDTO);
+                    mViewModel.refreshUserFromSharedPreferences();
+                } else {
+                    UserDTO userDTO = new UserDTO();
+                    userDTO.setName(firebaseUser.getDisplayName());
+                    mViewModel.setUser(userDTO);
+
+                    if (firebaseUser.getPhotoUrl() != null) {
+                        String firebaseUserPhoto = firebaseUser.getPhotoUrl().toString();
+                        mViewModel.saveUserAvatar(firebaseUserPhoto);
+                    }
+
+                    mNavController.navigate(R.id.ftue);
                 }
-
-                if (user.getPhoto() != null) {
-                    String userPhoto = user.getPhoto();
-                    mViewModel.setUserAvatar(userPhoto);
-                    mViewModel.saveUserAvatar(userPhoto);
-                } else if (firebaseUser.getPhotoUrl() != null) {
-                    String firebaseUserPhoto = firebaseUser.getPhotoUrl().toString();
-                    mViewModel.setUserAvatar(firebaseUserPhoto);
-                    mViewModel.saveUserAvatar(firebaseUserPhoto);
-                }
-
-                UserDTO userDTO = new UserDTO(user.getId(),
-                        user.getNick(), user.getTag(), user.getInfo());
-
-                mViewModel.saveUserToSharedPreferences(userDTO);
-                mViewModel.refreshUserFromSharedPreferences();
+            } else {
+                Toast.makeText(this,
+                        "Something bad happened.. " +
+                                "Please contact our support or other idiots who've made this shit",
+                        Toast.LENGTH_SHORT).show();
             }
         };
 
+        startBlockingLoading(0);
+
         mViewModel.getUserByEmail(firebaseUser.getEmail(), getUserCallback);
-        mViewModel.setLoadingUser();
     }
 
     private void setupDestinations() {
