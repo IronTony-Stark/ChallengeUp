@@ -1,4 +1,4 @@
-package com.example.challengeup.backend;
+package com.example.myapplication;
 
 import android.util.Log;
 
@@ -140,7 +140,7 @@ public class VideoConfirmationEntity {
         return null;
     }
 
-    public static VideoConfirmationEntity getVideoById(String id) {
+    public static VideoConfirmationEntity getVideoById(String id, String challenge_id) {
         try {
             OkHttpClient client = new OkHttpClient.Builder()
                     .connectTimeout(30, TimeUnit.SECONDS)
@@ -148,7 +148,7 @@ public class VideoConfirmationEntity {
                     .readTimeout(30, TimeUnit.SECONDS)
                     .build();
             Request request = new Request.Builder()
-                    .url("https://us-central1-challengeup-49057.cloudfunctions.net/get_videoConfirmation_by_id?videoConfirmation_id=" + id)
+                    .url("https://us-central1-challengeup-49057.cloudfunctions.net/get_videoConfirmation_by_id?videoConfirmation_id=" + id+"&videoConfirmation_challenge_id="+challenge_id)
                     .get()
                     .build();
             Response response = client.newCall(request).execute();
