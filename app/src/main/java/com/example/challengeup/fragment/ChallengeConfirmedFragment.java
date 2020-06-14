@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ChallengeChallengesFragment extends Fragment {
+public class ChallengeConfirmedFragment extends Fragment {
 
     private ChallengeChallengesViewModel mViewModel;
     private List<VideoConfirmationEntity> mArrayList = new ArrayList<>();
@@ -39,7 +39,7 @@ public class ChallengeChallengesFragment extends Fragment {
 
     private String challengeId;
 
-    public ChallengeChallengesFragment(String challengeId) {
+    public ChallengeConfirmedFragment(String challengeId) {
         this.challengeId = challengeId;
     }
 
@@ -74,7 +74,7 @@ public class ChallengeChallengesFragment extends Fragment {
 
                 ChallengeEntity challenge = ((Result.Success<ChallengeEntity>) result).data;
 
-                mViewModel.getAllVideos(challenge, result2 -> {
+                mViewModel.getAllConfirmedVideos(challenge, result2 -> {
                     if (result2 instanceof Result.Success) {
                         //noinspection unchecked
                         mArrayList = ((Result.Success<List<VideoConfirmationEntity>>) result2).data;
@@ -136,11 +136,11 @@ public class ChallengeChallengesFragment extends Fragment {
 //            holder.denyButton.setVisibility(Button.VISIBLE);
 
             holder.denyButton.setOnClickListener(new View.OnClickListener() {
-                                                     @Override
-                                                     public void onClick(View v) {
+                @Override
+                public void onClick(View v) {
 
-                                                     }
-                                                 });
+                }
+            });
 
 
         }

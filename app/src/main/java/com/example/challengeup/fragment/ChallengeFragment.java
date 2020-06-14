@@ -203,7 +203,10 @@ public class ChallengeFragment extends Fragment {
                             tab.setText("Users");
                             break;
                         case 1:
-                            tab.setText("Challenges");
+                            tab.setText("Challenges Unconfirmed");
+                            break;
+                        case 2:
+                            tab.setText("Challenges Confirmed");
                             break;
                     }
                 }
@@ -229,7 +232,10 @@ public class ChallengeFragment extends Fragment {
                     fragment = new ChallengePlayersFragment(challengeId);
                     break;
                 case 1:
-                    fragment = new ChallengeChallengesFragment(challengeId);
+                    fragment = new ChallengeUnconfirmedFragment(challengeId);
+                    break;
+                case 2:
+                    fragment = new ChallengeConfirmedFragment(challengeId);
                     break;
             }
 
@@ -239,7 +245,7 @@ public class ChallengeFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            return 2;
+            return 3;
         }
     }
 
