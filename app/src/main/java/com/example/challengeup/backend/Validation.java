@@ -36,22 +36,22 @@ public class Validation {
     }
 
     public static boolean validateTags(ArrayList<String> tags) throws IllegalArgumentException {
-        if (tags == null) throw new IllegalArgumentException("can`t be null");
-        if (tags.size() > 5) throw new IllegalArgumentException("size must be less than 6");
+        if (tags == null) throw new IllegalArgumentException("tags can`t be null");
+        if (tags.size() > 5) throw new IllegalArgumentException("tags number must be less than 6");
         return true;
     }
 
     public static boolean validateNickTagPassword(String nick) throws IllegalArgumentException {
-        if (nick == null) throw new IllegalArgumentException("can`t be null");
+        if (nick == null) throw new IllegalArgumentException("nick can`t be null");
         if (!nick.matches("[A-Za-z0-9_\\-]{5}[A-Za-z0-9_\\-]*"))
-            throw new IllegalArgumentException("wrong input");
+            throw new IllegalArgumentException("wrong nick");
         return true;
     }
 
     public static boolean validateEmail(String email) throws IllegalArgumentException {
-        if (email == null) throw new IllegalArgumentException("can`t be null");
+        if (email == null) throw new IllegalArgumentException("email can`t be null");
         if (!email.matches("[A-Za-z0-9_\\-]+@[A-Za-z0-9]+[A-Za-z0-9.]*[A-Za-z0-9].[A-Za-z0-9]+"))
-            throw new IllegalArgumentException("wrong input");
+            throw new IllegalArgumentException("wrong email");
         return true;
     }
 

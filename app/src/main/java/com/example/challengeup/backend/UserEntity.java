@@ -3,7 +3,6 @@ package com.example.challengeup.backend;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
-import android.util.TimingLogger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,10 +13,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -902,8 +901,12 @@ public class UserEntity {
         this.done = done;
     }
 
-    public void setCategories(ArrayList<String> categories) {
-        this.categories = categories;
+    public void setCategories(List<String> categories) {
+         try{
+             this.categories = (ArrayList<String>) categories;
+         } catch (ClassCastException e){
+             this.categories = new ArrayList<>(categories);
+         }
     }
 
     public void setSubscriptions(ArrayList<String> subscriptions) {
