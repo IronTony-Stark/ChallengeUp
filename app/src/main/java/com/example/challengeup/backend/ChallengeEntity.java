@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
@@ -235,7 +236,7 @@ public class ChallengeEntity {
         return null;
     }
 
-    public static ArrayList<ChallengeEntity> search(String query, Integer liked, Integer accepted, Integer completed, Integer rp, ArrayList<String> categories, OrderBy orderBy, OrderDirection orderDirection){
+    public static ArrayList<ChallengeEntity> search(String query, Integer liked, Integer accepted, Integer completed, Integer rp, List<String> categories, OrderBy orderBy, OrderDirection orderDirection){
 
         Predicate<ChallengeEntity> predicate = challengeEntity -> true;
 
