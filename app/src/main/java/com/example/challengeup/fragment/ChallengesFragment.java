@@ -59,6 +59,7 @@ public class ChallengesFragment extends Fragment {
 
     private FragmentChallengesBinding mBinding;
     private ChallengesViewModel mViewModel;
+    private MainActivityViewModel mMainActivityViewModel;
     private AppBarLayout mAppBarLayout;
     private Adapter mAdapter;
     private ILoadable mLoadable;
@@ -83,6 +84,8 @@ public class ChallengesFragment extends Fragment {
         mViewModel = new ViewModelProvider(this, new ChallengesFactory(
                 appContainer.mRequestExecutor
         )).get(ChallengesViewModel.class);
+        mMainActivityViewModel = new ViewModelProvider(requireActivity())
+                .get(MainActivityViewModel.class);
 
         mAppBarLayout = mBinding.appBarLayout;
         mAppBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) ->
@@ -216,7 +219,7 @@ public class ChallengesFragment extends Fragment {
         public void onBindViewHolder(@NotNull ChallengeViewHolder holder, int position) {
             ChallengeEntity challenge = mDataset.get(position);
 
-            ChallengeDTO challengeDTO = new ChallengeDTO();
+            ChallengeDTO challengeDTO = ChallengeDTO.builder().build();
 
             challengeDTO.setName(challenge.getName());
             challengeDTO.setDescription(challenge.getTask());
@@ -225,7 +228,7 @@ public class ChallengesFragment extends Fragment {
             holder.bind(challengeDTO);
             holder.bindThumbnail(challenge.getPhoto());
 
-            mViewModel.getUserById(challenge.getCreator_id(), result -> {
+            mMainActivityViewModel.getUserById(challenge.getCreator_id(), result -> {
                 if (result instanceof Result.Success) {
                     //noinspection unchecked
                     UserEntity user = ((Result.Success<UserEntity>) result).data;

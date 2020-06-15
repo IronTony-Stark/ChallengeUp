@@ -17,7 +17,6 @@ public class AddChallengeToUndone implements IRequestCommand {
 
     @Override
     public Result request() {
-
         user.addChallengeToUndone(challenge);
         user.update();
         return new Result.Success<>(challenge);

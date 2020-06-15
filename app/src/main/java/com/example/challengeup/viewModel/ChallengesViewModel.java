@@ -11,13 +11,14 @@ import com.example.challengeup.dto.ChallengeSearchDTO;
 import com.example.challengeup.request.ICallback;
 import com.example.challengeup.request.RequestExecutor;
 import com.example.challengeup.request.command.AddBookmarkedCommand;
+import com.example.challengeup.request.command.AddChallengeToUndone;
 import com.example.challengeup.request.command.ChallengeSearchCommand;
+import com.example.challengeup.request.command.CreateVideoConfirmation;
 import com.example.challengeup.request.command.GetAllChallengesCommand;
 import com.example.challengeup.request.command.GetCategories;
+import com.example.challengeup.request.command.GetChallengeByIdCommand;
 import com.example.challengeup.request.command.GetNumAcceptedCommand;
 import com.example.challengeup.request.command.GetNumCompletedCommand;
-import com.example.challengeup.request.command.GetUserByEmailCommand;
-import com.example.challengeup.request.command.GetUserByIdCommand;
 import com.example.challengeup.request.command.LikedCommand;
 import com.example.challengeup.request.command.RemoveBookmarkedCommand;
 import com.example.challengeup.request.command.UnlikedCommand;
@@ -35,16 +36,12 @@ public class ChallengesViewModel extends ViewModel {
         mRequestExecutor = requestExecutor;
     }
 
+    public void getChallengeById(String uid, ICallback callback) {
+        mRequestExecutor.execute(new GetChallengeByIdCommand(uid), callback);
+    }
+
     public void getAllChallenges(ICallback callback) {
         mRequestExecutor.execute(new GetAllChallengesCommand(), callback);
-    }
-
-    public void getUserById(String uid, ICallback callback) {
-        mRequestExecutor.execute(new GetUserByIdCommand(uid), callback);
-    }
-
-    public void getUserByEmail(String email, ICallback callback) {
-        mRequestExecutor.execute(new GetUserByEmailCommand(email), callback);
     }
 
     public void getNumAccepted(ChallengeEntity challenge, ICallback callback) {
@@ -69,12 +66,20 @@ public class ChallengesViewModel extends ViewModel {
             mRequestExecutor.execute(new UnlikedCommand(user, challenge), callback);
     }
 
-    public void getCategories(ICallback callback) {
-        mRequestExecutor.execute(new GetCategories(), callback);
-    }
-
     public void search(ChallengeSearchDTO challengeSearch, ICallback callback) {
         mRequestExecutor.execute(new ChallengeSearchCommand(challengeSearch), callback);
+    }
+
+    public void addChallengeToUndone(UserEntity user, ChallengeEntity challenge, ICallback callback) {
+        mRequestExecutor.execute(new AddChallengeToUndone(user, challenge), callback);
+    }
+
+    public void createVideoConfirmation(UserEntity user, String challenge, ICallback callback) {
+        mRequestExecutor.execute(new CreateVideoConfirmation(user, challenge), callback);
+    }
+
+    public void getCategories(ICallback callback) {
+        mRequestExecutor.execute(new GetCategories(), callback);
     }
 
     public void inflateChipGroup(ChipGroup chipGroup, List<String> categories, Context context) {

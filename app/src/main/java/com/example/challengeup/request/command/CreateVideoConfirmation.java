@@ -9,19 +9,20 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class CreateVideoConfirmation implements IRequestCommand {
 
-    private final AtomicReference<UserEntity> user;
+    private final UserEntity user;
     private final String challengeID;
 
-    public CreateVideoConfirmation(AtomicReference<UserEntity> user, String challengeID) {
+    public CreateVideoConfirmation(UserEntity user, String challengeID) {
         this.user = user;
         this.challengeID = challengeID;
     }
 
     @Override
     public Result request() {
-        String fileID = VideoConfirmationEntity.addNewVideo(user.get().getId(), challengeID, 4, 4);
-        user.get().addChallengeToWaitingConfirmation(challengeID);
-        user.get().update();
+        String fileID = VideoConfirmationEntity.addNewVideo(user.getId(),
+                challengeID, 4, 4);
+        user.addChallengeToWaitingConfirmation(challengeID);
+        user.update();
         return new Result.Success<>(fileID);
     }
 }

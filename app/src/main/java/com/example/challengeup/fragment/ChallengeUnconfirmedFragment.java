@@ -48,7 +48,7 @@ public class ChallengeUnconfirmedFragment extends Fragment {
     private List<VideoConfirmationEntity> mArrayList = new ArrayList<>();
     private Adapter mAdapter;
 
-    private ChallengeEntity challenge;
+    private final ChallengeEntity challenge;
 
     public ChallengeUnconfirmedFragment(ChallengeEntity challenge) {
         this.challenge = challenge;
