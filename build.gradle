@@ -4,7 +4,7 @@ buildscript {
 
     ext {
         version_navigation = "2.3.0-beta01"
-        version_material = "1.1.0"
+        version_material = "1.2.0-alpha01"
     }
 
     repositories {

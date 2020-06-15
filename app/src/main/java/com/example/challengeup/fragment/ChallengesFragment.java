@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.ScaleAnimation;
+import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -30,6 +31,8 @@ import com.example.challengeup.Container;
 import com.example.challengeup.ILoadable;
 import com.example.challengeup.R;
 import com.example.challengeup.backend.ChallengeEntity;
+import com.example.challengeup.backend.OrderBy;
+import com.example.challengeup.backend.OrderDirection;
 import com.example.challengeup.backend.UserEntity;
 import com.example.challengeup.databinding.FragmentChallengesBinding;
 import com.example.challengeup.databinding.ItemChallengeBinding;
@@ -40,18 +43,20 @@ import com.example.challengeup.viewModel.MainActivityViewModel;
 import com.example.challengeup.viewModel.factory.ChallengesFactory;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipDrawable;
+import com.google.android.material.chip.ChipGroup;
 import com.volokh.danylo.hashtaghelper.HashTagHelper;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ChallengesFragment extends Fragment {
 
     private FragmentChallengesBinding mBinding;
     private ChallengesViewModel mViewModel;
-    private  ILoadable mLoadable;
+    private ILoadable mLoadable;
     private ScaleAnimation mScaleAnimation;
     private List<ChallengeEntity> mArrayList = new ArrayList<>();
 
@@ -104,7 +109,7 @@ public class ChallengesFragment extends Fragment {
     }
 
     private void setupFilter() {
-        ViewGroup chips = mBinding.searchArea.chipFilter;
+        ChipGroup chips = mBinding.searchArea.chipFilter;
 
         mViewModel.getCategories(result -> {
             if (result instanceof Result.Success) {
@@ -117,6 +122,7 @@ public class ChallengesFragment extends Fragment {
                         Chip chip = new Chip(requireContext());
                         chip.setChipDrawable(ChipDrawable.createFromResource(
                                 requireContext(), R.xml.item_chip_filter));
+                        chip.setCheckable(true);
                         chip.setText(category);
 
                         chips.addView(chip);
@@ -126,21 +132,43 @@ public class ChallengesFragment extends Fragment {
         });
 
         EditText queryEdiText = mBinding.searchArea.editTextQuery;
+
+        EditText likedEditText = mBinding.searchArea.editTextLiked;
         EditText acceptedEditText = mBinding.searchArea.editTextAccepted;
         EditText completedEditText = mBinding.searchArea.editTextCompleted;
         EditText rpEditText = mBinding.searchArea.editTextRP;
 
         Spinner orderBySpinner = mBinding.searchArea.spinnerOrderBy;
+        orderBySpinner.setAdapter(new ArrayAdapter<>(requireContext(),
+                R.layout.item_spinner, OrderBy.values()));
 
         Spinner orderDirectionSpinner = mBinding.searchArea.spinnerDirection;
+        orderDirectionSpinner.setAdapter(new ArrayAdapter<>(requireContext(),
+                R.layout.item_spinner, OrderDirection.values()));
 
         mBinding.searchArea.iconSearch.setOnClickListener(v -> {
             String query = queryEdiText.getText().toString();
-            String accepted = acceptedEditText.getText().toString();
-            String completed = completedEditText.getText().toString();
-            String rp = rpEditText.getText().toString();
-            String orderBy = orderBySpinner.getSelectedItem().toString();
-            String orderDirection = orderDirectionSpinner.getSelectedItem().toString();
+
+            List<Integer> checkedChipIds = chips.getCheckedChipIds();
+            List<String> checkedChip = chips.getCheckedChipIds()
+                    .stream()
+                    .map(id -> ((Chip) chips.getChildAt(id - 1)).getText().toString())
+                    .collect(Collectors.toList());
+
+            String likedText = likedEditText.getText().toString();
+            String acceptedText = acceptedEditText.getText().toString();
+            String completedText = completedEditText.getText().toString();
+            String rpText = rpEditText.getText().toString();
+
+            Integer liked = likedText.isEmpty() ? null : Integer.valueOf(likedText);
+            Integer accepted = acceptedText.isEmpty() ? null : Integer.valueOf(acceptedText);
+            Integer completed = completedText.isEmpty() ? null : Integer.valueOf(completedText);
+            Integer rp = rpText.isEmpty() ? null : Integer.valueOf(rpText);
+
+            OrderBy orderBy = OrderBy.valueOf(
+                    orderBySpinner.getSelectedItem().toString());
+            OrderDirection orderDirection = OrderDirection.valueOf(
+                    orderDirectionSpinner.getSelectedItem().toString());
         });
     }
 

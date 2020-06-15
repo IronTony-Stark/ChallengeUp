@@ -37,7 +37,7 @@
     <string name="loading">Loading...</string>
     <string name="downloadingError">Error while downloading</string>
     <string name="order_by">Order By</string>
-    <string name="arrow"><![CDATA[>]]></string>
+    <string name="arrow"><![CDATA[>=]]></string>
     <string name="rp">RP</string>
     <string name="completed">Completed</string>
     <string name="accepted">Accepted</string>
