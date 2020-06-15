@@ -122,4 +122,15 @@
         android:name="com.example.challengeup.fragment.LikedChallengesFragment"
         android:label="fragment_liked_challenges"
         tools:layout="@layout/fragment_liked_challenges" />
+    <fragment
+        android:id="@+id/ftue"
+        android:name="com.example.challengeup.fragment.FTUEFragment"
+        android:label="ftue_fragment"
+        tools:layout="@layout/fragment_ftue">
+        <action
+            android:id="@+id/action_ftue_to_newsFeed"
+            app:destination="@id/newsFeed"
+            app:popUpTo="@id/newsFeed"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>

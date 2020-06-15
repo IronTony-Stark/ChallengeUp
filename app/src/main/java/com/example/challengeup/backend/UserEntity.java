@@ -248,8 +248,12 @@ public class UserEntity {
         waitingConfirmation.add(challenge.getId());
     }
 
+    public void addChallengeToWaitingConfirmation(String challengeID) {
+        waitingConfirmation.add(challengeID);
+    }
+
     public void removeChallengeFromWaitingConfirmation(ChallengeEntity challenge) {
-        if (waitingConfirmation.contains(challenge.getId())) waitingConfirmation.remove(challenge.getId());
+        waitingConfirmation.remove(challenge.getId());
     }
 
     public void addChallengeToUndone(ChallengeEntity challenge) {

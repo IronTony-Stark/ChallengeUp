@@ -13,8 +13,11 @@ import com.example.challengeup.request.command.GetAllConfirmedVideosCommand;
 import com.example.challengeup.request.command.GetAllUnconfirmedVideosCommand;
 import com.example.challengeup.request.command.GetAllVideosCommand;
 import com.example.challengeup.request.command.GetChallengeByIdCommand;
+import com.example.challengeup.request.command.GetUserByEmailCommand;
 import com.example.challengeup.request.command.GetUserByIdCommand;
 import com.example.challengeup.request.command.LoadFileToCashCommand;
+import com.example.challengeup.request.command.SendConfirmationCommand;
+import com.example.challengeup.request.command.SendRejectCommand;
 
 import java.io.File;
 
@@ -72,12 +75,24 @@ public class ChallengeChallengesViewModel extends ViewModel {
         mRequestExecutor.execute(new GetUserByIdCommand(uid), callback);
     }
 
+    public void getUserByEmail(String email, ICallback callback) {
+        mRequestExecutor.execute(new GetUserByEmailCommand(email), callback);
+    }
+
     public void getAllConfirmedVideos(ChallengeEntity challenge, ICallback callback) {
         mRequestExecutor.execute(new GetAllConfirmedVideosCommand(challenge), callback);
     }
 
     public void getAllUnconfirmedVideos(ChallengeEntity challenge, ICallback callback) {
         mRequestExecutor.execute(new GetAllUnconfirmedVideosCommand(challenge), callback);
+    }
+
+    public void sendConfiramtion(VideoConfirmationEntity entity, ICallback callback) {
+        mRequestExecutor.execute(new SendConfirmationCommand(entity), callback);
+    }
+
+    public void sendRejection(VideoConfirmationEntity entity, ICallback callback) {
+        mRequestExecutor.execute(new SendRejectCommand(entity), callback);
     }
 
     public void loadVideoToCash(String url, String fileName, ICallback callback) {

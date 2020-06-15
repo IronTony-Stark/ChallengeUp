@@ -1,22 +1,27 @@
 package com.example.challengeup.request.command;
 
+import com.example.challengeup.backend.UserEntity;
 import com.example.challengeup.backend.VideoConfirmationEntity;
 import com.example.challengeup.request.IRequestCommand;
 import com.example.challengeup.request.Result;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 public class CreateVideoConfirmation implements IRequestCommand {
 
-    private final String user;
-    private final String challenge;
+    private final AtomicReference<UserEntity> user;
+    private final String challengeID;
 
-    public CreateVideoConfirmation(String user, String challenge) {
+    public CreateVideoConfirmation(AtomicReference<UserEntity> user, String challengeID) {
         this.user = user;
-        this.challenge = challenge;
+        this.challengeID = challengeID;
     }
 
     @Override
     public Result request() {
-        String fileID = VideoConfirmationEntity.addNewVideo(user, challenge);
+        String fileID = VideoConfirmationEntity.addNewVideo(user.get().getId(), challengeID, 4, 4);
+        user.get().addChallengeToWaitingConfirmation(challengeID);
+        user.get().update();
         return new Result.Success<>(fileID);
     }
 }

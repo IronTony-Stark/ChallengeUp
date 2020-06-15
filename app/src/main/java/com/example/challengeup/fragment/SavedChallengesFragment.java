@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.challengeup.ApplicationContainer;
 import com.example.challengeup.Container;
+import com.example.challengeup.ILoadable;
 import com.example.challengeup.R;
 import com.example.challengeup.backend.ChallengeEntity;
 import com.example.challengeup.backend.UserEntity;
@@ -60,6 +61,9 @@ public class SavedChallengesFragment extends Fragment {
 
         id = mainViewModel.getUser().getValue().getId();
 
+        ILoadable loadable = (ILoadable) requireActivity();
+        loadable.startLoading();
+
         mViewModel.getUserById(id, result -> {
             if (result instanceof Result.Success) {
                 //noinspection unchecked
@@ -84,7 +88,7 @@ public class SavedChallengesFragment extends Fragment {
                         mAdapter.notifyItemRangeInserted(0, mArrayList.size());
 
                     }
-
+                    loadable.finishLoading();
                 });
 
             }
