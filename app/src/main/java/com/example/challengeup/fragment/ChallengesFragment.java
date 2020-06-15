@@ -126,19 +126,8 @@ public class ChallengesFragment extends Fragment {
             if (result instanceof Result.Success) {
                 //noinspection unchecked
                 List<String> categories = ((Result.Success<List<String>>) result).data;
-                if (categories != null) {
-                    for (int i = 0; i < categories.size(); i++) {
-                        String category = categories.get(i);
-
-                        Chip chip = new Chip(requireContext());
-                        chip.setChipDrawable(ChipDrawable.createFromResource(
-                                requireContext(), R.xml.item_chip_filter));
-                        chip.setCheckable(true);
-                        chip.setText(category);
-
-                        chips.addView(chip);
-                    }
-                }
+                if (categories != null)
+                    mViewModel.inflateChipGroup(chips, categories, requireContext());
             }
         });
 

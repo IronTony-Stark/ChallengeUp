@@ -51,6 +51,7 @@
     <string name="accepted">Accepted</string>
     <string name="liked">Liked</string>
     <string name="hint_search_by">Search by name, desc, hashtag, author</string>
+    <string name="pick_topics">Pick topics you are most interested in</string>
 
     <string-array name="createDialog">
         <item>Challenge</item>

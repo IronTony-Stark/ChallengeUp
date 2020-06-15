@@ -20,6 +20,8 @@ import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
 import com.bumptech.glide.Glide;
+import com.example.challengeup.ApplicationContainer;
+import com.example.challengeup.Container;
 import com.example.challengeup.IBlockingLoadable;
 import com.example.challengeup.IUIConfig;
 import com.example.challengeup.R;
@@ -29,7 +31,13 @@ import com.example.challengeup.databinding.FragmentFtueBinding;
 import com.example.challengeup.dto.UserDTO;
 import com.example.challengeup.request.ICallback;
 import com.example.challengeup.request.Result;
+import com.example.challengeup.viewModel.ChallengeViewModel;
+import com.example.challengeup.viewModel.ChallengesViewModel;
 import com.example.challengeup.viewModel.MainActivityViewModel;
+import com.example.challengeup.viewModel.factory.ChallengesFactory;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipDrawable;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,8 +47,11 @@ import com.google.firebase.storage.UploadTask;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -48,6 +59,7 @@ public class FTUEFragment extends Fragment {
 
     private FragmentFtueBinding mBinding;
     private MainActivityViewModel mMainActivityViewModel;
+    private ChallengesViewModel mChallengeViewModel;
     private IBlockingLoadable mBlockingLoadable;
     private IUIConfig mUIConfig;
     private StorageReference mStorage;
@@ -57,6 +69,7 @@ public class FTUEFragment extends Fragment {
     private EditText mName;
     private EditText mUsername;
     private EditText mInfo;
+    private ChipGroup mChipGroup;
 
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater,
@@ -71,8 +84,12 @@ public class FTUEFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        Container appContainer = ((ApplicationContainer) requireActivity().getApplication()).mContainer;
         mMainActivityViewModel = new ViewModelProvider(requireActivity())
                 .get(MainActivityViewModel.class);
+        mChallengeViewModel = new ViewModelProvider(this, new ChallengesFactory(
+                appContainer.mRequestExecutor
+        )).get(ChallengesViewModel.class);
 
         Activity activity = requireActivity();
         mBlockingLoadable = (IBlockingLoadable) activity;
@@ -96,6 +113,16 @@ public class FTUEFragment extends Fragment {
 
         mName.setText(Objects.requireNonNull(mMainActivityViewModel.getUser().getValue()).getName());
 
+        mChipGroup = mBinding.chipGroup;
+        mChallengeViewModel.getCategories(result -> {
+            if (result instanceof Result.Success) {
+                //noinspection unchecked
+                List<String> categories = ((Result.Success<List<String>>) result).data;
+                if (categories != null)
+                    mChallengeViewModel.inflateChipGroup(mChipGroup, categories, requireContext());
+            }
+        });
+
         btnLoadPhoto.setOnClickListener(v -> {
             Intent intent = new Intent();
             intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -110,10 +137,16 @@ public class FTUEFragment extends Fragment {
             String name = mName.getText().toString();
             String username = mUsername.getText().toString();
             String info = mInfo.getText().toString();
+            ArrayList<String> categories = (ArrayList<String>) mChipGroup
+                    .getCheckedChipIds()
+                    .stream()
+                    .map(id -> ((Chip) mChipGroup.getChildAt(id - 1)).getText().toString())
+                    .collect(Collectors.toList());
 
             UserEntity user = new UserEntity(username, name,
                     Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getEmail());
             user.setInfo(info);
+            user.setCategories(categories);
 
             mMainActivityViewModel.addUser(user, addUserResult -> {
                 mBlockingLoadable.finishBlockingLoading();
@@ -129,7 +162,7 @@ public class FTUEFragment extends Fragment {
                                 userId +
                                 "_photo" +
                                 "?alt=media";
-                        
+
                         uploadImage(userId, mAvatarUrl, taskSnapshot -> {
                             mMainActivityViewModel.saveUserAvatar(avatarDbUrl);
                             mMainActivityViewModel.setUserAvatar(avatarDbUrl);
