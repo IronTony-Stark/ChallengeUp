@@ -8,9 +8,13 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -229,6 +233,61 @@ public class ChallengeEntity {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static ArrayList<ChallengeEntity> search(String query, Integer liked, Integer accepted, Integer completed, Integer rp, ArrayList<String> categories, OrderBy orderBy, OrderDirection orderDirection){
+
+        Predicate<ChallengeEntity> predicate = challengeEntity -> true;
+
+        if (!Objects.isNull(liked))
+            predicate = predicate.and(challengeEntity -> challengeEntity.likes>=liked);
+        if (!Objects.isNull(rp))
+            predicate = predicate.and(challengeEntity -> challengeEntity.getRewardRp()>=rp);
+        if (!Objects.isNull(accepted))
+            predicate = predicate.and(challengeEntity -> challengeEntity.numberOfPeopleWhoAccepted()>=accepted);
+        if (!Objects.isNull(completed))
+            predicate =predicate.and(challengeEntity -> challengeEntity.numberOfPeopleWhoComplete()>completed);
+
+        if (!Objects.isNull(query)){
+            Predicate<ChallengeEntity> predicate1 = challengeEntity -> challengeEntity.getName().contains(query);
+            predicate1 = predicate1.or(challengeEntity -> challengeEntity.getTags().parallelStream().anyMatch(x->x.contains(query)));
+            predicate1 = predicate1.or(challengeEntity -> challengeEntity.getTask().contains(query));
+            predicate = predicate.and(predicate1);
+        }
+
+        if (!Objects.isNull(categories)){
+            predicate = predicate.and(challengeEntity -> challengeEntity.getCategories().stream().anyMatch(categories::contains));
+        }
+
+        Comparator<ChallengeEntity> challengeEntityComparator;
+        switch (orderBy) {
+            case Liked:{
+                challengeEntityComparator = Comparator.comparing(ChallengeEntity::getLikes);
+                break;
+            }
+            case RP:{
+                challengeEntityComparator = Comparator.comparing(ChallengeEntity::getRewardRp);
+                break;
+            }
+            case Accepted:{
+                challengeEntityComparator = Comparator.comparing(ChallengeEntity::numberOfPeopleWhoAccepted);
+                break;
+            }
+            case Completed:{
+                challengeEntityComparator = Comparator.comparing(ChallengeEntity::numberOfPeopleWhoComplete);
+                break;
+            }
+            default:
+                challengeEntityComparator = Comparator.comparing(ChallengeEntity::getName);
+        }
+
+        switch (orderDirection) {
+            case Descending: challengeEntityComparator  = challengeEntityComparator.reversed();
+        }
+
+        Stream<ChallengeEntity> stream = ChallengeEntity.getAllChallenges().parallelStream();
+
+        return (ArrayList<ChallengeEntity>) stream.filter(predicate).sorted(challengeEntityComparator).collect(Collectors.toList());
     }
 
     public static ChallengeEntity getChallengeById(String id) {
