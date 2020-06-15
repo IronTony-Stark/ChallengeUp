@@ -140,6 +140,49 @@ public class VideoConfirmationEntity {
         return null;
     }
 
+    public boolean deleteVideo(){
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .build();
+        Request request = new Request.Builder()
+                .url("https://us-central1-challengeup-49057.cloudfunctions.net/delete_video_by_id?videoConfirmation_id=" + id)
+                .get()
+                .build();
+        Response response = null;
+        try {
+            response = client.newCall(request).execute();
+            id = null;
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+    }
+
+    public static boolean deleteVideo(String id){
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .build();
+        Request request = new Request.Builder()
+                .url("https://us-central1-challengeup-49057.cloudfunctions.net/delete_video_by_id?videoConfirmation_id=" + id)
+                .get()
+                .build();
+        Response response = null;
+        try {
+            response = client.newCall(request).execute();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+    }
+
     public static VideoConfirmationEntity getVideoById(String id, String challenge_id) {
         try {
             OkHttpClient client = new OkHttpClient.Builder()
