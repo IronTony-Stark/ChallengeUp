@@ -37,6 +37,7 @@ import com.example.challengeup.backend.UserEntity;
 import com.example.challengeup.databinding.FragmentChallengesBinding;
 import com.example.challengeup.databinding.ItemChallengeBinding;
 import com.example.challengeup.dto.ChallengeDTO;
+import com.example.challengeup.dto.ChallengeSearchDTO;
 import com.example.challengeup.request.Result;
 import com.example.challengeup.viewModel.ChallengesViewModel;
 import com.example.challengeup.viewModel.MainActivityViewModel;
@@ -56,6 +57,7 @@ public class ChallengesFragment extends Fragment {
 
     private FragmentChallengesBinding mBinding;
     private ChallengesViewModel mViewModel;
+    private Adapter mAdapter;
     private ILoadable mLoadable;
     private ScaleAnimation mScaleAnimation;
     private List<ChallengeEntity> mArrayList = new ArrayList<>();
@@ -90,8 +92,8 @@ public class ChallengesFragment extends Fragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(view.getContext(), LinearLayoutManager.VERTICAL));
 
-        Adapter adapter = new Adapter(mArrayList);
-        recyclerView.setAdapter(adapter);
+        mAdapter = new Adapter(mArrayList);
+        recyclerView.setAdapter(mAdapter);
 
         mLoadable = (ILoadable) requireActivity();
         mLoadable.startLoading();
@@ -100,7 +102,7 @@ public class ChallengesFragment extends Fragment {
             if (result instanceof Result.Success) {
                 //noinspection unchecked
                 mArrayList = ((Result.Success<List<ChallengeEntity>>) result).data;
-                adapter.setDataset(mArrayList);
+                mAdapter.setDataset(mArrayList);
             }
             mLoadable.finishLoading();
         });
@@ -147,10 +149,11 @@ public class ChallengesFragment extends Fragment {
                 R.layout.item_spinner, OrderDirection.values()));
 
         mBinding.searchArea.iconSearch.setOnClickListener(v -> {
+            mLoadable.startLoading();
+
             String query = queryEdiText.getText().toString();
 
-            List<Integer> checkedChipIds = chips.getCheckedChipIds();
-            List<String> checkedChip = chips.getCheckedChipIds()
+            List<String> categories = chips.getCheckedChipIds()
                     .stream()
                     .map(id -> ((Chip) chips.getChildAt(id - 1)).getText().toString())
                     .collect(Collectors.toList());
@@ -169,6 +172,20 @@ public class ChallengesFragment extends Fragment {
                     orderBySpinner.getSelectedItem().toString());
             OrderDirection orderDirection = OrderDirection.valueOf(
                     orderDirectionSpinner.getSelectedItem().toString());
+
+            ChallengeSearchDTO challengeSearchDTO = new ChallengeSearchDTO(
+                    query, categories, liked, accepted, completed, rp, orderBy, orderDirection
+            );
+
+            mViewModel.search(challengeSearchDTO, result -> {
+                mLoadable.finishLoading();
+                if (result instanceof Result.Success) {
+                    //noinspection unchecked
+                    List<ChallengeEntity> challenges =
+                            ((Result.Success<List<ChallengeEntity>>) result).data;
+                    mAdapter.setDataset(challenges);
+                }
+            });
         });
     }
 

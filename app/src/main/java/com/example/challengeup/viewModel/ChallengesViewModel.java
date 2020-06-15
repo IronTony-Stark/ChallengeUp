@@ -4,9 +4,11 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.challengeup.backend.ChallengeEntity;
 import com.example.challengeup.backend.UserEntity;
+import com.example.challengeup.dto.ChallengeSearchDTO;
 import com.example.challengeup.request.ICallback;
 import com.example.challengeup.request.RequestExecutor;
 import com.example.challengeup.request.command.AddBookmarkedCommand;
+import com.example.challengeup.request.command.ChallengeSearchCommand;
 import com.example.challengeup.request.command.GetAllChallengesCommand;
 import com.example.challengeup.request.command.GetCategories;
 import com.example.challengeup.request.command.GetNumAcceptedCommand;
@@ -61,5 +63,9 @@ public class ChallengesViewModel extends ViewModel {
 
     public void getCategories(ICallback callback) {
         mRequestExecutor.execute(new GetCategories(), callback);
+    }
+
+    public void search(ChallengeSearchDTO challengeSearch, ICallback callback) {
+        mRequestExecutor.execute(new ChallengeSearchCommand(challengeSearch), callback);
     }
 }
