@@ -7,6 +7,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="chipIconTint">@color/cardview_light_background</item>
+        <item name="colorOnSecondary">#2a2a2a</item>
     </style>
 
 </resources>

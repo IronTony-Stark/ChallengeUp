@@ -132,39 +132,14 @@ public class ChallengeUnconfirmedFragment extends Fragment {
                 });
             }
             AtomicInteger mCurrentPosition = new AtomicInteger();
-            float fromScale = 1.35f;
-            float toScale = 1f;
-            float fromAlpha = 0f;
-            float toAlpha = 1f;
-            int length = 200;
             holder.video.setOnClickListener(v -> {
                 if (holder.video.isPlaying()) {
                     holder.video.pause();
                     holder.play.setVisibility(View.VISIBLE);
-//                    ScaleAnimation fade_in =
-//                            new ScaleAnimation(fromScale, toScale, fromScale, toScale,
-//                                    Animation.RELATIVE_TO_SELF, 0.5f,
-//                                    Animation.RELATIVE_TO_SELF, 0.5f);
-//                    fade_in.setDuration(length);
-//                    fade_in.setFillAfter(true);
-//                    AlphaAnimation alphaIn = new AlphaAnimation(fromAlpha, toAlpha);
-//                    alphaIn.setDuration(length);
-//                    holder.play.startAnimation(fade_in);
-//                    holder.play.startAnimation(alphaIn);
                     Animation fadeIn = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
                     holder.play.startAnimation(fadeIn);
                     mCurrentPosition.set(holder.video.getCurrentPosition());
                 } else {
-//                    ScaleAnimation fade_out =
-//                            new ScaleAnimation(toScale, fromScale, toScale, fromScale,
-//                                    Animation.RELATIVE_TO_SELF, 0.5f,
-//                                    Animation.RELATIVE_TO_SELF, 0.5f);
-//                    fade_out.setDuration(length);
-//                    fade_out.setFillAfter(true);
-//                    AlphaAnimation alphaOut = new AlphaAnimation(toAlpha, fromAlpha);
-//                    alphaOut.setDuration(length);
-//                    holder.play.startAnimation(fade_out);
-//                    holder.play.startAnimation(alphaOut);
                     Animation fadeOut = AnimationUtils.loadAnimation(getContext(), R.anim.fade_out);
                     holder.play.startAnimation(fadeOut);
                     holder.play.setVisibility(View.INVISIBLE);
@@ -200,24 +175,24 @@ public class ChallengeUnconfirmedFragment extends Fragment {
                 if (result instanceof Result.Success) {
                     UserEntity user = (UserEntity) ((Result.Success) result).data;
                     if (user != null) {
-                        if (user.getId().equals(challenge.getCreator_id())) {
+                        if (user.getId().equals(videoConfirmationEntity.getUser_id())) {
                             holder.denyButton.setEnabled(false);
                             holder.confirmButton.setEnabled(false);
+                        } else {
+                            holder.denyButton.setOnClickListener(v -> {
+                                // TODO Reject impl
+                                Toast.makeText(getContext(), "Denied impl", Toast.LENGTH_SHORT).show();
+                            });
+
+                            holder.confirmButton.setOnClickListener(v -> {
+                                // TODO Confirm impl
+                                Toast.makeText(getContext(), "Confirm impl", Toast.LENGTH_SHORT).show();
+                            });
                         }
                         // TODO set User avatar
 //                        holder.avatar =
                     }
                 }
-            });
-
-            holder.denyButton.setOnClickListener(v -> {
-                // TODO Reject impl
-                Toast.makeText(getContext(), "Denied impl", Toast.LENGTH_SHORT).show();
-            });
-
-            holder.confirmButton.setOnClickListener(v -> {
-                // TODO Confirm impl
-                Toast.makeText(getContext(), "Confirm impl", Toast.LENGTH_SHORT).show();
             });
         }
 
