@@ -135,9 +135,9 @@ public class ChallengeFragment extends Fragment {
                 List<String> tagsList = challenge.get().getTags();
                 StringBuilder hashtagsBuilder = new StringBuilder();
 
-                for (int i = 0; i < tagsList.size(); i++)
-                    hashtagsBuilder.append("#").append(tagsList.get(0));
-                hashtags.setText(hashtagsBuilder.toString());
+//                for (int i = 0; i < tagsList.size(); i++)
+//                    hashtagsBuilder.append("#").append(tagsList.get(0));
+//                hashtags.setText(hashtagsBuilder.toString());
 
                 rewardRP.setText(challenge.get().getRewardRp() + " RP");
 
