@@ -1,12 +1,16 @@
 package com.example.challengeup.backend;
 
+import android.os.Build;
 import android.util.Log;
+
+import androidx.annotation.RequiresApi;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -40,6 +44,9 @@ public class ChallengeEntity {
 
     private String photo;
 
+    private  final LocalDateTime dateTime;
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public ChallengeEntity(String name, String task, String creator_id, ArrayList<String> tags, ArrayList<String> categories) {
         this(name, task, creator_id);
 
@@ -47,6 +54,7 @@ public class ChallengeEntity {
         this.categories = categories;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public ChallengeEntity(String name, String task, String creator_id) {
         this.name = name;
         this.task = task;
@@ -59,6 +67,26 @@ public class ChallengeEntity {
         rewardTrophies = new ArrayList<>();
         id = null;
         photo = null;
+
+        dateTime = LocalDateTime.now();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private ChallengeEntity(String name, String task, String creator_id, ArrayList<String> tags, ArrayList<String> categories, LocalDateTime localDateTime) {
+        this.name = name;
+        this.task = task;
+        this.creator_id = creator_id;
+        likes = 0;
+        timesViewed = 0;
+        rewardRp = 0;
+        rewardTrophies = new ArrayList<>();
+        id = null;
+        photo = null;
+        this.tags = tags;
+        this.categories = categories;
+
+        dateTime = localDateTime;
+
     }
 
     public String getPhoto() {
@@ -102,7 +130,8 @@ public class ChallengeEntity {
                     .put("tags", challenge.tags)
                     .put("categories", challenge.categories)
                     .put("rewardRp", challenge.rewardRp)
-                    .put("rewardTrophies", challenge.rewardTrophies);
+                    .put("rewardTrophies", challenge.rewardTrophies)
+                    .put("dateTime", challenge.dateTime);
 
 
             RequestBody body = RequestBody.create(jsonObject.toString(), JSON);
@@ -124,6 +153,7 @@ public class ChallengeEntity {
         return "";
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public static String addNewChallenge(String name, String task, String creator_id, ArrayList<String> tags, ArrayList<String> categories) throws IllegalArgumentException {
         Validation.validateTags(tags);
         Validation.validateTags(categories);
@@ -145,7 +175,8 @@ public class ChallengeEntity {
                     .put("tags", tags)
                     .put("categories", categories)
                     .put("rewardRp", 0)
-                    .put("rewardTrophies", new ArrayList());
+                    .put("rewardTrophies", new ArrayList())
+                    .put("dateTime", LocalDateTime.now());
 
 
             RequestBody body = RequestBody.create(jsonObject.toString(), JSON);
@@ -166,6 +197,7 @@ public class ChallengeEntity {
         return "";
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public static ArrayList<ChallengeEntity> getAllChallenges() {
         try {
             OkHttpClient client = new OkHttpClient.Builder()
@@ -218,7 +250,8 @@ public class ChallengeEntity {
                         object.getJSONObject(key).getString("task"),
                         object.getJSONObject(key).getString("creator_id"),
                         tagsArray,
-                        categoriesArray);
+                        categoriesArray,
+                        LocalDateTime.parse(object.getJSONObject(key).getString("dateTime")));
                 challenge.setId(key);
                 challenge.setLikes(Integer.parseInt(object.getJSONObject(key).getString("likes")));
                 challenge.setTimesViewed(Integer.parseInt(object.getJSONObject(key).getString("times_viewed")));
@@ -236,6 +269,7 @@ public class ChallengeEntity {
         return null;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public static ArrayList<ChallengeEntity> search(String query, Integer liked, Integer accepted, Integer completed, Integer rp, List<String> categories, OrderBy orderBy, OrderDirection orderDirection){
 
         Predicate<ChallengeEntity> predicate = challengeEntity -> true;
@@ -291,6 +325,7 @@ public class ChallengeEntity {
         return (ArrayList<ChallengeEntity>) stream.filter(predicate).sorted(challengeEntityComparator).collect(Collectors.toList());
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public static ChallengeEntity getChallengeById(String id) {
         try {
             OkHttpClient client = new OkHttpClient.Builder()
@@ -337,7 +372,8 @@ public class ChallengeEntity {
                     object.getJSONObject(id).getString("task"),
                     object.getJSONObject(id).getString("creator_id"),
                     tagsArray,
-                    categoriesArray);
+                    categoriesArray,
+                    LocalDateTime.parse(object.getJSONObject(id).getString("dateTime")));
             challenge.setId(id);
             challenge.setLikes(Integer.parseInt(object.getJSONObject(id).getString("likes")));
             challenge.setTimesViewed(Integer.parseInt(object.getJSONObject(id).getString("times_viewed")));
@@ -353,24 +389,28 @@ public class ChallengeEntity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public static ArrayList<ChallengeEntity> getAllWithCategory(String category) {
         ArrayList<ChallengeEntity> challenges = ChallengeEntity.getAllChallenges();
         ArrayList<ChallengeEntity> a = (ArrayList<ChallengeEntity>) challenges.stream().filter(x -> x.getCategories().contains(category)).collect(Collectors.toList());
         return a;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public static ArrayList<ChallengeEntity> getAllWithTag(String tag) {
         ArrayList<ChallengeEntity> challenges = ChallengeEntity.getAllChallenges();
         ArrayList<ChallengeEntity> a = (ArrayList<ChallengeEntity>) challenges.stream().filter(x -> x.getTags().contains(tag)).collect(Collectors.toList());
         return a;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public static ArrayList<ChallengeEntity> getAllWithCategories(ArrayList<String> categories) {
         ArrayList<ChallengeEntity> challenges = ChallengeEntity.getAllChallenges();
         ArrayList<ChallengeEntity> a = (ArrayList<ChallengeEntity>) challenges.stream().filter(x -> x.getCategories().containsAll(categories)).collect(Collectors.toList());
         return a;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public static ArrayList<ChallengeEntity> getAllWithTags(ArrayList<String> tags) {
         ArrayList<ChallengeEntity> challenges = ChallengeEntity.getAllChallenges();
         ArrayList<ChallengeEntity> a = (ArrayList<ChallengeEntity>) challenges.stream().filter(x -> x.getTags().containsAll(tags)).collect(Collectors.toList());
@@ -435,7 +475,8 @@ public class ChallengeEntity {
                     .put("tags", tags)
                     .put("times_viewed", timesViewed)
                     .put("rewardRp", rewardRp)
-                    .put("rewardTrophies", rewardTrophies);
+                    .put("rewardTrophies", rewardTrophies)
+                    .put("dateTime", dateTime);
 
             // RequestBody body = RequestBody.create(jsonObject.toString(), JSON);
 
@@ -501,6 +542,10 @@ public class ChallengeEntity {
     public void setTask(String task) {
 
         this.task = task;
+    }
+
+    public LocalDateTime getDateTime() {
+        return dateTime;
     }
 
     public void setLikes(int likes) {
