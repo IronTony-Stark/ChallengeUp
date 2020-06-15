@@ -19,6 +19,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
+import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
@@ -221,7 +222,11 @@ public class MainActivity extends AppCompatActivity implements
                         mViewModel.saveUserAvatar(firebaseUserPhoto);
                     }
 
-                    mNavController.navigate(R.id.ftue);
+                    NavOptions navOptions = new NavOptions
+                            .Builder()
+                            .setPopUpTo(R.id.newsFeed, true)
+                            .build();
+                    mNavController.navigate(R.id.ftue, null, navOptions);
                 }
             } else {
                 Toast.makeText(this,
