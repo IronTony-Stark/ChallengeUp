@@ -36,18 +36,14 @@
     <string name="top">Top</string>
     <string name="loading">Loading...</string>
     <string name="downloadingError">Error while downloading</string>
+    <string name="order_by">Order By</string>
+    <string name="arrow"><![CDATA[>]]></string>
+    <string name="rp">RP</string>
+    <string name="completed">Completed</string>
+    <string name="accepted">Accepted</string>
+    <string name="liked">Liked</string>
+    <string name="hint_search_by">Search by name, desc, hashtag, author</string>
 
-    <string-array name="challengesOrderBy">
-        <item>None</item>
-        <item>Likes</item>
-        <item>Accepted</item>
-        <item>Completed</item>
-        <item>Points</item>
-    </string-array>
-    <string-array name="orderDirection">
-        <item>Ascending</item>
-        <item>Descending</item>
-    </string-array>
     <string-array name="createDialog">
         <item>Challenge</item>
         <item>Post</item>

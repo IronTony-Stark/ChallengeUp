@@ -23,7 +23,7 @@
                     android:id="@+id/searchArea"
                     layout="@layout/search_challenge"
                     android:layout_width="match_parent"
-                    android:layout_height="320dp" />
+                    android:layout_height="330dp" />
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
 

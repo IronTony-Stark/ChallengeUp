@@ -8,6 +8,8 @@ import android.view.animation.Animation;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +38,8 @@ import com.example.challengeup.request.Result;
 import com.example.challengeup.viewModel.ChallengesViewModel;
 import com.example.challengeup.viewModel.MainActivityViewModel;
 import com.example.challengeup.viewModel.factory.ChallengesFactory;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipDrawable;
 import com.volokh.danylo.hashtaghelper.HashTagHelper;
 
 import org.jetbrains.annotations.NotNull;
@@ -47,6 +51,7 @@ public class ChallengesFragment extends Fragment {
 
     private FragmentChallengesBinding mBinding;
     private ChallengesViewModel mViewModel;
+    private  ILoadable mLoadable;
     private ScaleAnimation mScaleAnimation;
     private List<ChallengeEntity> mArrayList = new ArrayList<>();
 
@@ -83,8 +88,8 @@ public class ChallengesFragment extends Fragment {
         Adapter adapter = new Adapter(mArrayList);
         recyclerView.setAdapter(adapter);
 
-        ILoadable loadable = (ILoadable) requireActivity();
-        loadable.startLoading();
+        mLoadable = (ILoadable) requireActivity();
+        mLoadable.startLoading();
 
         mViewModel.getAllChallenges(result -> {
             if (result instanceof Result.Success) {
@@ -92,7 +97,50 @@ public class ChallengesFragment extends Fragment {
                 mArrayList = ((Result.Success<List<ChallengeEntity>>) result).data;
                 adapter.setDataset(mArrayList);
             }
-            loadable.finishLoading();
+            mLoadable.finishLoading();
+        });
+
+        setupFilter();
+    }
+
+    private void setupFilter() {
+        ViewGroup chips = mBinding.searchArea.chipFilter;
+
+        mViewModel.getCategories(result -> {
+            if (result instanceof Result.Success) {
+                //noinspection unchecked
+                List<String> categories = ((Result.Success<List<String>>) result).data;
+                if (categories != null) {
+                    for (int i = 0; i < categories.size(); i++) {
+                        String category = categories.get(i);
+
+                        Chip chip = new Chip(requireContext());
+                        chip.setChipDrawable(ChipDrawable.createFromResource(
+                                requireContext(), R.xml.item_chip_filter));
+                        chip.setText(category);
+
+                        chips.addView(chip);
+                    }
+                }
+            }
+        });
+
+        EditText queryEdiText = mBinding.searchArea.editTextQuery;
+        EditText acceptedEditText = mBinding.searchArea.editTextAccepted;
+        EditText completedEditText = mBinding.searchArea.editTextCompleted;
+        EditText rpEditText = mBinding.searchArea.editTextRP;
+
+        Spinner orderBySpinner = mBinding.searchArea.spinnerOrderBy;
+
+        Spinner orderDirectionSpinner = mBinding.searchArea.spinnerDirection;
+
+        mBinding.searchArea.iconSearch.setOnClickListener(v -> {
+            String query = queryEdiText.getText().toString();
+            String accepted = acceptedEditText.getText().toString();
+            String completed = completedEditText.getText().toString();
+            String rp = rpEditText.getText().toString();
+            String orderBy = orderBySpinner.getSelectedItem().toString();
+            String orderDirection = orderDirectionSpinner.getSelectedItem().toString();
         });
     }
 
@@ -161,13 +209,15 @@ public class ChallengesFragment extends Fragment {
                                 challengeDTO.setLiked(String.valueOf(Integer.parseInt(prevLiked) - 1));
                             holder.bind(challengeDTO);
 
-                            mViewModel.setLiked(user, challenge, isChecked, ignored -> { });
+                            mViewModel.setLiked(user, challenge, isChecked, ignored -> {
+                            });
                         });
 
                         savedButton.setOnCheckedChangeListener((compoundButton, isChecked) -> {
                             compoundButton.startAnimation(mScaleAnimation);
 
-                            mViewModel.setBookmarked(user, challenge, isChecked, ignored -> { });
+                            mViewModel.setBookmarked(user, challenge, isChecked, ignored -> {
+                            });
                         });
 
                     }
