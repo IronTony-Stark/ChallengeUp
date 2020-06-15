@@ -2,7 +2,10 @@ package com.example.challengeup.backend;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.util.Log;
+
+import androidx.annotation.RequiresApi;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -282,6 +285,7 @@ public class UserEntity {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public ArrayList<ChallengeEntity> getDoneChallenges() {
         ArrayList<ChallengeEntity> challenges = new ArrayList<>();
         for (String s : done) {
@@ -290,6 +294,7 @@ public class UserEntity {
         return challenges;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public ArrayList<ChallengeEntity> getWaitingConfirmationChallenges() {
         ArrayList<ChallengeEntity> challenges = new ArrayList<>();
         for (String s : waitingConfirmation) {
@@ -298,6 +303,7 @@ public class UserEntity {
         return challenges;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public ArrayList<ChallengeEntity> getLikedChallenges() {
         ArrayList<ChallengeEntity> challenges = new ArrayList<>();
         for (String s : liked) {
@@ -306,6 +312,7 @@ public class UserEntity {
         return challenges;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public ArrayList<ChallengeEntity> getUnDoneChallenges() {
         ArrayList<ChallengeEntity> challenges = new ArrayList<>();
         for (String s : undone) {
@@ -314,6 +321,7 @@ public class UserEntity {
         return challenges;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public ArrayList<ChallengeEntity> getSavedChallenges() {
         ArrayList<ChallengeEntity> challenges = new ArrayList<>();
         for (String s : saved) {
@@ -322,6 +330,7 @@ public class UserEntity {
         return challenges;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public ArrayList<ChallengeEntity> getAllCreatedChallenges() {
         ArrayList<ChallengeEntity> challenges = ChallengeEntity.getAllChallenges();
         ArrayList<ChallengeEntity> a = (ArrayList<ChallengeEntity>) challenges.stream().filter(x -> x.getCreator_id().equals(id)).collect(Collectors.toList());
