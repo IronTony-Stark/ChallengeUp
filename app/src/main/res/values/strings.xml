@@ -30,7 +30,7 @@
     <string name="log_in_text">Log in</string>
     <string name="create_dialog_title">What do you want to create?</string>
     <string name="upload_video_confirmation">Upload video confirmation</string>
-    <string name="buffering_string"><![CDATA[Buffering&#8230;]]></string>
+    <string name="buffering_string"><![CDATA[Buffering &#8230;]]></string>
     <string name="challenges">Challenges</string>
     <string name="liked_challenges">Liked Challenges</string>
     <string name="top">Top</string>

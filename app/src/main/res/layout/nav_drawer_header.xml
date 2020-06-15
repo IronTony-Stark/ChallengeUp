@@ -31,7 +31,7 @@
             android:layout_marginStart="24dp"
             android:text="@{viewModel.user.name}"
             android:textColor="@color/design_default_color_on_primary"
-            android:textSize="24sp"
+            android:textSize="@dimen/h2"
             app:layout_constraintStart_toEndOf="@+id/avatar"
             app:layout_constraintTop_toTopOf="@+id/avatar"
             tools:text="Iron Tony" />
@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:text="@{viewModel.user.username}"
             android:textColor="@color/design_default_color_on_primary"
-            android:textSize="16sp"
+            android:textSize="@dimen/h6"
             app:layout_constraintBottom_toBottomOf="@+id/avatar"
             app:layout_constraintStart_toStartOf="@+id/name"
             tools:text="\@IronTonyStark" />

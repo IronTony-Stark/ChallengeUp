@@ -5,6 +5,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -130,12 +132,41 @@ public class ChallengeUnconfirmedFragment extends Fragment {
                 });
             }
             AtomicInteger mCurrentPosition = new AtomicInteger();
+            float fromScale = 1.35f;
+            float toScale = 1f;
+            float fromAlpha = 0f;
+            float toAlpha = 1f;
+            int length = 200;
             holder.video.setOnClickListener(v -> {
                 if (holder.video.isPlaying()) {
                     holder.video.pause();
                     holder.play.setVisibility(View.VISIBLE);
+//                    ScaleAnimation fade_in =
+//                            new ScaleAnimation(fromScale, toScale, fromScale, toScale,
+//                                    Animation.RELATIVE_TO_SELF, 0.5f,
+//                                    Animation.RELATIVE_TO_SELF, 0.5f);
+//                    fade_in.setDuration(length);
+//                    fade_in.setFillAfter(true);
+//                    AlphaAnimation alphaIn = new AlphaAnimation(fromAlpha, toAlpha);
+//                    alphaIn.setDuration(length);
+//                    holder.play.startAnimation(fade_in);
+//                    holder.play.startAnimation(alphaIn);
+                    Animation fadeIn = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
+                    holder.play.startAnimation(fadeIn);
                     mCurrentPosition.set(holder.video.getCurrentPosition());
                 } else {
+//                    ScaleAnimation fade_out =
+//                            new ScaleAnimation(toScale, fromScale, toScale, fromScale,
+//                                    Animation.RELATIVE_TO_SELF, 0.5f,
+//                                    Animation.RELATIVE_TO_SELF, 0.5f);
+//                    fade_out.setDuration(length);
+//                    fade_out.setFillAfter(true);
+//                    AlphaAnimation alphaOut = new AlphaAnimation(toAlpha, fromAlpha);
+//                    alphaOut.setDuration(length);
+//                    holder.play.startAnimation(fade_out);
+//                    holder.play.startAnimation(alphaOut);
+                    Animation fadeOut = AnimationUtils.loadAnimation(getContext(), R.anim.fade_out);
+                    holder.play.startAnimation(fadeOut);
                     holder.play.setVisibility(View.INVISIBLE);
                     holder.video.seekTo(mCurrentPosition.get());
                     holder.video.start();

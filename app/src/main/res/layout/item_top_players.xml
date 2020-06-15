@@ -25,7 +25,7 @@
                 android:layout_marginStart="8dp"
                 android:text="@{player.rank}"
                 android:textAlignment="center"
-                android:textSize="30sp"
+                android:textSize="@dimen/h2"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -48,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:text="@{player.name}"
-                android:textSize="36sp"
+                android:textSize="@dimen/h1"
                 app:layout_constraintStart_toEndOf="@+id/avatar"
                 app:layout_constraintTop_toTopOf="@+id/avatar"
                 tools:text="Iron Tony" />
@@ -58,9 +58,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{player.rp}"
-                android:textSize="18sp"
+                android:textSize="@dimen/h5"
                 app:layout_constraintBottom_toBottomOf="@+id/avatar"
                 app:layout_constraintStart_toStartOf="@+id/name"
+                app:layout_constraintTop_toBottomOf="@+id/name"
                 tools:text="1203187 RP" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
