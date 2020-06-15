@@ -190,7 +190,7 @@ public class ChallengeUnconfirmedFragment extends Fragment {
                 holder.confirmButton.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.fade_in));
                 mViewModel.sendConfiramtion(videoConfirmationEntity, result1 -> {
                     if ((int) ((Result.Success) result1).data == 0) {
-                        Toast.makeText(getContext(), R.string.completed, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), R.string.challenge_is_completed, Toast.LENGTH_LONG).show();
                     } else {
                         Toast.makeText(getContext(), R.string.confirmed, Toast.LENGTH_SHORT).show();
                     }

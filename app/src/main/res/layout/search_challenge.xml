@@ -1,222 +1,225 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <EditText
-        android:id="@+id/searchLine"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:padding="6dp"
-        android:layout_marginEnd="48dp"
-        android:hint="Challenge's name, desc, task, hashtags, authors"
-        android:inputType="text"
-        android:maxLines="1"
-        android:textSize="@dimen/h4"
-        app:layout_constraintEnd_toStartOf="@+id/imageView39"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/imageView39"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintBottom_toBottomOf="@+id/searchLine"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/searchLine"
-        app:srcCompat="@drawable/ic_search" />
-
-    <Spinner
-        android:id="@+id/spinner2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:entries="@array/orderDirection"
-        android:gravity="center"
-        app:layout_constraintBottom_toBottomOf="@+id/spinner"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/spinner"
-        app:layout_constraintTop_toTopOf="@+id/spinner" />
-
-    <Spinner
-        android:id="@+id/spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:entries="@array/challengesOrderBy"
-        android:gravity="center"
-        app:layout_constraintBottom_toBottomOf="@+id/textView52"
-        app:layout_constraintEnd_toStartOf="@+id/spinner2"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/textView52"
-        app:layout_constraintTop_toTopOf="@+id/textView52" />
-
-    <TextView
-        android:id="@+id/textView52"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Order By"
-        android:textSize="@dimen/h5"
-        app:layout_constraintEnd_toStartOf="@+id/spinner"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchConstrains" />
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/searchConstrains"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:layout_constraintBottom_toTopOf="@id/textView52"
-        app:layout_constraintTop_toBottomOf="@+id/searchLine"
-        tools:layout_editor_absoluteX="0dp">
-
-
-        <TextView
-            android:id="@+id/textView49"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=">"
-            android:textSize="@dimen/h5"
-            app:layout_constraintBottom_toTopOf="@+id/editTextNumber4"
-            app:layout_constraintEnd_toStartOf="@+id/editTextNumber5"
-            app:layout_constraintTop_toTopOf="@+id/editTextNumber5"
-            app:layout_constraintVertical_bias="0.648" />
+        android:layout_height="wrap_content">
 
         <EditText
-            android:id="@+id/editTextNumber4"
-            android:layout_width="wrap_content"
+            android:id="@+id/editTextQuery"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:ems="6"
-            android:inputType="number"
-            android:padding="5dp"
-            android:textSize="@dimen/h5"
-            app:layout_constraintEnd_toEndOf="@id/editTextNumber5"
-            app:layout_constraintTop_toBottomOf="@+id/editTextNumber5"
-            tools:layout_editor_absoluteX="243dp" />
-
-        <EditText
-            android:id="@+id/editTextNumber5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="50dp"
-            android:ems="6"
-            android:inputType="number"
-            android:padding="5dp"
-            android:textSize="@dimen/h5"
-            app:layout_constraintEnd_toEndOf="@+id/editTextNumber"
-            app:layout_constraintTop_toBottomOf="@+id/editTextNumber" />
-
-        <EditText
-            android:id="@+id/editTextNumber3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:ems="6"
-            android:inputType="number"
-            android:padding="5dp"
-            android:textSize="@dimen/h5"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/editTextNumber4"
-            app:layout_constraintTop_toBottomOf="@+id/editTextNumber4" />
-
-        <TextView
-            android:id="@+id/textView38"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=">"
-            android:textSize="@dimen/h5"
-            app:layout_constraintBottom_toBottomOf="@+id/editTextNumber4"
-            app:layout_constraintEnd_toStartOf="@+id/editTextNumber4"
-            app:layout_constraintStart_toStartOf="@+id/textView49"
-            app:layout_constraintTop_toTopOf="@+id/editTextNumber4" />
-
-        <TextView
-            android:id="@+id/textView37"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=">"
-            android:textSize="@dimen/h5"
-            app:layout_constraintBottom_toBottomOf="@+id/editTextNumber"
-            app:layout_constraintEnd_toStartOf="@+id/editTextNumber"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/textView22"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="56dp"
+            android:hint="@string/hint_search_by"
+            android:inputType="text"
+            android:maxLines="1"
+            app:layout_constraintEnd_toStartOf="@+id/iconSearch"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/textView36"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:text="RP"
-            android:textSize="@dimen/h5"
+        <ImageView
+            android:id="@+id/iconSearch"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="16dp"
+            android:tint="@color/colorAccent"
+            app:layout_constraintBottom_toBottomOf="@+id/editTextQuery"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/editTextQuery"
+            app:srcCompat="@drawable/ic_search" />
 
-            app:layout_constraintBottom_toBottomOf="@+id/textView51"
-            app:layout_constraintEnd_toStartOf="@+id/textView51"
-            app:layout_constraintTop_toTopOf="@+id/textView51" />
-
-        <TextView
-            android:id="@+id/textView35"
-            android:layout_width="wrap_content"
+        <HorizontalScrollView
+            android:id="@+id/categories"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Accepted"
-            android:textSize="@dimen/h5"
-            app:layout_constraintBottom_toBottomOf="@+id/textView49"
-            app:layout_constraintEnd_toEndOf="@+id/textView34"
-            app:layout_constraintTop_toTopOf="@+id/textView49" />
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:scrollbars="none"
+            app:layout_constraintBottom_toTopOf="@id/textLiked"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/editTextQuery">
 
-        <TextView
-            android:id="@+id/textView34"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Completed"
-            android:textSize="@dimen/h5"
-            app:layout_constraintBottom_toBottomOf="@+id/textView38"
-            app:layout_constraintEnd_toEndOf="@+id/textView36"
-            app:layout_constraintTop_toTopOf="@+id/textView38" />
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipFilter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:singleLine="true">
 
-        <TextView
-            android:id="@+id/textView22"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Likes"
-            android:textSize="@dimen/h5"
-            app:layout_constraintBottom_toBottomOf="@+id/textView37"
-            app:layout_constraintEnd_toEndOf="@+id/textView35"
-            app:layout_constraintTop_toTopOf="@+id/textView37" />
-
-        <TextView
-            android:id="@+id/textView51"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=">"
-            android:textSize="@dimen/h5"
-            app:layout_constraintBottom_toBottomOf="@+id/editTextNumber3"
-            app:layout_constraintEnd_toStartOf="@+id/editTextNumber3"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/textView38"
-            app:layout_constraintTop_toBottomOf="@+id/editTextNumber4" />
+            </com.google.android.material.chip.ChipGroup>
+        </HorizontalScrollView>
 
         <EditText
-            android:id="@+id/editTextNumber"
+            android:id="@+id/editTextLiked"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginEnd="70dp"
+            android:layout_marginEnd="32dp"
             android:ems="6"
             android:inputType="number"
-            android:padding="5dp"
-            android:textSize="@dimen/h5"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@+id/textLiked"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/textView37" />
+            app:layout_constraintStart_toEndOf="@+id/arrow1"
+            app:layout_constraintTop_toTopOf="@+id/textLiked" />
+
+        <EditText
+            android:id="@+id/editTextAccepted"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="6"
+            android:inputType="number"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@+id/textAccepted"
+            app:layout_constraintStart_toStartOf="@+id/editTextLiked"
+            app:layout_constraintTop_toTopOf="@+id/textAccepted" />
+
+        <EditText
+            android:id="@+id/editTextCompleted"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="6"
+            android:inputType="number"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@+id/textCompleted"
+            app:layout_constraintStart_toStartOf="@+id/editTextAccepted"
+            app:layout_constraintTop_toTopOf="@+id/arrow3" />
+
+        <EditText
+            android:id="@+id/editTextRP"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="6"
+            android:inputType="number"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@+id/textRP"
+            app:layout_constraintStart_toStartOf="@+id/editTextCompleted"
+            app:layout_constraintTop_toTopOf="@+id/arrow4" />
+
+        <TextView
+            android:id="@+id/textLiked"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/liked"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/arrow1"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/categories" />
+
+        <TextView
+            android:id="@+id/textAccepted"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/accepted"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="@+id/textLiked"
+            app:layout_constraintStart_toStartOf="@+id/textLiked"
+            app:layout_constraintTop_toBottomOf="@+id/textLiked" />
+
+        <TextView
+            android:id="@+id/textCompleted"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/completed"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="@+id/textAccepted"
+            app:layout_constraintStart_toStartOf="@+id/textAccepted"
+            app:layout_constraintTop_toBottomOf="@+id/textAccepted" />
+
+        <TextView
+            android:id="@+id/textRP"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/rp"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/arrow3"
+            app:layout_constraintStart_toStartOf="@+id/textCompleted"
+            app:layout_constraintTop_toBottomOf="@+id/textCompleted" />
+
+        <TextView
+            android:id="@+id/textOrderBy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="@string/order_by"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/spinnerOrderBy"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textRP" />
+
+        <Spinner
+            android:id="@+id/spinnerDirection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="@+id/spinnerOrderBy"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/spinnerOrderBy"
+            app:layout_constraintTop_toTopOf="@+id/spinnerOrderBy" />
+
+        <Spinner
+            android:id="@+id/spinnerOrderBy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="@+id/textOrderBy"
+            app:layout_constraintEnd_toStartOf="@+id/spinnerDirection"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/textOrderBy"
+            app:layout_constraintTop_toTopOf="@+id/textOrderBy" />
+
+        <TextView
+            android:id="@+id/arrow1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/arrow"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="@+id/textLiked"
+            app:layout_constraintEnd_toStartOf="@+id/editTextLiked"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/textLiked"
+            app:layout_constraintTop_toTopOf="@+id/textLiked" />
+
+        <TextView
+            android:id="@+id/arrow2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/arrow"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="@+id/textAccepted"
+            app:layout_constraintStart_toStartOf="@+id/arrow1"
+            app:layout_constraintTop_toTopOf="@+id/textAccepted" />
+
+        <TextView
+            android:id="@+id/arrow3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/arrow"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="@+id/textCompleted"
+            app:layout_constraintStart_toStartOf="@+id/arrow2"
+            app:layout_constraintTop_toTopOf="@+id/textCompleted" />
+
+        <TextView
+            android:id="@+id/arrow4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/arrow"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="@+id/textRP"
+            app:layout_constraintStart_toStartOf="@+id/arrow3"
+            app:layout_constraintTop_toTopOf="@+id/textRP" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
