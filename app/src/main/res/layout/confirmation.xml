@@ -87,6 +87,7 @@
         android:textAlignment="textEnd"
         android:textSize="@dimen/h6"
         android:translationZ="100dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@+id/video"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -100,6 +101,7 @@
         android:textAlignment="textEnd"
         android:textSize="@dimen/h6"
         android:translationZ="100dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@id/btnConfirm"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -120,9 +122,9 @@
         android:layout_marginBottom="8dp"
         android:textColor="#FFFFFF"
         android:textSize="@dimen/h5"
-        app:outlineColor="#FFFFFF"
-        app:outlineWidth="1.0"
         app:layout_constraintBottom_toBottomOf="@id/video"
-        app:layout_constraintStart_toEndOf="@id/avatar" />
+        app:layout_constraintStart_toEndOf="@id/avatar"
+        app:outlineColor="#FFFFFF"
+        app:outlineWidth="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
