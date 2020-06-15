@@ -9,7 +9,12 @@ import com.bumptech.glide.Glide;
 public class ImageDataBindingAdapter {
 
     @BindingAdapter("roundImageUrl")
-    public static void setImageResource(ImageView imageView, String url) {
+    public static void roundImageUrl(ImageView imageView, String url) {
         Glide.with(imageView).load(url).circleCrop().into(imageView);
+    }
+
+    @BindingAdapter("centerCropImageUrl")
+    public static void centerCropImageUrl(ImageView imageView, String url) {
+        Glide.with(imageView).load(url).centerCrop().into(imageView);
     }
 }

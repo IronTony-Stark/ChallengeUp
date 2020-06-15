@@ -1,8 +1,11 @@
 package com.example.challengeup;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,6 +37,8 @@ import com.example.challengeup.viewModel.factory.MainActivityFactory;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseUser;
+
+import org.jetbrains.annotations.NotNull;
 
 public class MainActivity extends AppCompatActivity implements
         CreateDialogFragment.CreateDialogListener,
@@ -83,6 +88,9 @@ public class MainActivity extends AppCompatActivity implements
 
         setupDestinations();
         setupNavDrawer();
+
+        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST);
     }
 
     @Override
@@ -166,6 +174,19 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NotNull String[] permissions,
+                                           @NotNull int[] grantResults) {
+        if (requestCode == MY_PERMISSIONS_REQUEST) {
+            if (grantResults.length > 0 &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                Log.w("Main", "Permission granted");
+            else
+                Log.w("Main", "Permission denied");
+        }
+    }
+
+    @SuppressWarnings("unchecked")
     private void getUserFromDbOrNavigateToFTUE(FirebaseUser firebaseUser) {
         ICallback getUserCallback = getUserResult -> {
             if (getUserResult instanceof Result.Success) {
@@ -241,7 +262,9 @@ public class MainActivity extends AppCompatActivity implements
     private ProgressBar mLoader;
     private BlockingLoaderDialog mBlockingLoader;
 
-    public static final int RC_SIGN_IN = 123;
+    private static final int RC_SIGN_IN = 123;
+    private static final int MY_PERMISSIONS_REQUEST = 124;
+
     public static final String USER_DATA_KEY = "com.example.challengeup.userdata";
     public static final String CREATE_DIALOG_TAG = "CREATE_DIALOG_TAG";
 }

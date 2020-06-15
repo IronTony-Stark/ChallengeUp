@@ -3,13 +3,14 @@
 buildscript {
 
     ext {
-        version_navigation = "2.3.0-rc01"
-        version_material = "1.1.0"
+        version_navigation = "2.3.0-beta01"
+        version_material = "1.2.0-alpha01"
     }
 
     repositories {
         google()
         jcenter()
+        maven { url 'https://jitpack.io' }
     }
 
     dependencies {
@@ -27,6 +28,7 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven { url 'https://jitpack.io' }
     }
 }
 

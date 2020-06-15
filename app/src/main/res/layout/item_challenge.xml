@@ -1,152 +1,165 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="350dp"
-    android:elevation="3dp"
-    app:cardCornerRadius="10dp"
-    app:cardUseCompatPadding="true"
-    tools:targetApi="lollipop"
-    tools:visibility="visible">
+<layout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <data>
+
+        <variable
+            name="thumbnail"
+            type="String" />
+
+        <variable
+            name="avatar"
+            type="String" />
+
+        <variable
+            name="challenge"
+            type="com.example.challengeup.dto.ChallengeDTO" />
+    </data>
+
+    <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="350dp"
+        android:elevation="3dp"
+        app:cardCornerRadius="10dp"
+        app:cardUseCompatPadding="true">
 
-        <ImageView
-            android:id="@+id/thumbnail"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:scaleType="centerCrop"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@tools:sample/backgrounds/scenic" />
+            android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/avatar"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintBottom_toBottomOf="@+id/name"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:srcCompat="@tools:sample/avatars" />
+            <ImageView
+                android:id="@+id/thumbnail"
+                centerCropImageUrl="@{thumbnail}"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:scaleType="centerCrop"
+                tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
-        <TextView
-            android:id="@+id/name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:textSize="20sp"
-            app:layout_constraintEnd_toStartOf="@+id/avatar"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/thumbnail"
-            tools:text="Challenge Name" />
+            <ImageView
+                android:id="@+id/avatar"
+                roundImageUrl="@{avatar}"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintBottom_toBottomOf="@+id/name"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:srcCompat="@tools:sample/avatars" />
 
-        <TextView
-            android:id="@+id/description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:maxLines="4"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/name"
-            tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis suscipit lectus non est elementum congue. Sed at imperdiet quam. Pellentesque ullamcorper dolor nec sem euismod, nec feugiat ex ultricies. Proin ut efficitur ligula. Sed feugiat, metus a sagittis porttitor, ante metus vestibulum mi, sit amet faucibus nibh sapien eget mi. Vestibulum porta est vel volutpat aliquet. Nulla eleifend sem at feugiat porttitor. Mauris vel ligula at leo imperdiet viverra. Fusce nec euismod justo. Etiam cursus purus sed orci maximus eleifend. Sed sodales diam erat, id laoreet ante sollicitudin ut. Nunc congue neque vitae fringilla elementum. In feugiat, lacus non facilisis viverra, diam tortor sodales dui, at dignissim ipsum sem ut tortor.  Vestibulum tristique neque et condimentum varius. Cras feugiat felis vel est luctus, vitae fermentum est congue. Vestibulum nec quam ac nunc fringilla sodales ut et orci. Nulla viverra non libero ac eleifend. Etiam ante diam, placerat ut tempor id, consectetur id ante. Nam vestibulum, ligula a iaculis aliquam, ligula lacus tincidunt turpis, in venenatis sapien sapien non nibh. Maecenas posuere lobortis elit sit amet faucibus. Proin scelerisque iaculis mi, eget viverra diam mattis vitae. Proin nec ligula dictum, volutpat enim eget, pretium ex. In lobortis cursus elit, in aliquet massa tincidunt sit amet. Maecenas ultrices suscipit lacus a gravida. Maecenas vel faucibus massa. Mauris vel ligula vel risus vulputate euismod mollis vel risus. Nam suscipit et tortor et varius. Donec et vestibulum enim, et fringilla velit. " />
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:text="@{challenge.name}"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toStartOf="@+id/avatar"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/thumbnail"
+                tools:text="Challenge Name" />
 
-        <ImageView
-            android:id="@+id/iconAccepted"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_marginEnd="8dp"
-            android:src="@drawable/ic_users"
-            app:layout_constraintBottom_toBottomOf="@+id/dataAccepted"
-            app:layout_constraintEnd_toStartOf="@+id/dataAccepted"
-            app:layout_constraintTop_toTopOf="@+id/dataAccepted" />
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:maxLines="4"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:text="@{challenge.description}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/name"
+                tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis suscipit lectus non est elementum congue. Sed at imperdiet quam. Pellentesque ullamcorper dolor nec sem euismod, nec feugiat ex ultricies. Proin ut efficitur ligula. Sed feugiat, metus a sagittis porttitor, ante metus vestibulum mi, sit amet faucibus nibh sapien eget mi. Vestibulum porta est vel volutpat aliquet. Nulla eleifend sem at feugiat porttitor. Mauris vel ligula at leo imperdiet viverra. Fusce nec euismod justo. Etiam cursus purus sed orci maximus eleifend. Sed sodales diam erat, id laoreet ante sollicitudin ut. Nunc congue neque vitae fringilla elementum. In feugiat, lacus non facilisis viverra, diam tortor sodales dui, at dignissim ipsum sem ut tortor.  Vestibulum tristique neque et condimentum varius. Cras feugiat felis vel est luctus, vitae fermentum est congue. Vestibulum nec quam ac nunc fringilla sodales ut et orci. Nulla viverra non libero ac eleifend. Etiam ante diam, placerat ut tempor id, consectetur id ante. Nam vestibulum, ligula a iaculis aliquam, ligula lacus tincidunt turpis, in venenatis sapien sapien non nibh. Maecenas posuere lobortis elit sit amet faucibus. Proin scelerisque iaculis mi, eget viverra diam mattis vitae. Proin nec ligula dictum, volutpat enim eget, pretium ex. In lobortis cursus elit, in aliquet massa tincidunt sit amet. Maecenas ultrices suscipit lacus a gravida. Maecenas vel faucibus massa. Mauris vel ligula vel risus vulputate euismod mollis vel risus. Nam suscipit et tortor et varius. Donec et vestibulum enim, et fringilla velit. " />
 
-        <TextView
-            android:id="@+id/dataAccepted"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/dataCompleted"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:text="2M" />
+            <ImageView
+                android:id="@+id/iconAccepted"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/ic_users"
+                app:layout_constraintBottom_toBottomOf="@+id/dataAccepted"
+                app:layout_constraintEnd_toStartOf="@+id/dataAccepted"
+                app:layout_constraintTop_toTopOf="@+id/dataAccepted" />
 
-        <ImageView
-            android:id="@+id/iconCompleted"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_marginEnd="8dp"
-            android:src="@drawable/ic_checkmark"
-            app:layout_constraintBottom_toBottomOf="@+id/dataCompleted"
-            app:layout_constraintEnd_toStartOf="@+id/dataCompleted"
-            app:layout_constraintTop_toTopOf="@+id/dataCompleted" />
+            <TextView
+                android:id="@+id/dataAccepted"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@{challenge.accepted}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/dataCompleted"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="2M" />
 
-        <TextView
-            android:id="@+id/dataCompleted"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toStartOf="@+id/dataLiked"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/dataAccepted"
-            app:layout_constraintTop_toTopOf="@+id/dataAccepted"
-            tools:text="1M" />
+            <ImageView
+                android:id="@+id/iconCompleted"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/ic_checkmark"
+                app:layout_constraintBottom_toBottomOf="@+id/dataCompleted"
+                app:layout_constraintEnd_toStartOf="@+id/dataCompleted"
+                app:layout_constraintTop_toTopOf="@+id/dataCompleted" />
 
-        <!--        <ImageView-->
-        <!--            android:id="@+id/iconLiked"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_marginEnd="8dp"-->
-        <!--            android:src="@drawable/ic_heart"-->
-        <!--            app:layout_constraintBottom_toBottomOf="@+id/dataLiked"-->
-        <!--            app:layout_constraintEnd_toStartOf="@+id/dataLiked"-->
-        <!--            app:layout_constraintTop_toTopOf="@+id/dataLiked" />-->
+            <TextView
+                android:id="@+id/dataCompleted"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{challenge.completed}"
+                app:layout_constraintEnd_toStartOf="@+id/dataLiked"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/dataAccepted"
+                app:layout_constraintTop_toTopOf="@+id/dataAccepted"
+                tools:text="1M" />
 
-        <ToggleButton
-            android:id="@+id/button_liked"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/button_liked"
-            android:checked="false"
-            android:text=""
-            android:textOff=""
-            android:textOn=""
-            app:layout_constraintBottom_toBottomOf="@+id/dataLiked"
-            app:layout_constraintEnd_toStartOf="@+id/dataLiked"
-            app:layout_constraintTop_toTopOf="@+id/dataLiked" />
+            <ToggleButton
+                android:id="@+id/button_liked"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/button_liked"
+                android:checked="false"
+                android:text=""
+                android:textOff=""
+                android:textOn=""
+                app:layout_constraintBottom_toBottomOf="@+id/dataLiked"
+                app:layout_constraintEnd_toStartOf="@+id/dataLiked"
+                app:layout_constraintTop_toTopOf="@+id/dataLiked" />
 
-        <TextView
-            android:id="@+id/dataLiked"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toStartOf="@id/buttonSave"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/dataCompleted"
-            app:layout_constraintTop_toTopOf="@+id/dataCompleted"
-            tools:text="1M" />
+            <TextView
+                android:id="@+id/dataLiked"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{challenge.liked}"
+                app:layout_constraintEnd_toStartOf="@id/buttonSave"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/dataCompleted"
+                app:layout_constraintTop_toTopOf="@+id/dataCompleted"
+                tools:text="1M" />
 
-        <ToggleButton
-            android:id="@+id/buttonSave"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/button_saved"
-            android:checked="false"
-            android:text=""
-            android:textOff=""
-            android:textOn=""
-            app:layout_constraintBottom_toBottomOf="@+id/button_liked"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/button_liked" />
+            <ToggleButton
+                android:id="@+id/buttonSave"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/button_saved"
+                android:checked="false"
+                android:text=""
+                android:textOff=""
+                android:textOn=""
+                app:layout_constraintBottom_toBottomOf="@+id/button_liked"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/button_liked" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.cardview.widget.CardView>
+    </androidx.cardview.widget.CardView>
+</layout>
