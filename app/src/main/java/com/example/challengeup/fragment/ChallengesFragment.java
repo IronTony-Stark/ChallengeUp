@@ -2,6 +2,7 @@ package com.example.challengeup.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -66,6 +67,7 @@ public class ChallengesFragment extends Fragment {
     public View onCreateView(@NotNull LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_challenges,
                 container, false);
         return mBinding.getRoot();
@@ -336,5 +338,11 @@ public class ChallengesFragment extends Fragment {
                 mBinding.executePendingBindings();
             }
         }
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.searchMenuItem).setVisible(true);
+        super.onPrepareOptionsMenu(menu);
     }
 }
