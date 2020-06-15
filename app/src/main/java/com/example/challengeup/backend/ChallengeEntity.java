@@ -290,7 +290,7 @@ public class ChallengeEntity {
             predicate = predicate.and(predicate1);
         }
 
-        if (!Objects.isNull(categories)){
+        if (!categories.isEmpty()){
             predicate = predicate.and(challengeEntity -> challengeEntity.getCategories().stream().anyMatch(categories::contains));
         }
 
