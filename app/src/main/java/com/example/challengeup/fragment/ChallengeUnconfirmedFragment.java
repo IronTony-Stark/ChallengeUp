@@ -117,7 +117,6 @@ public class ChallengeUnconfirmedFragment extends Fragment {
         public void onBindViewHolder(@NotNull Adapter.MyViewHolder holder, int position) {
             VideoConfirmationEntity videoConfirmationEntity = mDataset.get(position);
 
-            //            todo set images + video, add listeners to buttons
             Log.w("URL", videoConfirmationEntity.getUrl());
             File file = mViewModel.getSdcardFileForVideo(videoConfirmationEntity.getId());
             if (file.exists()) {
@@ -243,8 +242,6 @@ public class ChallengeUnconfirmedFragment extends Fragment {
             TextView buffering;
             ImageView avatar, play;
             ImageView denyButton, confirmButton;
-
-            //todo video + name, other text?
 
             public MyViewHolder(View itemView) {
                 super(itemView);

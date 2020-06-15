@@ -101,8 +101,6 @@ public class ChallengeConfirmedFragment extends Fragment {
             ImageView videoImage, avatar;
             Button denyButton, confirmButton;
 
-            //todo video + name, other text?
-
             public MyViewHolder(View itemView) {
                 super(itemView);
 

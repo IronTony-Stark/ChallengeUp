@@ -26,6 +26,7 @@ import com.example.challengeup.ILoadable;
 import com.example.challengeup.R;
 import com.example.challengeup.backend.ChallengeEntity;
 import com.example.challengeup.backend.UserEntity;
+import com.example.challengeup.backend.VideoConfirmationEntity;
 import com.example.challengeup.request.Result;
 import com.example.challengeup.viewModel.ChallengeViewModel;
 import com.example.challengeup.viewModel.factory.ChallengeFactory;
@@ -238,6 +239,7 @@ public class ChallengeFragment extends Fragment {
                     .addOnFailureListener(e -> {
                         Toast.makeText(getContext(),
                                 "Upload Failed", Toast.LENGTH_SHORT).show();
+                        VideoConfirmationEntity.deleteVideo(fileId);
                         loadable.finishBlockingLoading();
                     });
         } else {
