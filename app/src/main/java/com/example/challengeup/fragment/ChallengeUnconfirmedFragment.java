@@ -177,9 +177,18 @@ public class ChallengeUnconfirmedFragment extends Fragment {
                     UserEntity user = (UserEntity) ((Result.Success) result).data;
                     if (user != null) {
                         if (!user.getId().equals(videoConfirmationEntity.getUser_id())) {
-                            holder.confirmButton.setVisibility(View.VISIBLE);
-                            holder.denyButton.setVisibility(View.VISIBLE);
+                            boolean isConfirmed = false;
+                            for (String userId : videoConfirmationEntity.getUsersWhoConfirmedOrDenied())
+                                if (userId.equals(user.getId())) {
+                                    isConfirmed = true;
+                                    break;
+                                }
+                            if (!isConfirmed) {
+                                holder.confirmButton.setVisibility(View.VISIBLE);
+                                holder.denyButton.setVisibility(View.VISIBLE);
+                            }
                         }
+
                         // TODO set User avatar
 //                        holder.avatar =
                     }

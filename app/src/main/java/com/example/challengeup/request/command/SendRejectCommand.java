@@ -4,16 +4,22 @@ import com.example.challengeup.backend.VideoConfirmationEntity;
 import com.example.challengeup.request.IRequestCommand;
 import com.example.challengeup.request.Result;
 
+import java.util.ArrayList;
+
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class SendRejectCommand implements IRequestCommand {
 
     private VideoConfirmationEntity videoConfirmationEntity;
+    private String userID;
 
     @Override
     public Result request() {
-        videoConfirmationEntity.setNumberOfRejectionLeft(videoConfirmationEntity.getNumberOfRejectionLeft() - 1);
+        videoConfirmationEntity.setNumberOfConfirmationLeft(videoConfirmationEntity.getNumberOfConfirmationLeft() - 1);
+        ArrayList<String> users = videoConfirmationEntity.getUsersWhoConfirmedOrDenied();
+        users.add(userID);
+        videoConfirmationEntity.setUsersWhoConfirmedOrDenied(users);
         videoConfirmationEntity.update();
         return new Result.Success<>(videoConfirmationEntity.getNumberOfRejectionLeft());
     }
