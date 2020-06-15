@@ -3,6 +3,7 @@ package com.example.challengeup.utils;
 import android.app.Activity;
 
 import com.firebase.ui.auth.AuthUI;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,6 +33,7 @@ public class LoginUtils {
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
                         .setAvailableProviders(providers)
+                        .setIsSmartLockEnabled(false)
                         .build(),
                 RC_SIGN_IN);
     }
@@ -40,7 +42,6 @@ public class LoginUtils {
         AuthUI.getInstance()
                 .signOut(activity)
                 .addOnCompleteListener(task -> {
-                    // ...
                 });
     }
 
@@ -54,7 +55,6 @@ public class LoginUtils {
 
     public void themeAndLogo() {
         List<AuthUI.IdpConfig> providers = Collections.emptyList();
-
         activity.startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()

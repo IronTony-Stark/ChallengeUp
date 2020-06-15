@@ -1,5 +1,6 @@
 package com.example.challengeup.fragment;
 
+import android.graphics.drawable.Icon;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -7,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +32,7 @@ import com.example.challengeup.backend.VideoConfirmationEntity;
 import com.example.challengeup.request.Result;
 import com.example.challengeup.viewModel.ChallengeChallengesViewModel;
 import com.example.challengeup.viewModel.factory.ChallengeChallengesFactory;
+import com.google.firebase.auth.FirebaseAuth;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -171,29 +172,50 @@ public class ChallengeUnconfirmedFragment extends Fragment {
                         holder.video.seekTo(0);
                     });
 
-            mViewModel.getUserByID(videoConfirmationEntity.getUser_id(), result -> {
+            mViewModel.getUserByEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail(), result -> {
                 if (result instanceof Result.Success) {
                     UserEntity user = (UserEntity) ((Result.Success) result).data;
                     if (user != null) {
                         if (user.getId().equals(videoConfirmationEntity.getUser_id())) {
-                            holder.denyButton.setEnabled(false);
-                            holder.confirmButton.setEnabled(false);
-                        } else {
-                            holder.denyButton.setOnClickListener(v -> {
-                                // TODO Reject impl
-                                Toast.makeText(getContext(), "Denied impl", Toast.LENGTH_SHORT).show();
-                            });
-
-                            holder.confirmButton.setOnClickListener(v -> {
-                                // TODO Confirm impl
-                                Toast.makeText(getContext(), "Confirm impl", Toast.LENGTH_SHORT).show();
-                            });
+                            holder.confirmButton.setVisibility(View.INVISIBLE);
+                            holder.denyButton.setVisibility(View.INVISIBLE);
                         }
                         // TODO set User avatar
 //                        holder.avatar =
                     }
                 }
             });
+
+            holder.confirmButton.setOnClickListener(v -> {
+                holder.confirmButton.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.fade_in));
+                mViewModel.sendConfiramtion(videoConfirmationEntity, result1 -> {
+                    if ((int) ((Result.Success) result1).data == 0) {
+                        Toast.makeText(getContext(), R.string.completed, Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getContext(), R.string.confirmed, Toast.LENGTH_SHORT).show();
+                    }
+                    setConfirmationButtonsInactive(holder);
+                });
+            });
+
+            holder.denyButton.setOnClickListener(v -> {
+                holder.denyButton.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.fade_in));
+                mViewModel.sendRejection(videoConfirmationEntity, result1 -> {
+                    if ((int) ((Result.Success) result1).data == 0) {
+                        Toast.makeText(getContext(), R.string.totallyRejected, Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getContext(), R.string.rejected, Toast.LENGTH_SHORT).show();
+                    }
+                    setConfirmationButtonsInactive(holder);
+                });
+            });
+        }
+
+        private void setConfirmationButtonsInactive(MyViewHolder holder) {
+            holder.denyButton.setEnabled(false);
+            holder.denyButton.setImageIcon(Icon.createWithResource(getContext(), R.drawable.undone_disabled));
+            holder.confirmButton.setEnabled(false);
+            holder.confirmButton.setImageIcon(Icon.createWithResource(getContext(), R.drawable.done_disabled));
         }
 
         @Override
@@ -211,7 +233,7 @@ public class ChallengeUnconfirmedFragment extends Fragment {
             VideoView video;
             TextView buffering;
             ImageView avatar, play;
-            Button denyButton, confirmButton;
+            ImageView denyButton, confirmButton;
 
             //todo video + name, other text?
 

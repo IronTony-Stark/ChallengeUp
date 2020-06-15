@@ -69,6 +69,9 @@ dependencies {
     // ProgressBar
     implementation 'com.pnikosis:materialish-progress:1.7'
 
+    // Outline text
+    implementation 'com.github.iamBedant:OutlineTextView:1.0.5'
+
     // Lombok
     //noinspection AnnotationProcessorOnCompilePath
     compileOnly "org.projectlombok:lombok:1.18.12"

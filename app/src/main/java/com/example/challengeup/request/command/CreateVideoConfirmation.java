@@ -19,7 +19,7 @@ public class CreateVideoConfirmation implements IRequestCommand {
 
     @Override
     public Result request() {
-        String fileID = VideoConfirmationEntity.addNewVideo(user.get().getId(), challengeID);
+        String fileID = VideoConfirmationEntity.addNewVideo(user.get().getId(), challengeID, 4, 4);
         user.get().addChallengeToWaitingConfirmation(challengeID);
         user.get().update();
         return new Result.Success<>(fileID);

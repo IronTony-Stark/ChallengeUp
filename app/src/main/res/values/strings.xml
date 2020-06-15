@@ -3,7 +3,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="confirm">Approve</string>
-    <string name="reject">Reject</string>
+    <string name="rejected">Rejected.</string>
     <string name="follow">Follow</string>
     <string name="description">Description</string>
     <string name="task">Task</string>
@@ -36,6 +36,10 @@
     <string name="top">Top</string>
     <string name="loading">Loading...</string>
     <string name="downloadingError">Error while downloading</string>
+    <string name="confirmed">Confirmed!</string>
+    <string name="denied">Denied.</string>
+    <string name="completed">Challenge is completed!</string>
+    <string name="totallyRejected">Challenge approval totally rejected.</string>
 
     <string-array name="challengesOrderBy">
         <item>None</item>
