@@ -5,13 +5,13 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.challengeup.request.RequestExecutor;
-import com.example.challengeup.viewModel.ChallengeViewModel;
+import com.example.challengeup.viewModel.CreateChallengeViewModel;
 
-public class ChallengeFactory implements ViewModelProvider.Factory {
+public class CreateChallengeFactory implements ViewModelProvider.Factory {
 
     private final RequestExecutor mRequestExecutor;
 
-    public ChallengeFactory(final RequestExecutor requestExecutor) {
+    public CreateChallengeFactory(final RequestExecutor requestExecutor) {
         mRequestExecutor = requestExecutor;
     }
 
@@ -19,6 +19,6 @@ public class ChallengeFactory implements ViewModelProvider.Factory {
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new ChallengeViewModel(mRequestExecutor);
+        return (T) new CreateChallengeViewModel(mRequestExecutor);
     }
 }

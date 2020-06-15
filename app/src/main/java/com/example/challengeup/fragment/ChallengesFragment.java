@@ -46,7 +46,6 @@ import com.example.challengeup.viewModel.MainActivityViewModel;
 import com.example.challengeup.viewModel.factory.ChallengesFactory;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.chip.Chip;
-import com.google.android.material.chip.ChipDrawable;
 import com.google.android.material.chip.ChipGroup;
 import com.volokh.danylo.hashtaghelper.HashTagHelper;
 
@@ -60,6 +59,7 @@ public class ChallengesFragment extends Fragment {
 
     private FragmentChallengesBinding mBinding;
     private ChallengesViewModel mViewModel;
+    private MainActivityViewModel mMainActivityViewModel;
     private AppBarLayout mAppBarLayout;
     private Adapter mAdapter;
     private ILoadable mLoadable;
@@ -84,6 +84,8 @@ public class ChallengesFragment extends Fragment {
         mViewModel = new ViewModelProvider(this, new ChallengesFactory(
                 appContainer.mRequestExecutor
         )).get(ChallengesViewModel.class);
+        mMainActivityViewModel = new ViewModelProvider(requireActivity())
+                .get(MainActivityViewModel.class);
 
         mAppBarLayout = mBinding.appBarLayout;
         mAppBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) ->
@@ -126,19 +128,8 @@ public class ChallengesFragment extends Fragment {
             if (result instanceof Result.Success) {
                 //noinspection unchecked
                 List<String> categories = ((Result.Success<List<String>>) result).data;
-                if (categories != null) {
-                    for (int i = 0; i < categories.size(); i++) {
-                        String category = categories.get(i);
-
-                        Chip chip = new Chip(requireContext());
-                        chip.setChipDrawable(ChipDrawable.createFromResource(
-                                requireContext(), R.xml.item_chip_filter));
-                        chip.setCheckable(true);
-                        chip.setText(category);
-
-                        chips.addView(chip);
-                    }
-                }
+                if (categories != null)
+                    mViewModel.inflateChipGroup(chips, categories, requireContext());
             }
         });
 
@@ -228,7 +219,7 @@ public class ChallengesFragment extends Fragment {
         public void onBindViewHolder(@NotNull ChallengeViewHolder holder, int position) {
             ChallengeEntity challenge = mDataset.get(position);
 
-            ChallengeDTO challengeDTO = new ChallengeDTO();
+            ChallengeDTO challengeDTO = ChallengeDTO.builder().build();
 
             challengeDTO.setName(challenge.getName());
             challengeDTO.setDescription(challenge.getTask());
@@ -237,7 +228,7 @@ public class ChallengesFragment extends Fragment {
             holder.bind(challengeDTO);
             holder.bindThumbnail(challenge.getPhoto());
 
-            mViewModel.getUserById(challenge.getCreator_id(), result -> {
+            mMainActivityViewModel.getUserById(challenge.getCreator_id(), result -> {
                 if (result instanceof Result.Success) {
                     //noinspection unchecked
                     UserEntity user = ((Result.Success<UserEntity>) result).data;

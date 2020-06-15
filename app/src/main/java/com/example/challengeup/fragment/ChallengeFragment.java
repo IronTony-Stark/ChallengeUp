@@ -7,13 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
@@ -22,44 +21,51 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.example.challengeup.ApplicationContainer;
 import com.example.challengeup.Container;
 import com.example.challengeup.IBlockingLoadable;
-import com.example.challengeup.ILoadable;
 import com.example.challengeup.R;
 import com.example.challengeup.backend.ChallengeEntity;
 import com.example.challengeup.backend.UserEntity;
 import com.example.challengeup.backend.VideoConfirmationEntity;
+import com.example.challengeup.databinding.FragmentChallengeBinding;
+import com.example.challengeup.dto.ChallengeDTO;
 import com.example.challengeup.request.Result;
-import com.example.challengeup.viewModel.ChallengeViewModel;
-import com.example.challengeup.viewModel.factory.ChallengeFactory;
+import com.example.challengeup.viewModel.ChallengesViewModel;
+import com.example.challengeup.viewModel.MainActivityViewModel;
+import com.example.challengeup.viewModel.factory.ChallengesFactory;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.volokh.danylo.hashtaghelper.HashTagHelper;
 
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
 
 public class ChallengeFragment extends Fragment {
 
-    private static final int GET_VIDEO_REQUEST = 1;
-    View view;
-    private ChallengeViewModel mViewModel;
-    private HashTagHelper mTextHashTagHelper;
+    private FragmentChallengeBinding mBinding;
+
+    private ChallengesViewModel mViewModel;
+    private MainActivityViewModel mMainActivityViewModel;
+
     private StorageReference mStorage;
-    AtomicReference<UserEntity> user;
-    private String challengeIDToConfirm;
-    IBlockingLoadable loadable;
+    private IBlockingLoadable loadable;
+
+    private ChallengeEntity mChallenge;
+    private UserEntity mUser;
+
+    private Button mBtnLoadVideo;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater,
+                             ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_challenge, container, false);
-
-        return view;
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_challenge,
+                container, false);
+        return mBinding.getRoot();
     }
 
     @Override
@@ -67,146 +73,174 @@ public class ChallengeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         Container appContainer = ((ApplicationContainer) requireActivity().getApplication()).mContainer;
-        mViewModel = new ViewModelProvider(this, new ChallengeFactory(
+        mViewModel = new ViewModelProvider(this, new ChallengesFactory(
                 appContainer.mRequestExecutor
-        )).get(ChallengeViewModel.class);
+        )).get(ChallengesViewModel.class);
+        mMainActivityViewModel = new ViewModelProvider(requireActivity())
+                .get(MainActivityViewModel.class);
 
-        String challengeId = ChallengeFragmentArgs
-                .fromBundle(requireArguments()).getChallengeId();
+        mStorage = FirebaseStorage.getInstance().getReference("challenge_confirmation_videos");
 
-        mStorage = FirebaseStorage.getInstance().getReference();
-
-        ImageView imageChallenge = view.findViewById(R.id.imageChallenge);
-        ImageView avatar = view.findViewById(R.id.avatar);
-
-        TextView name = view.findViewById(R.id.dataCompleted);
-        TextView nameUser = view.findViewById(R.id.nameUser);
-        TextView description = view.findViewById(R.id.description);
-        TextView task = view.findViewById(R.id.task);
-        ViewGroup tags = view.findViewById(R.id.tags);
-        TextView hashtags = view.findViewById(R.id.hashTags);
-        TextView rewardRP = view.findViewById(R.id.rewardRP);//100 RP
-
-        AtomicReference<ChallengeEntity> challenge = new AtomicReference<>();
-
-        //todo accepted/completed/liked
+        mBtnLoadVideo = mBinding.btnLoadVideo;
 
         loadable = (IBlockingLoadable) requireActivity();
         loadable.startBlockingLoading(5000);
 
-        mViewModel.getChallengeById(challengeId, result -> {
-            if (result instanceof Result.Success) {
-                challenge.set(((Result.Success<ChallengeEntity>) result).data);
-                //todo imageChallenge
+        String challengeId = ChallengeFragmentArgs
+                .fromBundle(requireArguments()).getChallengeId();
 
-                mViewModel.getUserById(challenge.get().getCreator_id(), result2 -> {
-                    if (result2 instanceof Result.Success) {
+        mViewModel.getChallengeById(challengeId, getChallengeResult -> {
+            if (getChallengeResult instanceof Result.Success) {
+                //noinspection unchecked
+                mChallenge = ((Result.Success<ChallengeEntity>) getChallengeResult).data;
+
+                setupChallengeData(mChallenge);
+
+                mMainActivityViewModel.getUserById(mChallenge.getCreator_id(), getCreatorResult -> {
+                    if (getCreatorResult instanceof Result.Success) {
                         //noinspection unchecked
-                        UserEntity user = ((Result.Success<UserEntity>) result2).data;
-                        if (user != null) {
-//                            Bitmap avatarBitmap = user.getPhoto();
-//                            if (avatarBitmap != null)
-//                                avatar.setImageBitmap(avatarBitmap);
-
-                            nameUser.setText(user.getNick());
-                        }
+                        UserEntity user = ((Result.Success<UserEntity>) getCreatorResult).data;
+                        if (user != null)
+                            setupUserData(user);
                     }
                 });
 
-                name.setText(challenge.get().getName());
-                description.setText(challenge.get().getTask());
-                task.setText(challenge.get().getTask());
+                setupHashtags();
 
-                mTextHashTagHelper = HashTagHelper.Creator.create(ContextCompat.getColor(getContext(), R.color.colorPrimary),
-                        hashTag -> {
-                            Toast.makeText(getContext(), hashTag, Toast.LENGTH_SHORT).show();
-                        }, '_');
-                mTextHashTagHelper.handle(task);
+                setupChips();
 
-                for (String tag : challenge.get().getCategories()) {
-                    Chip chip = new Chip(getContext());
-                    chip.setText(tag);
-//            chip.chipIcon = ContextCompat.getDrawable(requireContext(), baseline_person_black_18)
-                    chip.setCloseIconVisible(false);
-                    chip.setClickable(true);
-                    chip.setCheckable(false);
-                    tags.addView(chip);
-                }
-
-                List<String> tagsList = challenge.get().getTags();
-                StringBuilder hashtagsBuilder = new StringBuilder();
-
-//                for (int i = 0; i < tagsList.size(); i++)
-//                    hashtagsBuilder.append("#").append(tagsList.get(0));
-//                hashtags.setText(hashtagsBuilder.toString());
-
-                rewardRP.setText(challenge.get().getRewardRp() + " RP");
-
-                Button accept = view.findViewById(R.id.btnAccept);
-                Button uploadConfirm = view.findViewById(R.id.btnLoadVideo);
-                user = new AtomicReference<>();
-                mViewModel.getUserByEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail(), u -> {
-                    if (u instanceof Result.Success) {
-                        //noinspection unchecked
-                        user.set(((Result.Success<UserEntity>) u).data);
-                        if (user.get() != null) {
-                            boolean isAccepted = false;
-                            for (String acceptedId : user.get().getUndone()) {
-                                if (acceptedId.equals(challengeId))
-                                    isAccepted = true;
-                            }
-                            if (isAccepted)
-                                uploadConfirm.setVisibility(View.VISIBLE);
-                            else accept.setVisibility(View.VISIBLE);
-                            for (String waitingConfirmId : user.get().getWaitingConfirmation()) {
-                                if (waitingConfirmId.equals(challengeId))
-                                    uploadConfirm.setEnabled(false);
-                            }
-                        }
-                    }
-                });
-
-                accept.setOnClickListener(l -> {
-                    mViewModel.addChallengeToUndone(user.get(), challenge.get(), r -> {
-                    });
-                    accept.setVisibility(View.INVISIBLE);
-                    uploadConfirm.setVisibility(View.VISIBLE);
-                });
-
-                uploadConfirm.setOnClickListener(v -> {
-                    Intent intent = new Intent();
-                    intent.setAction(Intent.ACTION_GET_CONTENT);
-                    intent.setType("video/*");
-                    challengeIDToConfirm = challengeId;
-                    if (intent.resolveActivity(requireActivity().getPackageManager()) != null)
-                        startActivityForResult(intent, GET_VIDEO_REQUEST);
-                });
-
+                setupButtons();
             }
 
-            ViewPagerAdapter adapter = new ViewPagerAdapter(this, challenge.get());
-            ViewPager2 viewPager = (ViewPager2) view.findViewById(R.id.viewPager);
-            viewPager.setAdapter(adapter);
-
-            TabLayout tabLayout = view.findViewById(R.id.tab_layout);
-            new TabLayoutMediator(tabLayout, viewPager,
-                    (tab, position) -> {
-                        switch (position) {
-                            case 0:
-                                tab.setText("Users");
-                                break;
-                            case 1:
-                                tab.setText("Challenges Unconfirmed");
-                                break;
-                            case 2:
-                                tab.setText("Challenges Confirmed");
-                                break;
-                        }
-                    }
-            ).attach();
+            setupTabs(mChallenge);
 
             loadable.finishBlockingLoading();
         });
+    }
+
+    private void setupUserData(UserEntity user) {
+        mBinding.setUserName(user.getNick());
+        mBinding.setAvatar(user.getPhoto());
+    }
+
+    private void setupChallengeData(ChallengeEntity challenge) {
+        ChallengeDTO challengeDTO = ChallengeDTO
+                .builder()
+                .name(challenge.getName())
+                .description(challenge.getTask())
+                .liked(String.valueOf(challenge.getLikes()))
+                .rp(String.valueOf(challenge.getRewardRp()))
+                .build();
+
+        mBinding.setChallenge(challengeDTO);
+        mBinding.setThumbnail(challenge.getPhoto());
+
+        mViewModel.getNumAccepted(challenge, result -> {
+            if (result instanceof Result.Success) {
+                //noinspection unchecked
+                Long num = ((Result.Success<Long>) result).data;
+                challengeDTO.setAccepted(String.valueOf(num));
+                mBinding.setChallenge(challengeDTO);
+            }
+        });
+
+        mViewModel.getNumCompleted(challenge, result -> {
+            if (result instanceof Result.Success) {
+                //noinspection unchecked
+                Long num = ((Result.Success<Long>) result).data;
+                challengeDTO.setCompleted(String.valueOf(num));
+                mBinding.setChallenge(challengeDTO);
+            }
+        });
+    }
+
+    private void setupHashtags() {
+        HashTagHelper textHashTagHelper = HashTagHelper.Creator.create(
+                ContextCompat.getColor(requireContext(), R.color.colorPrimary),
+                hashTag -> Toast.makeText(getContext(), hashTag, Toast.LENGTH_SHORT
+                ).show(), '_');
+        textHashTagHelper.handle(mBinding.description);
+    }
+
+    private void setupChips() {
+        ViewGroup categories = mBinding.categories;
+        for (String category : mChallenge.getCategories()) {
+            Chip chip = new Chip(requireContext());
+            chip.setText(category);
+            chip.setClickable(true);
+            chip.setCheckable(false);
+            categories.addView(chip);
+        }
+    }
+
+    private void setupButtons() {
+        Button btnAccept = mBinding.btnAccept;
+        Button btnLoadVideo = mBinding.btnLoadVideo;
+
+        mMainActivityViewModel.getUserById(Objects.requireNonNull(
+                mMainActivityViewModel.getUser().getValue()).getId(), getUserResult -> {
+            if (getUserResult instanceof Result.Success) {
+                //noinspection unchecked
+                mUser = ((Result.Success<UserEntity>) getUserResult).data;
+
+                if (mUser != null) {
+                    boolean isAccepted = false;
+                    for (String acceptedId : mUser.getUndone()) {
+                        if (acceptedId.equals(mChallenge.getId())) {
+                            isAccepted = true;
+                            break;
+                        }
+                    }
+
+                    if (isAccepted)
+                        btnLoadVideo.setVisibility(View.VISIBLE);
+                    else
+                        btnAccept.setVisibility(View.VISIBLE);
+
+                    for (String waitingConfirmationId : mUser.getWaitingConfirmation())
+                        if (waitingConfirmationId.equals(mChallenge.getId()))
+                            btnLoadVideo.setEnabled(false);
+                }
+            }
+        });
+
+        btnAccept.setOnClickListener(v -> {
+            mViewModel.addChallengeToUndone(mUser, mChallenge, ignored -> {
+            });
+            btnAccept.setVisibility(View.INVISIBLE);
+            btnLoadVideo.setVisibility(View.VISIBLE);
+        });
+
+        btnLoadVideo.setOnClickListener(v -> {
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            intent.setType("video/*");
+            if (intent.resolveActivity(requireActivity().getPackageManager()) != null)
+                startActivityForResult(intent, GET_VIDEO_REQUEST);
+        });
+    }
+
+    private void setupTabs(ChallengeEntity challengeEntity) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(this, challengeEntity);
+        ViewPager2 viewPager = (ViewPager2) mBinding.viewPager;
+        viewPager.setAdapter(adapter);
+
+        TabLayout tabLayout = mBinding.tabLayout;
+        new TabLayoutMediator(tabLayout, viewPager,
+                (tab, position) -> {
+                    switch (position) {
+                        case 0:
+                            tab.setText("Users");
+                            break;
+                        case 1:
+                            tab.setText("Challenges Unconfirmed");
+                            break;
+                        case 2:
+                            tab.setText("Challenges Confirmed");
+                            break;
+                    }
+                }
+        ).attach();
     }
 
     @Override
@@ -214,22 +248,24 @@ public class ChallengeFragment extends Fragment {
         if (requestCode == GET_VIDEO_REQUEST && resultCode == RESULT_OK &&
                 data != null && data.getData() != null) {
             Uri photoUri = data.getData();
-            Intent intent = getActivity().getIntent();
-            mViewModel.createVideoConfirmation(user, challengeIDToConfirm, result -> {
+            mViewModel.createVideoConfirmation(mUser, mChallenge.getId(), result -> {
                 if (result instanceof Result.Success) {
+                    //noinspection unchecked
                     String fileId = ((Result.Success<String>) result).data;
-                    view.findViewById(R.id.btnLoadVideo).setEnabled(false);
+
+                    mBtnLoadVideo.setEnabled(false);
                     loadable.startBlockingLoading(20000);
-                    uploadVideo(photoUri, challengeIDToConfirm, fileId);
+                    uploadVideo(photoUri, mChallenge.getId(), fileId);
                 } else
                     Toast.makeText(getContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
             });
         }
     }
 
+    // TODO image and video upload are the same. Extract to method
     private void uploadVideo(Uri videoUri, String challengeId, String fileId) {
         if (videoUri != null) {
-            StorageReference file = mStorage.child("challenge_confirmation_videos/" + challengeId + "/" + fileId + "_video");
+            StorageReference file = mStorage.child(challengeId + "/" + fileId + "_video");
             file.putFile(videoUri)
                     .addOnSuccessListener(taskSnapshot -> {
                         Toast.makeText(getContext(),
@@ -249,11 +285,11 @@ public class ChallengeFragment extends Fragment {
 
     class ViewPagerAdapter extends FragmentStateAdapter {
 
-        private ChallengeEntity challenge;
+        private final ChallengeEntity mChallenge;
 
         public ViewPagerAdapter(Fragment fragment, ChallengeEntity challenge) {
             super(fragment);
-            this.challenge = challenge;
+            this.mChallenge = challenge;
         }
 
         @NonNull
@@ -263,13 +299,19 @@ public class ChallengeFragment extends Fragment {
 
             switch (position) {
                 case 0:
-                    fragment = new ChallengePlayersFragment(challenge.getId());
+                    if (mFragmentsCache[0] == null)
+                        mFragmentsCache[0] = new ChallengePlayersFragment(mChallenge.getId());
+                    fragment = mFragmentsCache[0];
                     break;
                 case 1:
-                    fragment = new ChallengeUnconfirmedFragment(challenge);
+                    if (mFragmentsCache[1] == null)
+                        mFragmentsCache[1] = new ChallengeUnconfirmedFragment(mChallenge);
+                    fragment = mFragmentsCache[1];
                     break;
                 case 2:
-                    fragment = new ChallengeConfirmedFragment(challenge.getId());
+                    if (mFragmentsCache[2] == null)
+                        mFragmentsCache[2] = new ChallengeConfirmedFragment(mChallenge.getId());
+                    fragment = mFragmentsCache[2];
                     break;
             }
 
@@ -282,4 +324,7 @@ public class ChallengeFragment extends Fragment {
             return 3;
         }
     }
+
+    private Fragment[] mFragmentsCache = new Fragment[3];
+    private static final int GET_VIDEO_REQUEST = 1;
 }

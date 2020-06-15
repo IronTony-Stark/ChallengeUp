@@ -48,7 +48,7 @@ public class ChallengeUnconfirmedFragment extends Fragment {
     private List<VideoConfirmationEntity> mArrayList = new ArrayList<>();
     private Adapter mAdapter;
 
-    private ChallengeEntity challenge;
+    private final ChallengeEntity challenge;
 
     public ChallengeUnconfirmedFragment(ChallengeEntity challenge) {
         this.challenge = challenge;
@@ -196,7 +196,7 @@ public class ChallengeUnconfirmedFragment extends Fragment {
 
             holder.confirmButton.setOnClickListener(v -> {
                 holder.confirmButton.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.fade_in));
-                mViewModel.sendConfiramtion(videoConfirmationEntity, result1 -> {
+                mViewModel.sendConfirmation(videoConfirmationEntity, result1 -> {
                     if ((int) ((Result.Success) result1).data == 0) {
                         Toast.makeText(getContext(), R.string.challenge_is_completed, Toast.LENGTH_LONG).show();
                     } else {

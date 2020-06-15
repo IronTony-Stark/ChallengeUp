@@ -33,6 +33,11 @@
     <string name="challenges">Challenges</string>
     <string name="liked_challenges">Liked Challenges</string>
     <string name="top">Top</string>
+    <string name="challenge_up">Challenge Up!</string>
+    <string name="load_photo">Load Photo</string>
+    <string name="username">Username</string>
+    <string name="name">Name</string>
+    <string name="additional_info">Additional Info</string>
     <string name="loading" tools:ignore="TypographyEllipsis">Loading...</string>
     <string name="downloadingError">Error while downloading</string>
     <string name="confirmed">Confirmed!</string>
@@ -46,6 +51,8 @@
     <string name="accepted">Accepted</string>
     <string name="liked">Liked</string>
     <string name="hint_search_by">Search by name, desc, hashtag, author</string>
+    <string name="pick_topics">Pick topics you are most interested in</string>
+    <string name="challenge_created">Challenge Created</string>
 
     <string-array name="createDialog">
         <item>Challenge</item>

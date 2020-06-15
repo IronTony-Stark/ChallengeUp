@@ -63,27 +63,27 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/todoChips" />
 
-        <EditText
-            android:id="@+id/inputTask"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:hint="@string/task"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/inputDescription" />
+<!--        <EditText-->
+<!--            android:id="@+id/inputTask"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="16dp"-->
+<!--            android:hint="@string/task"-->
+<!--            android:paddingLeft="8dp"-->
+<!--            android:paddingRight="8dp"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/inputDescription" />-->
 
-        <TextView
-            android:id="@+id/hashTags"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/inputTask"
-            tools:text="#Cool #Hard #NoKids #Whatever #HashTag" />
+<!--        <TextView-->
+<!--            android:id="@+id/hashTags"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="8dp"-->
+<!--            android:layout_marginTop="16dp"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/inputTask"-->
+<!--            tools:text="#Cool #Hard #NoKids #Whatever #HashTag" />-->
 
         <Button
             android:id="@+id/btnLoadImage"
@@ -93,7 +93,7 @@
             android:text="@string/load_image"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/hashTags" />
+            app:layout_constraintTop_toBottomOf="@+id/inputDescription" />
 
         <Button
             android:id="@+id/btnCreate"

@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -37,16 +38,12 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseUser;
 
+import org.jetbrains.annotations.NotNull;
+
 public class MainActivity extends AppCompatActivity implements
         CreateDialogFragment.CreateDialogListener,
-        ILoadable, IBlockingLoadable {
+        ILoadable, IBlockingLoadable, IUIConfig {
 
-    public static final String USER_DATA_KEY = "com.example.challengeup.userdata";
-    public static final String AVATAR_FILE = "AVATAR_FILE";
-    public static final String CREATE_DIALOG_TAG = "CREATE_DIALOG_TAG";
-    private static final int RC_SIGN_IN = 123;
-    private static final int MY_PERMISSIONS_REQUEST = 124;
-    private ActivityMainBinding binding;
     private MainActivityViewModel mViewModel;
     private DrawerLayout mDrawerLayout;
     private BottomNavigationView mBottomNav;
@@ -157,78 +154,86 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void setAppBarVisibility(boolean show) {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            if (show) actionBar.show();
+            else actionBar.hide();
+        }
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
                 FirebaseUser user = mViewModel.getFirebaseUser();
-                addUserToDbIfAbsent(user);
+                getUserFromDbOrNavigateToFTUE(user);
             }
         }
     }
 
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.w("Main", "Permission granted");
-                } else {
-                    Log.w("Main", "Permission denied");
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-
-                }
-                return;
-            }
-            // other 'case' lines to check for other
-            // permissions this app might request
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NotNull String[] permissions,
+                                           @NotNull int[] grantResults) {
+        if (requestCode == MY_PERMISSIONS_REQUEST) {
+            if (grantResults.length > 0 &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                Log.w("Main", "Permission granted");
+            else
+                Log.w("Main", "Permission denied");
         }
     }
 
     @SuppressWarnings("unchecked")
-    private void addUserToDbIfAbsent(FirebaseUser firebaseUser) {
+    private void getUserFromDbOrNavigateToFTUE(FirebaseUser firebaseUser) {
         ICallback getUserCallback = getUserResult -> {
             if (getUserResult instanceof Result.Success) {
                 //noinspection unchecked
                 UserEntity user = ((Result.Success<UserEntity>) getUserResult).data;
 
-                if (user == null) {
-                    user = new UserEntity("IronTony",
-                            "IronTonyStark", firebaseUser.getEmail());
-                    user.setInfo("Most useful info ever");
-                    mViewModel.addUser(user, addUserResult -> {
-                        if (addUserResult instanceof Result.Success) {
-                            //noinspection unchecked
-                            String userId = ((Result.Success<String>) addUserResult).data;
-                            mViewModel.saveUserIdToSharedPreferences(userId);
-                            mViewModel.refreshUserFromSharedPreferences();
-                        }
-                    });
+                finishBlockingLoading();
+
+                if (user != null) {
+                    if (user.getPhoto() != null) {
+                        String userPhoto = user.getPhoto();
+                        mViewModel.setUserAvatar(userPhoto);
+                        mViewModel.saveUserAvatar(userPhoto);
+                    } else if (firebaseUser.getPhotoUrl() != null) {
+                        String firebaseUserPhoto = firebaseUser.getPhotoUrl().toString();
+                        mViewModel.setUserAvatar(firebaseUserPhoto);
+                        mViewModel.saveUserAvatar(firebaseUserPhoto);
+                    }
+
+                    UserDTO userDTO = new UserDTO(user.getId(),
+                            user.getNick(), user.getTag(), user.getInfo());
+
+                    mViewModel.saveUserToSharedPreferences(userDTO);
+                    mViewModel.refreshUserFromSharedPreferences();
+                } else {
+                    UserDTO userDTO = new UserDTO();
+                    userDTO.setName(firebaseUser.getDisplayName());
+                    mViewModel.setUser(userDTO);
+
+                    if (firebaseUser.getPhotoUrl() != null) {
+                        String firebaseUserPhoto = firebaseUser.getPhotoUrl().toString();
+                        mViewModel.saveUserAvatar(firebaseUserPhoto);
+                    }
+
+                    mNavController.navigate(R.id.ftue);
                 }
-
-                if (user.getPhoto() != null) {
-                    String userPhoto = user.getPhoto();
-                    mViewModel.setUserAvatar(userPhoto);
-                    mViewModel.saveUserAvatar(userPhoto);
-                } else if (firebaseUser.getPhotoUrl() != null) {
-                    String firebaseUserPhoto = firebaseUser.getPhotoUrl().toString();
-                    mViewModel.setUserAvatar(firebaseUserPhoto);
-                    mViewModel.saveUserAvatar(firebaseUserPhoto);
-                }
-
-                UserDTO userDTO = new UserDTO(user.getId(),
-                        user.getNick(), user.getTag(), user.getInfo());
-
-                mViewModel.saveUserToSharedPreferences(userDTO);
-                mViewModel.refreshUserFromSharedPreferences();
+            } else {
+                Toast.makeText(this,
+                        "Something bad happened.. " +
+                                "Please contact our support or other idiots who've made this shit",
+                        Toast.LENGTH_SHORT).show();
             }
         };
 
+        startBlockingLoading(0);
+
         mViewModel.getUserByEmail(firebaseUser.getEmail(), getUserCallback);
-        mViewModel.setLoadingUser();
     }
 
     private void setupDestinations() {
@@ -256,4 +261,10 @@ public class MainActivity extends AppCompatActivity implements
 
     private ProgressBar mLoader;
     private BlockingLoaderDialog mBlockingLoader;
+
+    private static final int RC_SIGN_IN = 123;
+    private static final int MY_PERMISSIONS_REQUEST = 124;
+
+    public static final String USER_DATA_KEY = "com.example.challengeup.userdata";
+    public static final String CREATE_DIALOG_TAG = "CREATE_DIALOG_TAG";
 }

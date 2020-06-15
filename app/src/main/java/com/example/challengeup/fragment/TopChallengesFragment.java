@@ -38,6 +38,7 @@ import java.util.List;
 public class TopChallengesFragment extends Fragment {
 
     private ChallengesViewModel mViewModel;
+    private MainActivityViewModel mMainActivityViewModel;
     private List<ChallengeEntity> mArrayList = new ArrayList<>();
     private Adapter mAdapter;
 
@@ -56,6 +57,8 @@ public class TopChallengesFragment extends Fragment {
         mViewModel = new ViewModelProvider(this, new ChallengesFactory(
                 appContainer.mRequestExecutor
         )).get(ChallengesViewModel.class);
+        mMainActivityViewModel = new ViewModelProvider(requireActivity())
+                .get(MainActivityViewModel.class);
 
         RecyclerView recyclerView = view.findViewById(R.id.top_challenges_list);
 
@@ -118,7 +121,7 @@ public class TopChallengesFragment extends Fragment {
 
             holder.bind(topChallenge);
 
-            mViewModel.getUserById(challenge.getCreator_id(), result -> {
+            mMainActivityViewModel.getUserById(challenge.getCreator_id(), result -> {
                 if (result instanceof Result.Success) {
                     //noinspection unchecked
                     UserEntity user = ((Result.Success<UserEntity>) result).data;

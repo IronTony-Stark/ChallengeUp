@@ -87,12 +87,14 @@ public class ChallengeChallengesViewModel extends ViewModel {
         mRequestExecutor.execute(new GetAllUnconfirmedVideosCommand(challenge), callback);
     }
 
-    public void sendConfiramtion(VideoConfirmationEntity entity, ICallback callback) {
-        mRequestExecutor.execute(new SendConfirmationCommand(entity), callback);
+    public void sendConfirmation(VideoConfirmationEntity entity, ICallback callback) {
+        // TODO hotfix
+//        mRequestExecutor.execute(new SendConfirmationCommand(entity), callback);
     }
 
     public void sendRejection(VideoConfirmationEntity entity, ICallback callback) {
-        mRequestExecutor.execute(new SendRejectCommand(entity), callback);
+        // TODO hotfix
+//        mRequestExecutor.execute(new SendRejectCommand(entity), callback);
     }
 
     public void loadVideoToCash(String url, String fileName, ICallback callback) {
