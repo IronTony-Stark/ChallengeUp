@@ -2,6 +2,7 @@ package com.example.challengeup.backend;
 
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,14 +23,20 @@ public class VideoConfirmationEntity {
     private String url;
     private String user_id;
     private String challenge_id;
-    private int numberOfConfirmation;
-    private boolean confirmed;
 
-    public VideoConfirmationEntity(String user_id, String challenge_id) {
+    private int numberOfConfirmationLeft;
+    private int numberOfRejectionLeft;
+
+    private ArrayList<String> usersWhoConfirmedOrDenied;
+
+
+    public VideoConfirmationEntity(String user_id, String challenge_id, int numberOfConfirmationLeft, int numberOfRejectionLeft) {
         this.user_id = user_id;
         this.challenge_id = challenge_id;
-        numberOfConfirmation = 0;
-        confirmed = false;
+        this.numberOfConfirmationLeft = numberOfConfirmationLeft;
+        this.numberOfRejectionLeft = numberOfRejectionLeft;
+
+        usersWhoConfirmedOrDenied = new ArrayList<>();
         id = null;
     }
 
@@ -44,8 +51,9 @@ public class VideoConfirmationEntity {
             JSONObject jsonObject = new JSONObject()
                     .put("user_id", videoConfirmationEntity.user_id)
                     .put("challenge_id", videoConfirmationEntity.challenge_id)
-                    .put("numberOfConfirmation", videoConfirmationEntity.numberOfConfirmation)
-                    .put("confirmed", videoConfirmationEntity.confirmed);
+                    .put("numberOfConfirmationLeft", videoConfirmationEntity.numberOfConfirmationLeft)
+                    .put("numberOfRejectionLeft", videoConfirmationEntity.numberOfRejectionLeft)
+                    .put("usersWhoConfirmedOrDenied", videoConfirmationEntity.usersWhoConfirmedOrDenied);
 
 
             RequestBody body = RequestBody.create(jsonObject.toString(), JSON);
@@ -67,7 +75,7 @@ public class VideoConfirmationEntity {
         return "";
     }
 
-    public static String addNewVideo(String user_id, String challenge_id) throws IllegalArgumentException {
+    public static String addNewVideo(String user_id, String challenge_id, int numberOfConfirmationLeft, int numberOfRejectionLeft) throws IllegalArgumentException {
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)
@@ -78,8 +86,10 @@ public class VideoConfirmationEntity {
             JSONObject jsonObject = new JSONObject()
                     .put("user_id", user_id)
                     .put("challenge_id", challenge_id)
-                    .put("numberOfConfirmation", 0)
-                    .put("confirmed", false);
+                    .put("numberOfConfirmationLeft", numberOfConfirmationLeft)
+                    .put("numberOfRejectionLeft", numberOfRejectionLeft)
+                    .put("usersWhoConfirmedOrDenied", new ArrayList<>());
+
 
 
             RequestBody body = RequestBody.create(jsonObject.toString(), JSON);
@@ -121,13 +131,22 @@ public class VideoConfirmationEntity {
             for (Iterator<String> it = object.keys(); it.hasNext(); ) {
                 String key = it.next();
 
+                ArrayList<String> usersArray  = new ArrayList<>();
+
+                try {
+                    JSONArray users = new JSONArray(object.getJSONObject(key).getString("usersWhoConfirmedOrDenied"));
+                    for (int i = 0; i < users.length(); ++i)
+                        usersArray.add((String) users.get(i));
+                } catch (JSONException ignored) {
+                }
 
                 VideoConfirmationEntity videoConfirmationEntity = new VideoConfirmationEntity(
                         object.getJSONObject(key).getString("user_id"),
-                        object.getJSONObject(key).getString("challenge_id"));
-                videoConfirmationEntity.setConfirmed(object.getJSONObject(key).getBoolean("confirmed"));
-                videoConfirmationEntity.setNumberOfConfirmation(object.getJSONObject(key).getInt("numberOfConfirmation"));
+                        object.getJSONObject(key).getString("challenge_id"),
+                        object.getJSONObject(key).getInt("numberOfConfirmationLeft"),
+                        object.getJSONObject(key).getInt("numberOfRejectionLeft"));
                 videoConfirmationEntity.setId(key);
+                videoConfirmationEntity.setUsersWhoConfirmedOrDenied(usersArray);
                 if (!object.getJSONObject(key).getString("video_link").equals("")) {
                     videoConfirmationEntity.setUrl(object.getJSONObject(key).getString("video_link"));
                 }
@@ -138,6 +157,49 @@ public class VideoConfirmationEntity {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public boolean deleteVideo(){
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .build();
+        Request request = new Request.Builder()
+                .url("https://us-central1-challengeup-49057.cloudfunctions.net/delete_video_by_id?videoConfirmation_id=" + id)
+                .get()
+                .build();
+        Response response = null;
+        try {
+            response = client.newCall(request).execute();
+            id = null;
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+    }
+
+    public static boolean deleteVideo(String id){
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .build();
+        Request request = new Request.Builder()
+                .url("https://us-central1-challengeup-49057.cloudfunctions.net/delete_video_by_id?videoConfirmation_id=" + id)
+                .get()
+                .build();
+        Response response = null;
+        try {
+            response = client.newCall(request).execute();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+
     }
 
     public static VideoConfirmationEntity getVideoById(String id, String challenge_id) {
@@ -156,13 +218,21 @@ public class VideoConfirmationEntity {
             JSONObject object = new JSONObject(resStr);
             object = new JSONObject(object.getString("videoConfirmation"));
 
+            ArrayList<String> usersArray  = new ArrayList<>();
+            try {
+                JSONArray users = new JSONArray(object.getJSONObject(id).getString("usersWhoConfirmedOrDenied"));
+                for (int i = 0; i < users.length(); ++i)
+                    usersArray.add((String) users.get(i));
+            } catch (JSONException ignored) {
+            }
 
                 VideoConfirmationEntity videoConfirmationEntity = new VideoConfirmationEntity(
                         object.getJSONObject(id).getString("user_id"),
-                        object.getJSONObject(id).getString("challenge_id"));
-                videoConfirmationEntity.setConfirmed(object.getJSONObject(id).getBoolean("confirmed"));
-                videoConfirmationEntity.setNumberOfConfirmation(object.getJSONObject(id).getInt("numberOfConfirmation"));
+                        object.getJSONObject(id).getString("challenge_id"),
+                        object.getJSONObject(id).getInt("numberOfConfirmationLeft"),
+                        object.getJSONObject(id).getInt("numberOfRejectionLeft"));
                 videoConfirmationEntity.setId(id);
+                videoConfirmationEntity.setUsersWhoConfirmedOrDenied(usersArray);
                 if (!object.getJSONObject(id).getString("video_link").equals("")) {
                     videoConfirmationEntity.setUrl(object.getJSONObject(id).getString("video_link"));
                 }
@@ -186,8 +256,9 @@ public class VideoConfirmationEntity {
                     .put("videoConfirmation_id", id)
                     .put("user_id", user_id)
                     .put("challenge_id", challenge_id)
-                    .put("confirmed", confirmed)
-                    .put("numberOfConfirmation", numberOfConfirmation);
+                    .put("numberOfConfirmationLeft", numberOfConfirmationLeft)
+                    .put("numberOfRejectionLeft", numberOfRejectionLeft)
+                    .put("usersWhoConfirmedOrDenied", usersWhoConfirmedOrDenied);
 
             // RequestBody body = RequestBody.create(jsonObject.toString(), JSON);
 
@@ -239,20 +310,35 @@ public class VideoConfirmationEntity {
         this.challenge_id = challenge_id;
     }
 
-    public int getNumberOfConfirmation() {
-        return numberOfConfirmation;
+    public int getNumberOfConfirmationLeft() {
+        return numberOfConfirmationLeft;
     }
 
-    public void setNumberOfConfirmation(int numberOfConfirmation) {
-        this.numberOfConfirmation = numberOfConfirmation;
+    public void setNumberOfConfirmationLeft(int numberOfConfirmationLeft) {
+        this.numberOfConfirmationLeft = numberOfConfirmationLeft;
+    }
+
+    public int getNumberOfRejectionLeft() {
+        return numberOfRejectionLeft;
+    }
+
+    public ArrayList<String> getUsersWhoConfirmedOrDenied() {
+        return usersWhoConfirmedOrDenied;
+    }
+
+    public void setUsersWhoConfirmedOrDenied(ArrayList<String> usersWhoConfirmedOrDenied) {
+        this.usersWhoConfirmedOrDenied = usersWhoConfirmedOrDenied;
+    }
+
+    public void setNumberOfRejectionLeft(int numberOfRejectionLeft) {
+        this.numberOfRejectionLeft = numberOfRejectionLeft;
     }
 
     public boolean isConfirmed() {
-        return confirmed;
+        return numberOfConfirmationLeft<=0;
     }
-
-    public void setConfirmed(boolean confirmed) {
-        this.confirmed = confirmed;
+    public boolean isRejected() {
+        return numberOfRejectionLeft<=0;
     }
 
     @Override
@@ -262,8 +348,9 @@ public class VideoConfirmationEntity {
                 ", url='" + url + '\'' +
                 ", user_id='" + user_id + '\'' +
                 ", challenge_id='" + challenge_id + '\'' +
-                ", numberOfConfirmation=" + numberOfConfirmation +
-                ", confirmed=" + confirmed +
+                ", numberOfConfirmationLeft=" + numberOfConfirmationLeft +
+                ", numberOfRejectionLeft=" + numberOfRejectionLeft +
+                ", usersWhoConfirmedOrDenied=" + usersWhoConfirmedOrDenied +
                 '}';
     }
 }

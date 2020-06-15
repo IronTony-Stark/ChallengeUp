@@ -2,8 +2,10 @@ package com.example.challengeup.backend;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.util.Log;
-import android.util.TimingLogger;
+
+import androidx.annotation.RequiresApi;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,10 +16,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -281,6 +283,7 @@ public class UserEntity {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public ArrayList<ChallengeEntity> getDoneChallenges() {
         ArrayList<ChallengeEntity> challenges = new ArrayList<>();
         for (String s : done) {
@@ -289,6 +292,7 @@ public class UserEntity {
         return challenges;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public ArrayList<ChallengeEntity> getWaitingConfirmationChallenges() {
         ArrayList<ChallengeEntity> challenges = new ArrayList<>();
         for (String s : waitingConfirmation) {
@@ -297,6 +301,7 @@ public class UserEntity {
         return challenges;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public ArrayList<ChallengeEntity> getLikedChallenges() {
         ArrayList<ChallengeEntity> challenges = new ArrayList<>();
         for (String s : liked) {
@@ -305,6 +310,7 @@ public class UserEntity {
         return challenges;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public ArrayList<ChallengeEntity> getUnDoneChallenges() {
         ArrayList<ChallengeEntity> challenges = new ArrayList<>();
         for (String s : undone) {
@@ -313,6 +319,7 @@ public class UserEntity {
         return challenges;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public ArrayList<ChallengeEntity> getSavedChallenges() {
         ArrayList<ChallengeEntity> challenges = new ArrayList<>();
         for (String s : saved) {
@@ -321,6 +328,7 @@ public class UserEntity {
         return challenges;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public ArrayList<ChallengeEntity> getAllCreatedChallenges() {
         ArrayList<ChallengeEntity> challenges = ChallengeEntity.getAllChallenges();
         ArrayList<ChallengeEntity> a = (ArrayList<ChallengeEntity>) challenges.stream().filter(x -> x.getCreator_id().equals(id)).collect(Collectors.toList());
@@ -900,8 +908,12 @@ public class UserEntity {
         this.done = done;
     }
 
-    public void setCategories(ArrayList<String> categories) {
-        this.categories = categories;
+    public void setCategories(List<String> categories) {
+         try{
+             this.categories = (ArrayList<String>) categories;
+         } catch (ClassCastException e){
+             this.categories = new ArrayList<>(categories);
+         }
     }
 
     public void setSubscriptions(ArrayList<String> subscriptions) {
