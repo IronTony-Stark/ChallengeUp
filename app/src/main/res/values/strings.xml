@@ -37,6 +37,9 @@
     <string name="loading">Loading...</string>
     <string name="downloadingError">Error while downloading</string>
 
+    <string name="challenge_created">Challenge Created</string>
+
+
     <string-array name="challengesOrderBy">
         <item>None</item>
         <item>Likes</item>

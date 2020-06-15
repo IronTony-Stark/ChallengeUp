@@ -55,11 +55,10 @@ public class SavedChallengesFragment extends Fragment {
                 appContainer.mRequestExecutor
         )).get(SavedChallengesViewModel.class);
 
-        //todo get current user id
+
         mainViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
 
         id = mainViewModel.getUser().getValue().getId();
-        //id = "a";
 
         mViewModel.getUserById(id, result -> {
             if (result instanceof Result.Success) {
