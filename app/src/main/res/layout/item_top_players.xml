@@ -12,43 +12,59 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="100dp">
+        android:layout_height="90dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <ImageView
+                android:id="@+id/rewardAchievement"
+                android:layout_width="48dp"
+                android:layout_height="46dp"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/ic_trophy"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/rank"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <TextView
                 android:id="@+id/rank"
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginEnd="16dp"
                 android:text="@{player.rank}"
-                android:textAlignment="center"
-                android:textSize="30sp"
+                android:textAlignment="textStart"
+                android:textSize="@dimen/h3"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="1121" />
 
             <ImageView
                 android:id="@+id/avatar"
                 roundImageUrl="@{player.avatar}"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_marginStart="8dp"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/rank"
+                android:foregroundGravity=""
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 tools:srcCompat="@tools:sample/avatars" />
 
             <TextView
                 android:id="@+id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 android:text="@{player.name}"
-                android:textSize="36sp"
+                android:textColor="@color/nicknameColor"
+                android:textSize="@dimen/h4"
+                android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/avatar"
                 app:layout_constraintTop_toTopOf="@+id/avatar"
                 tools:text="Iron Tony" />
@@ -57,10 +73,12 @@
                 android:id="@+id/rp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:text="@{player.rp}"
-                android:textSize="18sp"
+                android:textSize="@dimen/h6"
                 app:layout_constraintBottom_toBottomOf="@+id/avatar"
                 app:layout_constraintStart_toStartOf="@+id/name"
+                app:layout_constraintTop_toBottomOf="@+id/name"
                 tools:text="1203187 RP" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 

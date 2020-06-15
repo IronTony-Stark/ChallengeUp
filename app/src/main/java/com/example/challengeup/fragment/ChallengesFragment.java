@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
@@ -24,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.challengeup.ApplicationContainer;
 import com.example.challengeup.Container;
+import com.example.challengeup.ILoadable;
 import com.example.challengeup.R;
 import com.example.challengeup.backend.ChallengeEntity;
 import com.example.challengeup.backend.UserEntity;
@@ -33,6 +35,7 @@ import com.example.challengeup.viewModel.factory.ChallengesFactory;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipDrawable;
 import com.google.firebase.auth.FirebaseAuth;
+import com.volokh.danylo.hashtaghelper.HashTagHelper;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -72,6 +75,9 @@ public class ChallengesFragment extends Fragment {
         mAdapter = new Adapter(mArrayList);
         recyclerView.setAdapter(mAdapter);
 
+        ILoadable loadable = (ILoadable) requireActivity();
+        loadable.startLoading();
+
         mViewModel.getAllChallenges(result -> {
             if (result instanceof Result.Success) {
                 //noinspection unchecked
@@ -79,7 +85,9 @@ public class ChallengesFragment extends Fragment {
                 mAdapter.setDataset(mArrayList);
                 mAdapter.notifyItemRangeInserted(0, mArrayList.size());
             }
+            loadable.finishLoading();
         });
+
     }
 
     class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
@@ -131,6 +139,12 @@ public class ChallengesFragment extends Fragment {
             holder.description.setText(challenge.getTask());
             holder.dataLiked.setText(String.valueOf(challenge.getLikes()));
 
+            HashTagHelper mTextHashTagHelper = HashTagHelper.Creator.create(ContextCompat.getColor(getContext(), R.color.colorPrimary),
+                    hashTag -> {
+                        Toast.makeText(getContext(), hashTag, Toast.LENGTH_SHORT).show();
+                    }, '_');
+            mTextHashTagHelper.handle(holder.description);
+
             holder.itemView.setOnClickListener(view -> {
                 ChallengesFragmentDirections.ActionChallengesToChallenge action =
                         ChallengesFragmentDirections.actionChallengesToChallenge(challenge.getId());
@@ -146,9 +160,9 @@ public class ChallengesFragment extends Fragment {
             scaleAnimation.setInterpolator(bounceInterpolator);
 
             CompoundButton likedButton =
-                    (((CompoundButton) (holder.itemView.findViewById(R.id.button_liked))));
+                    holder.itemView.findViewById(R.id.button_liked);
             CompoundButton savedButton =
-                    (((CompoundButton) (holder.itemView.findViewById(R.id.buttonSave))));
+                    holder.itemView.findViewById(R.id.buttonSave);
 
             mViewModel.getUserByEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail(), userResult -> {
                 if (userResult instanceof Result.Success) {

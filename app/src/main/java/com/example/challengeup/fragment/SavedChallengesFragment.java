@@ -18,10 +18,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.challengeup.ApplicationContainer;
 import com.example.challengeup.Container;
+import com.example.challengeup.ILoadable;
 import com.example.challengeup.R;
 import com.example.challengeup.backend.ChallengeEntity;
 import com.example.challengeup.backend.UserEntity;
 import com.example.challengeup.request.Result;
+import com.example.challengeup.viewModel.MainActivityViewModel;
 import com.example.challengeup.viewModel.SavedChallengesViewModel;
 import com.example.challengeup.viewModel.factory.SavedChallengesFactory;
 
@@ -35,6 +37,7 @@ public class SavedChallengesFragment extends Fragment {
     String id;
     UserEntity user;
     private SavedChallengesViewModel mViewModel;
+    private MainActivityViewModel mainViewModel;
     private List<ChallengeEntity> mArrayList = new ArrayList<>();
     private Adapter mAdapter;
 
@@ -54,7 +57,14 @@ public class SavedChallengesFragment extends Fragment {
         )).get(SavedChallengesViewModel.class);
 
         //todo get current user id
-        id = "a";
+        mainViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
+
+        id = mainViewModel.getUser().getValue().getId();
+        //id = "a";
+
+        ILoadable loadable = (ILoadable) requireActivity();
+        loadable.startLoading();
+
         mViewModel.getUserById(id, result -> {
             if (result instanceof Result.Success) {
                 //noinspection unchecked
@@ -79,7 +89,7 @@ public class SavedChallengesFragment extends Fragment {
                         mAdapter.notifyItemRangeInserted(0, mArrayList.size());
 
                     }
-
+                    loadable.finishLoading();
                 });
 
             }

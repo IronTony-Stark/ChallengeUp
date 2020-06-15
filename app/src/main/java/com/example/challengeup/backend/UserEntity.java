@@ -46,6 +46,7 @@ public class UserEntity {
     private ArrayList<String> saved;
     private ArrayList<String> trophies;
     private ArrayList<String> liked;
+    private ArrayList<String> waitingConfirmation;
 
     private HashMap<String, String> links;
 
@@ -65,6 +66,7 @@ public class UserEntity {
         saved = new ArrayList<>();
         trophies = new ArrayList<>();
         liked = new ArrayList<>();
+        waitingConfirmation = new ArrayList<>();
         id = null;
         photo = null;
         rp = 0;
@@ -116,7 +118,8 @@ public class UserEntity {
                     .put("rp", user.rp)
                     .put("totalRp", user.totalRp)
                     .put("liked", user.liked)
-                    .put("info",user.info);
+                    .put("info",user.info)
+                    .put("waitingConfirmation", user.waitingConfirmation);
 
 
             RequestBody requestBody;
@@ -210,7 +213,8 @@ public class UserEntity {
                     .put("rp", 0)
                     .put("totalRp", 0)
                     .put("liked", new ArrayList<>())
-                    .put("info", "");
+                    .put("info", "")
+                    .put("waitingConfirmation",new ArrayList<>());
 
             RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
                     .addFormDataPart("data", jsonObject.toString())
@@ -238,6 +242,18 @@ public class UserEntity {
 
     public void removeChallengeFromDone(ChallengeEntity challenge) {
         done.remove(challenge.getId());
+    }
+
+    public void addChallengeToWaitingConfirmation(ChallengeEntity challenge) {
+        waitingConfirmation.add(challenge.getId());
+    }
+
+    public void addChallengeToWaitingConfirmation(String challengeID) {
+        waitingConfirmation.add(challengeID);
+    }
+
+    public void removeChallengeFromWaitingConfirmation(ChallengeEntity challenge) {
+        waitingConfirmation.remove(challenge.getId());
     }
 
     public void addChallengeToUndone(ChallengeEntity challenge) {
@@ -272,6 +288,14 @@ public class UserEntity {
     public ArrayList<ChallengeEntity> getDoneChallenges() {
         ArrayList<ChallengeEntity> challenges = new ArrayList<>();
         for (String s : done) {
+            challenges.add(ChallengeEntity.getChallengeById(s));
+        }
+        return challenges;
+    }
+
+    public ArrayList<ChallengeEntity> getWaitingConfirmationChallenges() {
+        ArrayList<ChallengeEntity> challenges = new ArrayList<>();
+        for (String s : waitingConfirmation) {
             challenges.add(ChallengeEntity.getChallengeById(s));
         }
         return challenges;
@@ -374,6 +398,13 @@ public class UserEntity {
                 ArrayList<String> achievements = new ArrayList<>();
 
                 ArrayList<String> liked = new ArrayList<>();
+
+                ArrayList<String> waitingConfirmation = new ArrayList<>();
+                try {
+                    JSONArray s = new JSONArray(object.getJSONObject(key).getString("waitingConfirmation"));
+                    for (int i = 0; i < s.length(); ++i) waitingConfirmation.add((String) s.get(i));
+                } catch (JSONException ignored) {
+                }
                 try {
                     JSONArray s = new JSONArray(object.getJSONObject(key).getString("liked"));
                     for (int i = 0; i < s.length(); ++i) liked.add((String) s.get(i));
@@ -449,6 +480,7 @@ public class UserEntity {
                 user.setTotalRp(Integer.parseInt(object.getJSONObject(key).getString("totalRp")));
                 user.setLiked(liked);
                 user.setInfo(object.getJSONObject(key).getString("info"));
+                user.setWaitingConfirmation(waitingConfirmation);
                 if (!object.getJSONObject(key).getString("photo_link").equals("")) {
                     user.setPhoto(object.getJSONObject(key).getString("photo_link"));
                 }
@@ -462,16 +494,6 @@ public class UserEntity {
     }
 
     public static UserEntity getUserByEmail(String email) {
-        ArrayList<UserEntity> users = getAllUsers();
-        try {
-            UserEntity a = users.stream().filter(x -> x.getEmail().equals(email)).collect(Collectors.toList()).get(0);
-            return a;
-        } catch (IndexOutOfBoundsException e) {
-            return null;
-        }
-    }
-
-    public static UserEntity getUserById(String id) {
         try {
             OkHttpClient client = new OkHttpClient.Builder()
                     .connectTimeout(30, TimeUnit.SECONDS)
@@ -480,14 +502,16 @@ public class UserEntity {
                     .build();
 
             Request request = new Request.Builder()
-                    .url("https://us-central1-challengeup-49057.cloudfunctions.net/get_user_by_id?user_id=" + id)
+                    .url("https://us-central1-challengeup-49057.cloudfunctions.net/get_user_by_email?email=" + email)
                     .get()
                     .build();
             Response response = client.newCall(request).execute();
             String resStr = response.body().string();
+            Log.d("TITLE", resStr);
 
             JSONObject object = new JSONObject(resStr);
 
+            String id = object.getString("user_id");
 
             object = new JSONObject(object.getString("user"));
 
@@ -502,6 +526,12 @@ public class UserEntity {
             ArrayList<String> achievements = new ArrayList<>();
 
             ArrayList<String> liked = new ArrayList<>();
+
+            ArrayList<String> waitingConfirmation = new ArrayList<>();
+            try {
+                JSONArray s = new JSONArray(object.getJSONObject(id).getString("waitingConfirmation"));
+                for (int i = 0; i < s.length(); ++i) waitingConfirmation.add((String) s.get(i));
+            } catch (JSONException ignored) {}
             try {
                 JSONArray s = new JSONArray(object.getJSONObject(id).getString("liked"));
                 for (int i = 0; i < s.length(); ++i) liked.add((String) s.get(i));
@@ -576,6 +606,128 @@ public class UserEntity {
             user.setTotalRp(Integer.parseInt(object.getJSONObject(id).getString("totalRp")));
             user.setLiked(liked);
             user.setInfo(object.getJSONObject(id).getString("info"));
+            user.setWaitingConfirmation(waitingConfirmation);
+            if (!object.getJSONObject(id).getString("photo_link").equals("")) {
+                user.setPhoto(object.getJSONObject(id).getString("photo_link"));
+            }
+            return user;
+        } catch (IOException | JSONException e) {
+            return null;
+        }
+    }
+
+    public static UserEntity getUserById(String id) {
+        try {
+            OkHttpClient client = new OkHttpClient.Builder()
+                    .connectTimeout(30, TimeUnit.SECONDS)
+                    .writeTimeout(30, TimeUnit.SECONDS)
+                    .readTimeout(30, TimeUnit.SECONDS)
+                    .build();
+
+            Request request = new Request.Builder()
+                    .url("https://us-central1-challengeup-49057.cloudfunctions.net/get_user_by_id?user_id=" + id)
+                    .get()
+                    .build();
+            Response response = client.newCall(request).execute();
+            String resStr = response.body().string();
+
+            JSONObject object = new JSONObject(resStr);
+
+
+            object = new JSONObject(object.getString("user"));
+
+            ArrayList<String> undoneArray = new ArrayList<>();
+            ArrayList<String> doneArray = new ArrayList<>();
+            ArrayList<String> categoriesArray = new ArrayList<>();
+            ArrayList<String> subscriptionsArray = new ArrayList<>();
+
+            HashMap<String, String> links = new HashMap<>();
+
+            ArrayList<String> saved = new ArrayList<>();
+            ArrayList<String> achievements = new ArrayList<>();
+
+            ArrayList<String> liked = new ArrayList<>();
+
+            ArrayList<String> waitingConfirmation = new ArrayList<>();
+            try {
+                JSONArray s = new JSONArray(object.getJSONObject(id).getString("waitingConfirmation"));
+                for (int i = 0; i < s.length(); ++i) waitingConfirmation.add((String) s.get(i));
+            } catch (JSONException ignored) {}
+            try {
+                JSONArray s = new JSONArray(object.getJSONObject(id).getString("liked"));
+                for (int i = 0; i < s.length(); ++i) liked.add((String) s.get(i));
+            } catch (JSONException ignored) {
+            }
+
+            try {
+                JSONArray s = new JSONArray(object.getJSONObject(id).getString("trophies"));
+                for (int i = 0; i < s.length(); ++i) achievements.add((String) s.get(i));
+            } catch (JSONException ignored) {
+            }
+
+            try {
+                JSONArray s = new JSONArray(object.getJSONObject(id).getString("saved"));
+                for (int i = 0; i < s.length(); ++i) saved.add((String) s.get(i));
+            } catch (JSONException ignored) {
+            }
+
+            try {
+                JSONObject l = new JSONObject(object.getJSONObject(id).getString("links"));
+                if (l.has("facebook"))
+                    links.put("facebook", l.getString("facebook"));
+
+                if (l.has("instagram"))
+                    links.put("instagram", l.getString("instagram"));
+
+                if (l.has("youtube"))
+                    links.put("youtube", l.getString("youtube"));
+            } catch (JSONException ignored) {
+            }
+
+            try {
+                JSONArray subscriptions = new JSONArray(object.getJSONObject(id).getString("subscriptions"));
+                for (int i = 0; i < subscriptions.length(); ++i)
+                    subscriptionsArray.add((String) subscriptions.get(i));
+            } catch (JSONException ignored) {
+            }
+
+
+            try {
+                JSONArray categories = new JSONArray(object.getJSONObject(id).getJSONArray("categories"));
+                for (int i = 0; i < categories.length(); ++i)
+                    categoriesArray.add((String) categories.get(i));
+            } catch (JSONException ignored) {
+            }
+
+            try {
+                JSONArray undone = new JSONArray(object.getJSONObject(id).getString("undone"));
+                for (int i = 0; i < undone.length(); ++i) undoneArray.add((String) undone.get(i));
+            } catch (JSONException ignored) {
+            }
+
+            try {
+
+                JSONArray done = new JSONArray(object.getJSONObject(id).getString("done"));
+                for (int i = 0; i < done.length(); ++i) doneArray.add((String) done.get(i));
+            } catch (JSONException ignored) {
+            }
+
+            UserEntity user = new UserEntity(object.getJSONObject(id).getString("tag"),
+                    object.getJSONObject(id).getString("nick"),
+                    object.getJSONObject(id).getString("email"),
+                    categoriesArray);
+            user.setId(id);
+            user.setUndone(undoneArray);
+            user.setDone(doneArray);
+            user.setSubscriptions(subscriptionsArray);
+            user.setLinks(links);
+            user.setSaved(saved);
+            user.setTrophies(achievements);
+            user.setRp(Integer.parseInt(object.getJSONObject(id).getString("rp")));
+            user.setTotalRp(Integer.parseInt(object.getJSONObject(id).getString("totalRp")));
+            user.setLiked(liked);
+            user.setInfo(object.getJSONObject(id).getString("info"));
+            user.setWaitingConfirmation(waitingConfirmation);
             if (!object.getJSONObject(id).getString("photo_link").equals("")) {
                 user.setPhoto(object.getJSONObject(id).getString("photo_link"));
             }
@@ -611,7 +763,8 @@ public class UserEntity {
                     .put("rp", rp)
                     .put("totalRp", totalRp)
                     .put("liked", liked)
-                    .put("info", info);
+                    .put("info", info)
+                    .put("waitingConfirmation", waitingConfirmation);
 
             //RequestBody body = RequestBody.create(jsonObject.toString(), JSON);
             RequestBody requestBody;
@@ -809,5 +962,36 @@ public class UserEntity {
 
     public void setInfo(String info) {
         this.info = info;
+    }
+
+    public ArrayList<String> getWaitingConfirmation() {
+        return waitingConfirmation;
+    }
+
+    public void setWaitingConfirmation(ArrayList<String> waitingConfirmation) {
+        this.waitingConfirmation = waitingConfirmation;
+    }
+
+    @Override
+    public String toString() {
+        return "UserEntity{" +
+                "id='" + id + '\'' +
+                ", tag='" + tag + '\'' +
+                ", nick='" + nick + '\'' +
+                ", email='" + email + '\'' +
+                ", info='" + info + '\'' +
+                ", rp=" + rp +
+                ", totalRp=" + totalRp +
+                ", categories=" + categories +
+                ", subscriptions=" + subscriptions +
+                ", undone=" + undone +
+                ", done=" + done +
+                ", saved=" + saved +
+                ", trophies=" + trophies +
+                ", liked=" + liked +
+                ", waitingConfirmation=" + waitingConfirmation +
+                ", links=" + links +
+                ", photo='" + photo + '\'' +
+                '}';
     }
 }

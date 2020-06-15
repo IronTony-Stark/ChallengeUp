@@ -4,8 +4,6 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-<!--    TODO WIP create post -->
-
     <TextView
         android:id="@+id/titlePreview"
         android:layout_width="wrap_content"

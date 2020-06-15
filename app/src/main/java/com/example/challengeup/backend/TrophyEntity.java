@@ -21,12 +21,14 @@ public class TrophyEntity {
     private String id;
     private String name;
     private String description;
+    private String photo;
 
     public TrophyEntity(String name, String description) {
 
         this.name = name;
         this.description = description;
         id = null;
+        photo = null;
     }
 
     public static String addNewTrophy(TrophyEntity trophy) throws IllegalArgumentException {
@@ -117,6 +119,9 @@ public class TrophyEntity {
                 TrophyEntity trophy = new TrophyEntity(object.getJSONObject(key).getString("name"),
                         object.getJSONObject(key).getString("description"));
                 trophy.setId(key);
+                if (!object.getJSONObject(key).getString("photo_link").equals("")) {
+                    trophy.setPhoto(object.getJSONObject(key).getString("photo_link"));
+                }
                 trophies.add(trophy);
             }
             return trophies;
@@ -146,6 +151,9 @@ public class TrophyEntity {
             TrophyEntity trophy = new TrophyEntity(object.getJSONObject(id).getString("name"),
                     object.getJSONObject(id).getString("description"));
             trophy.setId(id);
+            if (!object.getJSONObject(id).getString("photo_link").equals("")) {
+                trophy.setPhoto(object.getJSONObject(id).getString("photo_link"));
+            }
             return trophy;
         } catch (IOException | JSONException e) {
             return null;
@@ -211,6 +219,14 @@ public class TrophyEntity {
         this.id = id;
     }
 
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -221,10 +237,11 @@ public class TrophyEntity {
 
     @Override
     public String toString() {
-        return "Trophy{" +
+        return "TrophyEntity{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
+                ", photo='" + photo + '\'' +
                 '}';
     }
 

@@ -1,11 +1,15 @@
 package com.example.challengeup;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,7 +26,8 @@ import com.example.challengeup.backend.UserEntity;
 import com.example.challengeup.databinding.ActivityMainBinding;
 import com.example.challengeup.databinding.NavDrawerHeaderBinding;
 import com.example.challengeup.dto.UserDTO;
-import com.example.challengeup.fragment.CreateDialogFragment;
+import com.example.challengeup.fragment.dialog.BlockingLoaderDialog;
+import com.example.challengeup.fragment.dialog.CreateDialogFragment;
 import com.example.challengeup.request.ICallback;
 import com.example.challengeup.request.Result;
 import com.example.challengeup.utils.LoginUtils;
@@ -32,24 +37,28 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+public class MainActivity extends AppCompatActivity implements
+        CreateDialogFragment.CreateDialogListener,
+        ILoadable, IBlockingLoadable {
 
-public class MainActivity extends AppCompatActivity
-        implements CreateDialogFragment.CreateDialogListener {
-
+    public static final String USER_DATA_KEY = "com.example.challengeup.userdata";
+    public static final String AVATAR_FILE = "AVATAR_FILE";
+    public static final String CREATE_DIALOG_TAG = "CREATE_DIALOG_TAG";
     private static final int RC_SIGN_IN = 123;
-
+    private static final int MY_PERMISSIONS_REQUEST = 124;
+    private ActivityMainBinding binding;
     private MainActivityViewModel mViewModel;
     private DrawerLayout mDrawerLayout;
     private BottomNavigationView mBottomNav;
     private NavigationView mNavView;
+    private AppBarConfiguration mAppBarConfiguration;
     private NavController mNavController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mBlockingLoader = new BlockingLoaderDialog(this);
 
         ActivityMainBinding binding = DataBindingUtil
                 .setContentView(this, R.layout.activity_main);
@@ -65,22 +74,26 @@ public class MainActivity extends AppCompatActivity
         mDrawerLayout = binding.drawerLayout;
         mBottomNav = binding.bottomNavigationView;
         mNavView = binding.navView;
+        mLoader = binding.progressBar;
 
         setSupportActionBar(binding.toolbar);
 
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration
-                .Builder(R.id.timeChallenges, R.id.challenges, R.id.newsFeed, R.id.profile)
+        mAppBarConfiguration = new AppBarConfiguration
+                .Builder(R.id.timeChallenges, R.id.challenges, R.id.newsFeed)
                 .setOpenableLayout(mDrawerLayout)
                 .build();
 
         mNavController = Navigation.findNavController(this, R.id.navHostFragment);
 
-        NavigationUI.setupWithNavController(binding.toolbar, mNavController, appBarConfiguration);
+        NavigationUI.setupWithNavController(binding.toolbar, mNavController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, mNavController);
         NavigationUI.setupWithNavController(binding.bottomNavigationView, mNavController);
 
         setupDestinations();
         setupNavDrawer();
+
+        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST);
     }
 
     @Override
@@ -124,6 +137,26 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public void startLoading() {
+        mLoader.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void finishLoading() {
+        mLoader.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void startBlockingLoading(int timeoutMillis) {
+        mBlockingLoader.startBlockingLoading(timeoutMillis);
+    }
+
+    @Override
+    public void finishBlockingLoading() {
+        mBlockingLoader.finishBlockingLoading();
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -135,6 +168,27 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.w("Main", "Permission granted");
+                } else {
+                    Log.w("Main", "Permission denied");
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+
+                }
+                return;
+            }
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
+
+    @SuppressWarnings("unchecked")
     private void addUserToDbIfAbsent(FirebaseUser firebaseUser) {
         ICallback getUserCallback = getUserResult -> {
             if (getUserResult instanceof Result.Success) {
@@ -178,21 +232,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setupDestinations() {
-        final List<Integer> navDrawerUnlockedFragmentIds = new LinkedList<Integer>() {
-            {
-                add(Objects.requireNonNull(mNavController
-                        .getGraph().findNode(R.id.timeChallenges)).getId());
-                add(Objects.requireNonNull(mNavController
-                        .getGraph().findNode(R.id.challenges)).getId());
-                add(Objects.requireNonNull(mNavController
-                        .getGraph().findNode(R.id.newsFeed)).getId());
-                add(Objects.requireNonNull(mNavController
-                        .getGraph().findNode(R.id.profile)).getId());
-            }
-        };
-
         mNavController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-            if (navDrawerUnlockedFragmentIds.contains(destination.getId())) {
+            if (mAppBarConfiguration.getTopLevelDestinations().contains(destination.getId())) {
                 mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
                 mBottomNav.setVisibility(View.VISIBLE);
             } else {
@@ -213,6 +254,6 @@ public class MainActivity extends AppCompatActivity
         mViewModel.refreshUserAvatar();
     }
 
-    public static final String USER_DATA_KEY = "com.example.challengeup.userdata";
-    public static final String CREATE_DIALOG_TAG = "CREATE_DIALOG_TAG";
+    private ProgressBar mLoader;
+    private BlockingLoaderDialog mBlockingLoader;
 }
