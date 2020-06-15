@@ -3,6 +3,7 @@ package com.example.challengeup.fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -43,6 +44,7 @@ import com.example.challengeup.request.Result;
 import com.example.challengeup.viewModel.ChallengesViewModel;
 import com.example.challengeup.viewModel.MainActivityViewModel;
 import com.example.challengeup.viewModel.factory.ChallengesFactory;
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipDrawable;
 import com.google.android.material.chip.ChipGroup;
@@ -58,6 +60,7 @@ public class ChallengesFragment extends Fragment {
 
     private FragmentChallengesBinding mBinding;
     private ChallengesViewModel mViewModel;
+    private AppBarLayout mAppBarLayout;
     private Adapter mAdapter;
     private ILoadable mLoadable;
     private ScaleAnimation mScaleAnimation;
@@ -81,6 +84,10 @@ public class ChallengesFragment extends Fragment {
         mViewModel = new ViewModelProvider(this, new ChallengesFactory(
                 appContainer.mRequestExecutor
         )).get(ChallengesViewModel.class);
+
+        mAppBarLayout = mBinding.appBarLayout;
+        mAppBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) ->
+                mIsExpanded = verticalOffset == 0);
 
         mScaleAnimation = new ScaleAnimation(0.7f, 1.0f, 0.7f, 1.0f,
                 Animation.RELATIVE_TO_SELF, 0.7f,
@@ -345,4 +352,17 @@ public class ChallengesFragment extends Fragment {
         menu.findItem(R.id.searchMenuItem).setVisible(true);
         super.onPrepareOptionsMenu(menu);
     }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        //noinspection SwitchStatementWithTooFewBranches
+        switch (item.getItemId()) {
+            case R.id.searchMenuItem:
+                mAppBarLayout.setExpanded(!mIsExpanded);
+                return true;
+            default: return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private boolean mIsExpanded = true;
 }
