@@ -252,6 +252,7 @@ public class ChallengeFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == GET_VIDEO_REQUEST && resultCode == RESULT_OK &&
                 data != null && data.getData() != null) {
+            loadable.startBlockingLoading(20000);
             Uri photoUri = data.getData();
             mViewModel.createVideoConfirmation(mUser, mChallenge.getId(), result -> {
                 if (result instanceof Result.Success) {
@@ -259,7 +260,6 @@ public class ChallengeFragment extends Fragment {
                     String fileId = ((Result.Success<String>) result).data;
 
                     mBtnLoadVideo.setEnabled(false);
-                    loadable.startBlockingLoading(20000);
                     uploadVideo(photoUri, mChallenge.getId(), fileId);
                 } else
                     Toast.makeText(getContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
