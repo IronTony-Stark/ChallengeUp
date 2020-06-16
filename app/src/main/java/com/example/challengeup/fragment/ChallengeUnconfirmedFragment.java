@@ -194,25 +194,25 @@ public class ChallengeUnconfirmedFragment extends Fragment {
 
             holder.confirmButton.setOnClickListener(v -> {
                 holder.confirmButton.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.fade_in));
+                setConfirmationButtonsInactive(holder);
                 mViewModel.sendConfirmation(videoConfirmationEntity, user.get().getId(), result1 -> {
                     if ((int) ((Result.Success) result1).data == 0) {
                         Toast.makeText(getContext(), R.string.challenge_is_completed, Toast.LENGTH_LONG).show();
                     } else {
                         Toast.makeText(getContext(), R.string.confirmed, Toast.LENGTH_SHORT).show();
                     }
-                    setConfirmationButtonsInactive(holder);
                 });
             });
 
             holder.denyButton.setOnClickListener(v -> {
                 holder.denyButton.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.fade_in));
+                setConfirmationButtonsInactive(holder);
                 mViewModel.sendRejection(videoConfirmationEntity, user.get().getId(), result1 -> {
                     if ((int) ((Result.Success) result1).data == 0) {
                         Toast.makeText(getContext(), R.string.totallyRejected, Toast.LENGTH_LONG).show();
                     } else {
                         Toast.makeText(getContext(), R.string.rejected, Toast.LENGTH_SHORT).show();
                     }
-                    setConfirmationButtonsInactive(holder);
                 });
             });
         }
@@ -222,6 +222,13 @@ public class ChallengeUnconfirmedFragment extends Fragment {
             holder.denyButton.setImageIcon(Icon.createWithResource(getContext(), R.drawable.undone_disabled));
             holder.confirmButton.setEnabled(false);
             holder.confirmButton.setImageIcon(Icon.createWithResource(getContext(), R.drawable.done_disabled));
+        }
+
+        private void setConfirmationButtonsActive(MyViewHolder holder) {
+            holder.denyButton.setEnabled(true);
+            holder.denyButton.setImageIcon(Icon.createWithResource(getContext(), R.drawable.done_outline));
+            holder.confirmButton.setEnabled(true);
+            holder.confirmButton.setImageIcon(Icon.createWithResource(getContext(), R.drawable.undone));
         }
 
         @Override

@@ -242,6 +242,10 @@ public class UserEntity {
         done.add(challenge.getId());
     }
 
+    public void addChallengeToDone(String challengeID) {
+        done.add(challengeID);
+    }
+
     public void removeChallengeFromDone(ChallengeEntity challenge) {
         done.remove(challenge.getId());
     }
