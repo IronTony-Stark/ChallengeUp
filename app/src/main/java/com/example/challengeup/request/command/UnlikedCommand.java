@@ -17,10 +17,10 @@ public class UnlikedCommand implements IRequestCommand {
 
     @Override
     public Result request() {
-        user.removeChallengeFromLiked(challenge);
-        user.update();
         challenge.setLikes(challenge.getLikes() - 1);
         challenge.update();
+        user.removeChallengeFromLiked(challenge);
+        user.update();
         return new Result.Success<>(challenge);
     }
 }

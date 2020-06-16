@@ -17,10 +17,10 @@ public class LikedCommand implements IRequestCommand {
 
     @Override
     public Result request() {
-        user.addChallengeToLiked(challenge);
-        user.update();
         challenge.setLikes(challenge.getLikes() + 1);
         challenge.update();
+        user.addChallengeToLiked(challenge);
+        user.update();
         return new Result.Success<>(challenge);
     }
 }

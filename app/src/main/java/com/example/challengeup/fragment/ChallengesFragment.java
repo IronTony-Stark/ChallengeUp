@@ -1,6 +1,7 @@
 package com.example.challengeup.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -31,6 +32,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.challengeup.ApplicationContainer;
 import com.example.challengeup.Container;
+import com.example.challengeup.IBlockingLoadable;
 import com.example.challengeup.ILoadable;
 import com.example.challengeup.R;
 import com.example.challengeup.backend.ChallengeEntity;
@@ -45,6 +47,7 @@ import com.example.challengeup.request.Result;
 import com.example.challengeup.viewModel.ChallengesViewModel;
 import com.example.challengeup.viewModel.MainActivityViewModel;
 import com.example.challengeup.viewModel.factory.ChallengesFactory;
+import com.firebase.ui.auth.data.model.User;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -54,6 +57,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 public class ChallengesFragment extends Fragment {
@@ -66,6 +70,9 @@ public class ChallengesFragment extends Fragment {
     private ILoadable mLoadable;
     private ScaleAnimation mScaleAnimation;
     private List<ChallengeEntity> mData = new ArrayList<>();
+
+    private AtomicReference<UserEntity> currentUser = new AtomicReference<>(null);
+    private boolean mIsExpanded = true;
 
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater,
@@ -109,6 +116,10 @@ public class ChallengesFragment extends Fragment {
 
         mLoadable = (ILoadable) requireActivity();
         mLoadable.startLoading();
+
+        mMainActivityViewModel.getUserById(mMainActivityViewModel.getUser().getValue().getId(), result -> {
+            currentUser.set((UserEntity) ((Result.Success) result).data);
+        });
 
         mViewModel.getAllChallenges(result -> {
             if (result instanceof Result.Success) {
@@ -197,6 +208,24 @@ public class ChallengesFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.searchMenuItem).setVisible(true);
+        super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        //noinspection SwitchStatementWithTooFewBranches
+        switch (item.getItemId()) {
+            case R.id.searchMenuItem:
+                mAppBarLayout.setExpanded(!mIsExpanded);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     class Adapter extends RecyclerView.Adapter<Adapter.ChallengeViewHolder> {
 
         private List<ChallengeEntity> mDataset;
@@ -239,42 +268,55 @@ public class ChallengesFragment extends Fragment {
             mMainActivityViewModel.getUserById(challenge.getCreator_id(), result -> {
                 if (result instanceof Result.Success) {
                     //noinspection unchecked
-                    UserEntity user = ((Result.Success<UserEntity>) result).data;
-                    if (user != null) {
-
-                        if (user.getLiked().contains(challenge.getId()))
-                            likedButton.setChecked(true);
-                        if (user.getSaved().contains(challenge.getId()))
-                            savedButton.setChecked(true);
-
-                        if (user.getPhoto() != null)
-                            holder.bindAvatar(user.getPhoto());
+                    UserEntity creator = ((Result.Success<UserEntity>) result).data;
+                    if (creator != null) {
+                        if (creator.getPhoto() != null)
+                            holder.bindAvatar(creator.getPhoto());
                         else
                             holder.bindAvatar(MainActivityViewModel.DEFAULT_AVATAR_URL);
-
-                        likedButton.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-                            compoundButton.startAnimation(mScaleAnimation);
-
-                            String prevLiked = challengeDTO.getLiked();
-                            if (isChecked)
-                                challengeDTO.setLiked(String.valueOf(Integer.parseInt(prevLiked) + 1));
-                            else
-                                challengeDTO.setLiked(String.valueOf(Integer.parseInt(prevLiked) - 1));
-                            holder.bind(challengeDTO);
-
-                            mViewModel.setLiked(user, challenge, isChecked, ignored -> {
-                            });
-                        });
-
-                        savedButton.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-                            compoundButton.startAnimation(mScaleAnimation);
-
-                            mViewModel.setBookmarked(user, challenge, isChecked, ignored -> {
-                            });
-                        });
-
                     }
                 }
+            });
+
+            IBlockingLoadable loadable = (IBlockingLoadable) requireActivity();
+            if (currentUser.get() == null) {
+                mMainActivityViewModel.getUserById(mMainActivityViewModel.getUser().getValue().getId(), result -> {
+                    if (result instanceof Result.Success) {
+                        //noinspection unchecked
+                        currentUser.set(((Result.Success<UserEntity>) result).data);
+                        if (currentUser.get() != null) {
+                            loadLikesAndSaves(challenge);
+                            Log.w("ChallengesFragment", "Likes and saved loaded.");
+                        } else {
+                            loadable.startBlockingLoading(0);
+                            loadUser();
+                            loadable.finishBlockingLoading();
+                        }
+                    }
+                });
+            } else {
+                loadLikesAndSaves(challenge);
+            }
+
+            likedButton.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+                compoundButton.startAnimation(mScaleAnimation);
+
+                String prevLiked = challengeDTO.getLiked();
+                if (isChecked)
+                    challengeDTO.setLiked(String.valueOf(Integer.parseInt(prevLiked) + 1));
+                else
+                    challengeDTO.setLiked(String.valueOf(Integer.parseInt(prevLiked) - 1));
+                holder.bind(challengeDTO);
+
+                mViewModel.setLiked(currentUser.get(), challenge, isChecked, ignored -> {
+                });
+            });
+
+            savedButton.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+                compoundButton.startAnimation(mScaleAnimation);
+
+                mViewModel.setBookmarked(currentUser.get(), challenge, isChecked, ignored -> {
+                });
             });
 
             mViewModel.getNumAccepted(challenge, result -> {
@@ -320,6 +362,28 @@ public class ChallengesFragment extends Fragment {
             notifyDataSetChanged();
         }
 
+        private void loadUser() {
+            mMainActivityViewModel.getUserById(mMainActivityViewModel.getUser().getValue().getId(), result -> {
+                if (result instanceof Result.Success) {
+                    //noinspection unchecked
+                    currentUser.set(((Result.Success<UserEntity>) result).data);
+                    if (currentUser.get() != null) {
+                        Log.w("ChallengesFragment", "User retrieved");
+                    } else {
+                        loadUser();
+                    }
+                }
+            });
+        }
+
+        private void loadLikesAndSaves(ChallengeEntity challenge) {
+            if (currentUser.get().getLiked().contains(challenge.getId()))
+                likedButton.setChecked(true);
+            if (currentUser.get().getSaved().contains(challenge.getId()))
+                savedButton.setChecked(true);
+            Log.w("ChallengesFragment", "Likes and saved loaded.");
+        }
+
         public class ChallengeViewHolder extends RecyclerView.ViewHolder {
 
             private final ItemChallengeBinding mBinding;
@@ -345,23 +409,4 @@ public class ChallengesFragment extends Fragment {
             }
         }
     }
-
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.searchMenuItem).setVisible(true);
-        super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        //noinspection SwitchStatementWithTooFewBranches
-        switch (item.getItemId()) {
-            case R.id.searchMenuItem:
-                mAppBarLayout.setExpanded(!mIsExpanded);
-                return true;
-            default: return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private boolean mIsExpanded = true;
 }
