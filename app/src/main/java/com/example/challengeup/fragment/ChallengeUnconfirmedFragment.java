@@ -40,6 +40,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 public class ChallengeUnconfirmedFragment extends Fragment {
@@ -171,14 +172,15 @@ public class ChallengeUnconfirmedFragment extends Fragment {
                         holder.video.seekTo(0);
                     });
 
+            AtomicReference<UserEntity> user = new AtomicReference<>();
             mViewModel.getUserByEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail(), result -> {
                 if (result instanceof Result.Success) {
-                    UserEntity user = (UserEntity) ((Result.Success) result).data;
-                    if (user != null) {
-                        if (!user.getId().equals(videoConfirmationEntity.getUser_id())) {
+                    user.set((UserEntity) ((Result.Success) result).data);
+                    if (user.get() != null) {
+                        if (!user.get().getId().equals(videoConfirmationEntity.getUser_id())) {
                             boolean isConfirmed = false;
                             for (String userId : videoConfirmationEntity.getUsersWhoConfirmedOrDenied())
-                                if (userId.equals(user.getId())) {
+                                if (userId.equals(user.get().getId())) {
                                     isConfirmed = true;
                                     break;
                                 }
@@ -196,7 +198,7 @@ public class ChallengeUnconfirmedFragment extends Fragment {
 
             holder.confirmButton.setOnClickListener(v -> {
                 holder.confirmButton.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.fade_in));
-                mViewModel.sendConfirmation(videoConfirmationEntity, result1 -> {
+                mViewModel.sendConfirmation(videoConfirmationEntity, user.get().getId(), result1 -> {
                     if ((int) ((Result.Success) result1).data == 0) {
                         Toast.makeText(getContext(), R.string.challenge_is_completed, Toast.LENGTH_LONG).show();
                     } else {
@@ -208,7 +210,7 @@ public class ChallengeUnconfirmedFragment extends Fragment {
 
             holder.denyButton.setOnClickListener(v -> {
                 holder.denyButton.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.fade_in));
-                mViewModel.sendRejection(videoConfirmationEntity, result1 -> {
+                mViewModel.sendRejection(videoConfirmationEntity, user.get().getId(), result1 -> {
                     if ((int) ((Result.Success) result1).data == 0) {
                         Toast.makeText(getContext(), R.string.totallyRejected, Toast.LENGTH_LONG).show();
                     } else {
