@@ -11,6 +11,7 @@ import com.example.challengeup.dto.ChallengeSearchDTO;
 import com.example.challengeup.request.ICallback;
 import com.example.challengeup.request.RequestExecutor;
 import com.example.challengeup.request.command.AddBookmarkedCommand;
+import com.example.challengeup.request.command.AddChallengeCommand;
 import com.example.challengeup.request.command.AddChallengeToUndone;
 import com.example.challengeup.request.command.ChallengeSearchCommand;
 import com.example.challengeup.request.command.CreateVideoConfirmation;
@@ -76,6 +77,10 @@ public class ChallengesViewModel extends ViewModel {
 
     public void createVideoConfirmation(UserEntity user, String challenge, ICallback callback) {
         mRequestExecutor.execute(new CreateVideoConfirmation(user, challenge), callback);
+    }
+
+    public void addChallenge(ChallengeEntity challenge, ICallback callback) {
+        mRequestExecutor.execute(new AddChallengeCommand(challenge), callback);
     }
 
     public void getCategories(ICallback callback) {

@@ -65,7 +65,7 @@ public class FTUEFragment extends Fragment {
     private EditText mName;
     private EditText mUsername;
     private EditText mInfo;
-    private ChipGroup mChipGroup;
+    private ChipGroup mCategories;
 
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater,
@@ -109,13 +109,13 @@ public class FTUEFragment extends Fragment {
 
         mName.setText(Objects.requireNonNull(mMainActivityViewModel.getUser().getValue()).getName());
 
-        mChipGroup = mBinding.chipGroup;
+        mCategories = mBinding.chipGroup;
         mChallengeViewModel.getCategories(result -> {
             if (result instanceof Result.Success) {
                 //noinspection unchecked
                 List<String> categories = ((Result.Success<List<String>>) result).data;
                 if (categories != null)
-                    mChallengeViewModel.inflateChipGroup(mChipGroup, categories, requireContext());
+                    mChallengeViewModel.inflateChipGroup(mCategories, categories, requireContext());
             }
         });
 
@@ -133,10 +133,10 @@ public class FTUEFragment extends Fragment {
             String name = mName.getText().toString();
             String username = mUsername.getText().toString();
             String info = mInfo.getText().toString();
-            List<String> categories = mChipGroup
+            List<String> categories = mCategories
                     .getCheckedChipIds()
                     .stream()
-                    .map(id -> ((Chip) mChipGroup.getChildAt(id - 1)).getText().toString())
+                    .map(id -> ((Chip) mCategories.getChildAt(id - 1)).getText().toString())
                     .collect(Collectors.toList());
 
             UserEntity user = new UserEntity(username, name,

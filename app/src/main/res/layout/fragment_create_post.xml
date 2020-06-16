@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <include
-        android:id="@+id/include"
+        android:id="@+id/preview"
         layout="@layout/post"
         android:layout_width="match_parent"
         android:layout_height="450dp"
