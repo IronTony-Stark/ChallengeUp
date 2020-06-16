@@ -38,7 +38,7 @@ public class SavedChallengesFragment extends Fragment {
     UserEntity user;
     private SavedChallengesViewModel mViewModel;
     private MainActivityViewModel mainViewModel;
-    private List<ChallengeEntity> mArrayList = new ArrayList<>();
+    private List<ChallengeEntity> mData = new ArrayList<>();
     private Adapter mAdapter;
 
     @Override
@@ -76,16 +76,16 @@ public class SavedChallengesFragment extends Fragment {
                 recyclerView.setItemAnimator(new DefaultItemAnimator());
                 recyclerView.addItemDecoration(new DividerItemDecoration(view.getContext(), LinearLayoutManager.VERTICAL));
 
-                mAdapter = new Adapter(mArrayList);
+                mAdapter = new Adapter(mData);
                 recyclerView.setAdapter(mAdapter);
 
                 mViewModel.getSavedChallenges(user, result2 -> {
                     if (result2 instanceof Result.Success) {
                         //noinspection unchecked
-                        mArrayList = ((Result.Success<List<ChallengeEntity>>) result2).data;
+                        mData = ((Result.Success<List<ChallengeEntity>>) result2).data;
 
-                        mAdapter.setDataset(mArrayList);
-                        mAdapter.notifyItemRangeInserted(0, mArrayList.size());
+                        mAdapter.setDataset(mData);
+                        mAdapter.notifyItemRangeInserted(0, mData.size());
 
                     }
                     loadable.finishLoading();

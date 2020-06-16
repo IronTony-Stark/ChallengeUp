@@ -120,7 +120,7 @@ public class ChallengeFragment extends Fragment {
 
     private void setupUserData(UserEntity user) {
         mBinding.setUserName(user.getNick());
-        mBinding.setAvatar(user.getPhoto());
+        mBinding.setUserAvatar(user.getPhoto());
     }
 
     private void setupChallengeData(ChallengeEntity challenge) {
@@ -133,7 +133,7 @@ public class ChallengeFragment extends Fragment {
                 .build();
 
         mBinding.setChallenge(challengeDTO);
-        mBinding.setThumbnail(challenge.getPhoto());
+        mBinding.setChallengeThumbnail(challenge.getPhoto());
 
         mViewModel.getNumAccepted(challenge, result -> {
             if (result instanceof Result.Success) {
@@ -222,7 +222,7 @@ public class ChallengeFragment extends Fragment {
 
     private void setupTabs(ChallengeEntity challengeEntity) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(this, challengeEntity);
-        ViewPager2 viewPager = (ViewPager2) mBinding.viewPager;
+        ViewPager2 viewPager = mBinding.viewPager;
         viewPager.setAdapter(adapter);
 
         TabLayout tabLayout = mBinding.tabLayout;

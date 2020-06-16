@@ -4,16 +4,16 @@
     <data>
 
         <variable
-            name="thumbnail"
-            type="String" />
-
-        <variable
-            name="avatar"
-            type="String" />
-
-        <variable
             name="challenge"
             type="com.example.challengeup.dto.ChallengeDTO" />
+
+        <variable
+            name="challengeThumbnail"
+            type="String" />
+
+        <variable
+            name="userAvatar"
+            type="String" />
     </data>
 
     <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -31,7 +31,7 @@
 
             <ImageView
                 android:id="@+id/thumbnail"
-                centerCropImageUrl="@{thumbnail}"
+                centerCropImageUrl="@{challengeThumbnail}"
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -42,7 +42,7 @@
 
             <ImageView
                 android:id="@+id/avatar"
-                roundImageUrl="@{avatar}"
+                roundImageUrl="@{userAvatar}"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginEnd="16dp"

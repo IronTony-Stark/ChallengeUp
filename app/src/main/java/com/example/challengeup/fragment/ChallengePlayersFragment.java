@@ -34,7 +34,7 @@ import java.util.List;
 public class ChallengePlayersFragment extends Fragment {
 
     private ChallengePlayersViewModel mViewModel;
-    private List<UserEntity> mArrayList = new ArrayList<>();
+    private List<UserEntity> mData = new ArrayList<>();
     private Adapter mAdapter;
 
     private String challengeId;
@@ -65,7 +65,7 @@ public class ChallengePlayersFragment extends Fragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(view.getContext(), LinearLayoutManager.VERTICAL));
 
-        mAdapter = new Adapter(mArrayList);
+        mAdapter = new Adapter(mData);
         recyclerView.setAdapter(mAdapter);
 
         mViewModel.getChallengeById(challengeId, result -> {
@@ -76,13 +76,13 @@ public class ChallengePlayersFragment extends Fragment {
                 mViewModel.peopleWhoAccepted(challenge, result2 -> {
                     if (result2 instanceof Result.Success) {
                         //noinspection unchecked
-                        mArrayList = ((Result.Success<List<UserEntity>>) result2).data;
+                        mData = ((Result.Success<List<UserEntity>>) result2).data;
 
-                        Collections.sort(mArrayList, (u1, u2) ->
+                        Collections.sort(mData, (u1, u2) ->
                                 Integer.compare(u1.getTotalRp(), u2.getTotalRp()));
 
-                        mAdapter.setDataset(mArrayList);
-                        mAdapter.notifyItemRangeInserted(0, mArrayList.size());
+                        mAdapter.setDataset(mData);
+                        mAdapter.notifyItemRangeInserted(0, mData.size());
                     }
                 });
 

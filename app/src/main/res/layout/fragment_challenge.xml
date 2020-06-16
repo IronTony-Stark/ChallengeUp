@@ -12,11 +12,11 @@
             type="com.example.challengeup.dto.ChallengeDTO" />
 
         <variable
-            name="avatar"
+            name="userAvatar"
             type="String" />
 
         <variable
-            name="thumbnail"
+            name="challengeThumbnail"
             type="String" />
     </data>
 
@@ -33,7 +33,7 @@
 
             <ImageView
                 android:id="@+id/imageChallenge"
-                centerCropImageUrl="@{thumbnail}"
+                centerCropImageUrl="@{challengeThumbnail}"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:maxHeight="260dp"
@@ -68,7 +68,7 @@
 
             <ImageView
                 android:id="@+id/avatar"
-                roundImageUrl="@{avatar}"
+                roundImageUrl="@{userAvatar}"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="48dp"

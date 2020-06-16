@@ -38,7 +38,7 @@ public class AchievementsFragment extends Fragment {
 
     private AchievementsViewModel mViewModel;
     private MainActivityViewModel mainViewModel;
-    private List<TrophyEntity> mArrayList = new ArrayList<>();
+    private List<TrophyEntity> mData = new ArrayList<>();
     private Adapter mAdapter;
 
     private String id;
@@ -69,7 +69,7 @@ public class AchievementsFragment extends Fragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(view.getContext(), GridLayoutManager.VERTICAL));
 
-        mAdapter = new Adapter(mArrayList);
+        mAdapter = new Adapter(mData);
         recyclerView.setAdapter(mAdapter);
 
         width = getActivity().getWindow().getDecorView().getWidth();//todo MAYBE there is an easier way?
@@ -89,20 +89,20 @@ public class AchievementsFragment extends Fragment {
                 mViewModel.getAchievementsAsTrophies(user, result2 -> {
                     if (result2 instanceof Result.Success) {
                         //noinspection unchecked
-                        mArrayList = ((Result.Success<List<TrophyEntity>>) result2).data;
+                        mData = ((Result.Success<List<TrophyEntity>>) result2).data;
                         mAdapter.setDone(true);
-                        mAdapter.setDataset(mArrayList);
-                        mAdapter.notifyItemRangeInserted(0, mArrayList.size());
+                        mAdapter.setDataset(mData);
+                        mAdapter.notifyItemRangeInserted(0, mData.size());
 
                         mViewModel.getUndoneAchievementsAsTrophies(user, result3 -> {
                             if (result3 instanceof Result.Success) {
                                 //noinspection unchecked
-                                mArrayList = ((Result.Success<List<TrophyEntity>>) result3).data;
+                                mData = ((Result.Success<List<TrophyEntity>>) result3).data;
                                 mAdapter.setDone(false);
 
                                 int start = mAdapter.getItemCount();
-                                mAdapter.mDataset.addAll(start,mArrayList);
-                                mAdapter.notifyItemRangeInserted(start, mArrayList.size());
+                                mAdapter.mDataset.addAll(start, mData);
+                                mAdapter.notifyItemRangeInserted(start, mData.size());
                                 loadable.finishLoading();
                             }
                         });

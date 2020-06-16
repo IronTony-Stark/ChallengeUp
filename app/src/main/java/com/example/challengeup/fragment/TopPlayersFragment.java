@@ -36,7 +36,7 @@ import java.util.List;
 
 public class TopPlayersFragment extends Fragment {
 
-    private List<UserEntity> mArrayList = new ArrayList<>();
+    private List<UserEntity> mData = new ArrayList<>();
     private Adapter mAdapter;
 
     @Override
@@ -61,7 +61,7 @@ public class TopPlayersFragment extends Fragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(view.getContext(), LinearLayoutManager.VERTICAL));
 
-        mAdapter = new Adapter(mArrayList);
+        mAdapter = new Adapter(mData);
         recyclerView.setAdapter(mAdapter);
 
         ILoadable loadable = (ILoadable) requireActivity();
@@ -70,10 +70,10 @@ public class TopPlayersFragment extends Fragment {
         viewModel.getAllUsers(result -> {
             if (result instanceof Result.Success) {
                 //noinspection unchecked
-                mArrayList = ((Result.Success<List<UserEntity>>) result).data;
+                mData = ((Result.Success<List<UserEntity>>) result).data;
 
                 // TODO sometimes values are null
-                Collections.sort(mArrayList, (u1, u2) -> {
+                Collections.sort(mData, (u1, u2) -> {
                     if (u1 == null && u2 == null)
                         return 0;
                     else if (u1 == null)
@@ -83,8 +83,8 @@ public class TopPlayersFragment extends Fragment {
                     else return -Integer.compare(u1.getTotalRp(), u2.getTotalRp());
                 });
 
-                mAdapter.setDataset(mArrayList);
-                mAdapter.notifyItemRangeInserted(0, mArrayList.size());
+                mAdapter.setDataset(mData);
+                mAdapter.notifyItemRangeInserted(0, mData.size());
                 loadable.finishLoading();
             }
         });

@@ -34,7 +34,7 @@ import java.util.List;
 public class ChallengeConfirmedFragment extends Fragment {
 
     private ChallengeChallengesViewModel mViewModel;
-    private List<VideoConfirmationEntity> mArrayList = new ArrayList<>();
+    private List<VideoConfirmationEntity> mData = new ArrayList<>();
     private Adapter mAdapter;
 
     private String challengeId;
@@ -66,7 +66,7 @@ public class ChallengeConfirmedFragment extends Fragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(view.getContext(), LinearLayoutManager.VERTICAL));
 
-        mAdapter = new Adapter(mArrayList);
+        mAdapter = new Adapter(mData);
         recyclerView.setAdapter(mAdapter);
 
         mViewModel.getChallengeById(challengeId, result -> {
@@ -77,10 +77,10 @@ public class ChallengeConfirmedFragment extends Fragment {
                 mViewModel.getAllConfirmedVideos(challenge, result2 -> {
                     if (result2 instanceof Result.Success) {
                         //noinspection unchecked
-                        mArrayList = ((Result.Success<List<VideoConfirmationEntity>>) result2).data;
+                        mData = ((Result.Success<List<VideoConfirmationEntity>>) result2).data;
 
-                        mAdapter.setDataset(mArrayList);
-                        mAdapter.notifyItemRangeInserted(0, mArrayList.size());
+                        mAdapter.setDataset(mData);
+                        mAdapter.notifyItemRangeInserted(0, mData.size());
                     }
                 });
 

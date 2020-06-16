@@ -38,7 +38,7 @@ public class AchievementFragment extends Fragment {
     View view;
 
     private AchievementViewModel mViewModel;
-    private List<UserEntity> mArrayList = new ArrayList<>();
+    private List<UserEntity> mData = new ArrayList<>();
     private Adapter mAdapter;
 
     @Override
@@ -70,7 +70,7 @@ public class AchievementFragment extends Fragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(view.getContext(), GridLayoutManager.VERTICAL));
 
-        mAdapter = new Adapter(mArrayList);
+        mAdapter = new Adapter(mData);
         recyclerView.setAdapter(mAdapter);
 
         ILoadable loadable = (ILoadable) requireActivity();
@@ -89,9 +89,9 @@ public class AchievementFragment extends Fragment {
                 mViewModel.getUsersWithThisTrophy(trophy, result2 -> {
                     if (result2 instanceof Result.Success) {
                         //noinspection unchecked
-                        mArrayList = ((Result.Success<List<UserEntity>>) result2).data;
-                        mAdapter.setDataset(mArrayList);
-                        mAdapter.notifyItemRangeInserted(0, mArrayList.size());
+                        mData = ((Result.Success<List<UserEntity>>) result2).data;
+                        mAdapter.setDataset(mData);
+                        mAdapter.notifyItemRangeInserted(0, mData.size());
                         loadable.finishLoading();
                     }
                 });

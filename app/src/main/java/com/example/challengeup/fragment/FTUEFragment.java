@@ -44,7 +44,6 @@ import com.google.firebase.storage.UploadTask;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -134,7 +133,7 @@ public class FTUEFragment extends Fragment {
             String name = mName.getText().toString();
             String username = mUsername.getText().toString();
             String info = mInfo.getText().toString();
-            ArrayList<String> categories = (ArrayList<String>) mChipGroup
+            List<String> categories = mChipGroup
                     .getCheckedChipIds()
                     .stream()
                     .map(id -> ((Chip) mChipGroup.getChildAt(id - 1)).getText().toString())

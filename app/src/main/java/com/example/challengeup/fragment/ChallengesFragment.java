@@ -64,7 +64,7 @@ public class ChallengesFragment extends Fragment {
     private Adapter mAdapter;
     private ILoadable mLoadable;
     private ScaleAnimation mScaleAnimation;
-    private List<ChallengeEntity> mArrayList = new ArrayList<>();
+    private List<ChallengeEntity> mData = new ArrayList<>();
 
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater,
@@ -103,7 +103,7 @@ public class ChallengesFragment extends Fragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(view.getContext(), LinearLayoutManager.VERTICAL));
 
-        mAdapter = new Adapter(mArrayList);
+        mAdapter = new Adapter(mData);
         recyclerView.setAdapter(mAdapter);
 
         mLoadable = (ILoadable) requireActivity();
@@ -112,8 +112,8 @@ public class ChallengesFragment extends Fragment {
         mViewModel.getAllChallenges(result -> {
             if (result instanceof Result.Success) {
                 //noinspection unchecked
-                mArrayList = ((Result.Success<List<ChallengeEntity>>) result).data;
-                mAdapter.setDataset(mArrayList);
+                mData = ((Result.Success<List<ChallengeEntity>>) result).data;
+                mAdapter.setDataset(mData);
             }
             mLoadable.finishLoading();
         });
@@ -181,9 +181,8 @@ public class ChallengesFragment extends Fragment {
                 mLoadable.finishLoading();
                 if (result instanceof Result.Success) {
                     //noinspection unchecked
-                    List<ChallengeEntity> challenges =
-                            ((Result.Success<List<ChallengeEntity>>) result).data;
-                    mAdapter.setDataset(challenges);
+                    mData = ((Result.Success<List<ChallengeEntity>>) result).data;
+                    mAdapter.setDataset(mData);
                 }
             });
         });
@@ -327,12 +326,12 @@ public class ChallengesFragment extends Fragment {
             }
 
             public void bindThumbnail(String url) {
-                mBinding.setThumbnail(url);
+                mBinding.setChallengeThumbnail(url);
                 mBinding.executePendingBindings();
             }
 
             public void bindAvatar(String url) {
-                mBinding.setAvatar(url);
+                mBinding.setUserAvatar(url);
                 mBinding.executePendingBindings();
             }
         }

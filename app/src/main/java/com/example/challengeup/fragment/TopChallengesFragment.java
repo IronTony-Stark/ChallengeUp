@@ -39,7 +39,7 @@ public class TopChallengesFragment extends Fragment {
 
     private ChallengesViewModel mViewModel;
     private MainActivityViewModel mMainActivityViewModel;
-    private List<ChallengeEntity> mArrayList = new ArrayList<>();
+    private List<ChallengeEntity> mData = new ArrayList<>();
     private Adapter mAdapter;
 
     @Override
@@ -66,7 +66,7 @@ public class TopChallengesFragment extends Fragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(view.getContext(), LinearLayoutManager.VERTICAL));
 
-        mAdapter = new Adapter(mArrayList);
+        mAdapter = new Adapter(mData);
         recyclerView.setAdapter(mAdapter);
 
         ILoadable loadable = (ILoadable) requireActivity();
@@ -75,13 +75,13 @@ public class TopChallengesFragment extends Fragment {
         mViewModel.getAllChallenges(result -> {
             if (result instanceof Result.Success) {
                 //noinspection unchecked
-                mArrayList = ((Result.Success<List<ChallengeEntity>>) result).data;
+                mData = ((Result.Success<List<ChallengeEntity>>) result).data;
 
-                Collections.sort(mArrayList, (c1, c2) ->
+                Collections.sort(mData, (c1, c2) ->
                         -Integer.compare(c1.getLikes(), c2.getLikes()));
 
-                mAdapter.setDataset(mArrayList);
-                mAdapter.notifyItemRangeInserted(0, mArrayList.size());
+                mAdapter.setDataset(mData);
+                mAdapter.notifyItemRangeInserted(0, mData.size());
                 loadable.finishLoading();
             }
         });
