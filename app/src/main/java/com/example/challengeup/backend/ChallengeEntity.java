@@ -71,7 +71,6 @@ public class ChallengeEntity {
         dateTime = LocalDateTime.now();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private ChallengeEntity(String name, String task, String creator_id, ArrayList<String> tags, ArrayList<String> categories, LocalDateTime localDateTime) {
         this.name = name;
         this.task = task;
@@ -272,6 +271,7 @@ public class ChallengeEntity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public static ArrayList<ChallengeEntity> search(String query, Integer liked, Integer accepted, Integer completed, Integer rp, List<String> categories, OrderBy orderBy, OrderDirection orderDirection){
 
+
         Predicate<ChallengeEntity> predicate = challengeEntity -> true;
 
         if (!Objects.isNull(liked))
@@ -284,13 +284,13 @@ public class ChallengeEntity {
             predicate =predicate.and(challengeEntity -> challengeEntity.numberOfPeopleWhoComplete()>completed);
 
         if (!Objects.isNull(query)){
-            Predicate<ChallengeEntity> predicate1 = challengeEntity -> challengeEntity.getName().contains(query);
-            predicate1 = predicate1.or(challengeEntity -> challengeEntity.getTags().parallelStream().anyMatch(x->x.contains(query)));
-            predicate1 = predicate1.or(challengeEntity -> challengeEntity.getTask().contains(query));
+            Predicate<ChallengeEntity> predicate1 = challengeEntity -> challengeEntity.getName().toLowerCase().contains(query.toLowerCase());
+            predicate1 = predicate1.or(challengeEntity -> challengeEntity.getTags().parallelStream().anyMatch(x->x.toLowerCase().contains(query.toLowerCase())));
+            predicate1 = predicate1.or(challengeEntity -> challengeEntity.getTask().toLowerCase().contains(query.toLowerCase()));
             predicate = predicate.and(predicate1);
         }
 
-        if (!Objects.isNull(categories)){
+        if (!categories.isEmpty()){
             predicate = predicate.and(challengeEntity -> challengeEntity.getCategories().stream().anyMatch(categories::contains));
         }
 
@@ -596,6 +596,7 @@ public class ChallengeEntity {
                 ", tags=" + tags +
                 ", categories=" + categories +
                 ", photo='" + photo + '\'' +
+                ", dateTime=" + dateTime +
                 '}';
     }
 }

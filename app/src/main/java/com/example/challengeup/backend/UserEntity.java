@@ -96,8 +96,8 @@ public class UserEntity {
 
     public static String addNewUser(UserEntity user) throws IllegalArgumentException {
         Validation.validateUserTagToBeUnique(user.tag);
-        Validation.validateNickTagPassword(user.nick);
-        Validation.validateNickTagPassword(user.tag);
+        Validation.validateNick(user.nick);
+        Validation.validateTag(user.tag);
 
         Validation.validateEmail(user.email);
         OkHttpClient client = new OkHttpClient.Builder()
@@ -191,8 +191,8 @@ public class UserEntity {
     }
 
     public static String addNewUser(String tag, String nick, String email, ArrayList<String> categories) throws IllegalArgumentException {
-        Validation.validateNickTagPassword(nick);
-        Validation.validateNickTagPassword(tag);
+        Validation.validateNick(nick);
+        Validation.validateTag(tag);
         Validation.validateEmail(email);
         Validation.validateUserTagToBeUnique(tag);
         OkHttpClient client = new OkHttpClient.Builder()
@@ -742,8 +742,8 @@ public class UserEntity {
     }
 
     public void update() throws IllegalArgumentException {
-        Validation.validateNickTagPassword(nick);
-        Validation.validateNickTagPassword(tag);
+        Validation.validateNick(nick);
+        Validation.validateTag(tag);
         Validation.validateEmail(email);
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(30, TimeUnit.SECONDS)
