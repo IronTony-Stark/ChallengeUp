@@ -23,6 +23,7 @@ import com.example.challengeup.backend.ChallengeEntity;
 import com.example.challengeup.backend.UserEntity;
 import com.example.challengeup.request.Result;
 import com.example.challengeup.viewModel.ChallengePlayersViewModel;
+import com.example.challengeup.viewModel.MainActivityViewModel;
 import com.example.challengeup.viewModel.factory.ChallengePlayersFactory;
 
 import org.jetbrains.annotations.NotNull;
@@ -129,11 +130,7 @@ public class ChallengePlayersFragment extends Fragment {
         public void onBindViewHolder(@NotNull Adapter.MyViewHolder holder, int position) {
             UserEntity user = mDataset.get(position);
 
-//            Bitmap avatar = user.getPhoto();
-//            if (avatar != null)
-//                holder.avatar.setImageBitmap(avatar);
-
-            //todo set image
+//            holder.binding.setUserAvatar(photoUrl != null ? photoUrl : MainActivityViewModel.DEFAULT_AVATAR_URL);
 
             holder.rank.setText(String.valueOf(position + 1));
             holder.name.setText(user.getNick());

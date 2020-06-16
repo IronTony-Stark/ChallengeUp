@@ -1,124 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+<layout xmlns:bind="http://schemas.android.com/apk/res-auto">
 
-    <VideoView
-        android:id="@+id/video"
-        android:layout_width="wrap_content"
-        android:layout_height="300dp"
-        android:scaleType="centerCrop"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/backgrounds/scenic" />
+    <data>
 
-    <ImageView
-        android:id="@+id/imagePlay"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:scaleType="center"
-        android:scaleX="2"
-        android:scaleY="2"
-        android:src="@drawable/video_play"
-        app:layout_constraintBottom_toBottomOf="@+id/video"
-        app:layout_constraintEnd_toEndOf="@+id/video"
-        app:layout_constraintStart_toStartOf="@+id/video"
-        app:layout_constraintTop_toTopOf="@+id/video" />
+        <variable
+            name="userName"
+            type="String" />
 
-    <TextView
-        android:id="@+id/buffering_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="@string/buffering_string"
-        android:textColor="@android:color/white"
-        android:textSize="@dimen/h4"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/video"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/video"
-        app:layout_constraintTop_toTopOf="@+id/imagePlay" />
+        <variable
+            name="userAvatar"
+            type="String" />
 
-    <!--    <Button-->
-    <!--        android:id="@+id/btnConfirm"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginEnd="8dp"-->
-    <!--        android:layout_marginBottom="8dp"-->
-    <!--        android:text="@string/confirm"-->
-    <!--        android:textAlignment="textEnd"-->
-    <!--        android:textSize="@dimen/h6"-->
-    <!--        android:translationZ="100dp"-->
-    <!--        app:layout_constraintBottom_toBottomOf="@+id/video"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent" />-->
+    </data>
 
-    <!--    <Button-->
-    <!--        android:id="@+id/btnDeny"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginEnd="8dp"-->
-    <!--        android:layout_marginBottom="8dp"-->
-    <!--        android:text="@string/reject"-->
-    <!--        android:textAlignment="textEnd"-->
-    <!--        android:textSize="@dimen/h6"-->
-    <!--        android:translationZ="100dp"-->
-    <!--        app:layout_constraintBottom_toTopOf="@id/btnConfirm"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent" />-->
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/btnConfirm"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:src="@drawable/done_outline"
-        android:text="@string/confirm"
-        android:textAlignment="textEnd"
-        android:textSize="@dimen/h6"
-        android:translationZ="100dp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@+id/video"
-        app:layout_constraintEnd_toEndOf="parent" />
+        <VideoView
+            android:id="@+id/video"
+            android:layout_width="wrap_content"
+            android:layout_height="300dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
-    <ImageView
-        android:id="@+id/btnDeny"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:src="@drawable/undone"
-        android:textAlignment="textEnd"
-        android:textSize="@dimen/h6"
-        android:translationZ="100dp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@id/btnConfirm"
-        app:layout_constraintEnd_toEndOf="parent" />
+        <ImageView
+            android:id="@+id/imagePlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="center"
+            android:scaleX="2"
+            android:scaleY="2"
+            android:src="@drawable/video_play"
+            app:layout_constraintBottom_toBottomOf="@+id/video"
+            app:layout_constraintEnd_toEndOf="@+id/video"
+            app:layout_constraintStart_toStartOf="@+id/video"
+            app:layout_constraintTop_toTopOf="@+id/video" />
 
-    <ImageView
-        android:id="@+id/avatar"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/video"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:srcCompat="@tools:sample/avatars" />
+        <TextView
+            android:id="@+id/buffering_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="@string/buffering_string"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/h4"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/video"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/video"
+            app:layout_constraintTop_toTopOf="@+id/imagePlay" />
 
-    <com.iambedant.text.OutlineTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="8dp"
-        android:textColor="#FFFFFF"
-        android:textSize="@dimen/h5"
-        app:layout_constraintBottom_toBottomOf="@id/video"
-        app:layout_constraintStart_toEndOf="@id/avatar"
-        app:outlineColor="#FFFFFF"
-        app:outlineWidth="1.0" />
+        <ImageView
+            android:id="@+id/btnConfirm"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:src="@drawable/done_outline"
+            android:text="@string/confirm"
+            android:textAlignment="textEnd"
+            android:textSize="@dimen/h6"
+            android:translationZ="100dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/video"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageView
+            android:id="@+id/btnDeny"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:src="@drawable/undone"
+            android:textAlignment="textEnd"
+            android:textSize="@dimen/h6"
+            android:translationZ="100dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@id/btnConfirm"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <ImageView
+            android:id="@+id/avatar"
+            roundImageUrl="@{userAvatar}"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/video"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <com.iambedant.text.OutlineTextView
+            android:id="@+id/username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="@{userName}"
+            android:textColor="#FFFFFF"
+            android:textSize="@dimen/h5"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/video"
+            app:layout_constraintStart_toEndOf="@id/avatar"
+            app:outlineColor="#000000"
+            app:outlineWidth="0.3" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

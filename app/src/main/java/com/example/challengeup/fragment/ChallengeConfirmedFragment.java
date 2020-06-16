@@ -15,6 +15,7 @@ import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -27,7 +28,9 @@ import com.example.challengeup.Container;
 import com.example.challengeup.ILoadable;
 import com.example.challengeup.R;
 import com.example.challengeup.backend.ChallengeEntity;
+import com.example.challengeup.backend.UserEntity;
 import com.example.challengeup.backend.VideoConfirmationEntity;
+import com.example.challengeup.databinding.ConfirmationBinding;
 import com.example.challengeup.dto.UserDTO;
 import com.example.challengeup.request.Result;
 import com.example.challengeup.viewModel.ChallengeChallengesViewModel;
@@ -108,10 +111,9 @@ public class ChallengeConfirmedFragment extends Fragment {
         @NotNull
         @Override
         public ChallengeConfirmedFragment.Adapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.confirmation, parent, false);
-
-            return new ChallengeConfirmedFragment.Adapter.MyViewHolder(itemView);
+            LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+            ConfirmationBinding binding = DataBindingUtil.inflate(inflater, R.layout.confirmation, parent, false);
+            return new ChallengeConfirmedFragment.Adapter.MyViewHolder(binding);
         }
 
         @Override
@@ -172,17 +174,25 @@ public class ChallengeConfirmedFragment extends Fragment {
                         holder.video.seekTo(0);
                     });
 
-            MainActivityViewModel mMainActivityViewModel = new ViewModelProvider(requireActivity())
-                    .get(MainActivityViewModel.class);
-            AtomicReference<UserDTO> user = new AtomicReference<>(mMainActivityViewModel.getUser().getValue());
-//            mViewModel.getUserByEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail(), result -> {
-//                if (result instanceof Result.Success) {
-//                    user.set((UserEntity) ((Result.Success) result).data);
-
-            if (user.get() != null) {
-                // TODO set User avatar
-//                        holder.avatar =
-            }
+            mViewModel.getUserByID(videoConfirmationEntity.getUser_id(), result -> {
+                UserEntity user = (UserEntity) ((Result.Success) result).data;
+                String name;
+                if (user != null) {
+                    name = user.getNick();
+                    holder.binding.setUserName("@" + user.getTag());
+                    String photoUrl = user.getPhoto();
+                    holder.binding.setUserAvatar(photoUrl != null ? photoUrl : MainActivityViewModel.DEFAULT_AVATAR_URL);
+                } else {
+                    name = "Anonym";
+                    holder.binding.setUserName("Anonym");
+                    holder.binding.setUserAvatar(MainActivityViewModel.DEFAULT_AVATAR_URL);
+                }
+                holder.avatar.setOnClickListener(v ->
+                {
+                    holder.avatar.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.fade_in));
+                    Toast.makeText(getContext(), name, Toast.LENGTH_SHORT).show();
+                });
+            });
         }
 
         private void setConfirmationButtonsInactive(ChallengeConfirmedFragment.Adapter.MyViewHolder holder) {
@@ -209,8 +219,13 @@ public class ChallengeConfirmedFragment extends Fragment {
             ImageView avatar, play;
             ImageView denyButton, confirmButton;
 
-            public MyViewHolder(View itemView) {
-                super(itemView);
+            ConfirmationBinding binding;
+
+            public MyViewHolder(ConfirmationBinding binding) {
+                super(binding.getRoot());
+
+                View itemView = binding.getRoot();
+                this.binding = binding;
 
                 video = itemView.findViewById(R.id.video);
                 buffering = itemView.findViewById(R.id.buffering_textview);

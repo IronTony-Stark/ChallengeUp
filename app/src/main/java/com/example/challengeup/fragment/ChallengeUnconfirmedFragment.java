@@ -15,6 +15,7 @@ import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -27,7 +28,9 @@ import com.example.challengeup.Container;
 import com.example.challengeup.ILoadable;
 import com.example.challengeup.R;
 import com.example.challengeup.backend.ChallengeEntity;
+import com.example.challengeup.backend.UserEntity;
 import com.example.challengeup.backend.VideoConfirmationEntity;
+import com.example.challengeup.databinding.ConfirmationBinding;
 import com.example.challengeup.dto.UserDTO;
 import com.example.challengeup.request.Result;
 import com.example.challengeup.viewModel.ChallengeChallengesViewModel;
@@ -42,10 +45,13 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
+import lombok.Getter;
+
 
 public class ChallengeUnconfirmedFragment extends Fragment {
 
     private final ChallengeEntity challenge;
+    //    private ConfirmationBinding mBinding;
     private ChallengeChallengesViewModel mViewModel;
     private List<VideoConfirmationEntity> mData = new ArrayList<>();
     private Adapter mAdapter;
@@ -99,6 +105,7 @@ public class ChallengeUnconfirmedFragment extends Fragment {
     class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
 
         private List<VideoConfirmationEntity> mDataset;
+//        private ConfirmationBinding binding;
 
         public Adapter(@NonNull List<VideoConfirmationEntity> myDataset) {
             mDataset = myDataset;
@@ -107,10 +114,9 @@ public class ChallengeUnconfirmedFragment extends Fragment {
         @NotNull
         @Override
         public Adapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.confirmation, parent, false);
-
-            return new MyViewHolder(itemView);
+            LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+            ConfirmationBinding binding = DataBindingUtil.inflate(inflater, R.layout.confirmation, parent, false);
+            return new MyViewHolder(binding);
         }
 
         @Override
@@ -173,12 +179,12 @@ public class ChallengeUnconfirmedFragment extends Fragment {
 
             MainActivityViewModel mMainActivityViewModel = new ViewModelProvider(requireActivity())
                     .get(MainActivityViewModel.class);
-            AtomicReference<UserDTO> user = new AtomicReference<>(mMainActivityViewModel.getUser().getValue());
-            if (user.get() != null) {
-                if (!user.get().getId().equals(videoConfirmationEntity.getUser_id())) {
+            AtomicReference<UserDTO> currentUser = new AtomicReference<>(mMainActivityViewModel.getUser().getValue());
+            if (currentUser.get() != null) {
+                if (!currentUser.get().getId().equals(videoConfirmationEntity.getUser_id())) {
                     boolean isConfirmed = false;
                     for (String userId : videoConfirmationEntity.getUsersWhoConfirmedOrDenied())
-                        if (userId.equals(user.get().getId())) {
+                        if (userId.equals(currentUser.get().getId())) {
                             isConfirmed = true;
                             break;
                         }
@@ -187,15 +193,32 @@ public class ChallengeUnconfirmedFragment extends Fragment {
                         holder.denyButton.setVisibility(View.VISIBLE);
                     }
                 }
-
-                // TODO set User avatar
-//                holder.avatar.setImageIcon(I);
             }
+
+            mViewModel.getUserByID(videoConfirmationEntity.getUser_id(), result -> {
+                UserEntity user = (UserEntity) ((Result.Success) result).data;
+                String name;
+                if (user != null) {
+                    name = user.getNick();
+                    holder.binding.setUserName("@" + user.getTag());
+                    String photoUrl = user.getPhoto();
+                    holder.binding.setUserAvatar(photoUrl != null ? photoUrl : MainActivityViewModel.DEFAULT_AVATAR_URL);
+                } else {
+                    name = "Anonym";
+                    holder.binding.setUserName("Anonym");
+                    holder.binding.setUserAvatar(MainActivityViewModel.DEFAULT_AVATAR_URL);
+                }
+                holder.avatar.setOnClickListener(v ->
+                {
+                    holder.avatar.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.fade_in));
+                    Toast.makeText(getContext(), name, Toast.LENGTH_SHORT).show();
+                });
+            });
 
             holder.confirmButton.setOnClickListener(v -> {
                 holder.confirmButton.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.fade_in));
                 setConfirmationButtonsInactive(holder);
-                mViewModel.sendConfirmation(videoConfirmationEntity, user.get().getId(), result1 -> {
+                mViewModel.sendConfirmation(videoConfirmationEntity, currentUser.get().getId(), result1 -> {
                     if ((int) ((Result.Success) result1).data == 0) {
                         Toast.makeText(getContext(), R.string.challenge_is_completed, Toast.LENGTH_LONG).show();
                     } else {
@@ -207,7 +230,7 @@ public class ChallengeUnconfirmedFragment extends Fragment {
             holder.denyButton.setOnClickListener(v -> {
                 holder.denyButton.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.fade_in));
                 setConfirmationButtonsInactive(holder);
-                mViewModel.sendRejection(videoConfirmationEntity, user.get().getId(), result1 -> {
+                mViewModel.sendRejection(videoConfirmationEntity, currentUser.get().getId(), result1 -> {
                     if ((int) ((Result.Success) result1).data == 0) {
                         Toast.makeText(getContext(), R.string.totallyRejected, Toast.LENGTH_LONG).show();
                     } else {
@@ -244,16 +267,22 @@ public class ChallengeUnconfirmedFragment extends Fragment {
         public class MyViewHolder extends RecyclerView.ViewHolder {
 
             VideoView video;
-            TextView buffering;
+            TextView buffering, username;
             ImageView avatar, play;
             ImageView denyButton, confirmButton;
 
-            public MyViewHolder(View itemView) {
-                super(itemView);
+            ConfirmationBinding binding;
+
+            public MyViewHolder(ConfirmationBinding binding) {
+                super(binding.getRoot());
+
+                View itemView = binding.getRoot();
+                this.binding = binding;
 
                 video = itemView.findViewById(R.id.video);
                 buffering = itemView.findViewById(R.id.buffering_textview);
                 avatar = itemView.findViewById(R.id.avatar);
+                username = itemView.findViewById(R.id.username);
                 denyButton = itemView.findViewById(R.id.btnDeny);
                 confirmButton = itemView.findViewById(R.id.btnConfirm);
                 play = itemView.findViewById(R.id.imagePlay);
