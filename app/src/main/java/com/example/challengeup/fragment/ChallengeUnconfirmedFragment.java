@@ -27,12 +27,12 @@ import com.example.challengeup.Container;
 import com.example.challengeup.ILoadable;
 import com.example.challengeup.R;
 import com.example.challengeup.backend.ChallengeEntity;
-import com.example.challengeup.backend.UserEntity;
 import com.example.challengeup.backend.VideoConfirmationEntity;
+import com.example.challengeup.dto.UserDTO;
 import com.example.challengeup.request.Result;
 import com.example.challengeup.viewModel.ChallengeChallengesViewModel;
+import com.example.challengeup.viewModel.MainActivityViewModel;
 import com.example.challengeup.viewModel.factory.ChallengeChallengesFactory;
-import com.google.firebase.auth.FirebaseAuth;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -45,11 +45,10 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class ChallengeUnconfirmedFragment extends Fragment {
 
+    private final ChallengeEntity challenge;
     private ChallengeChallengesViewModel mViewModel;
     private List<VideoConfirmationEntity> mData = new ArrayList<>();
     private Adapter mAdapter;
-
-    private final ChallengeEntity challenge;
 
     public ChallengeUnconfirmedFragment(ChallengeEntity challenge) {
         this.challenge = challenge;
@@ -172,29 +171,26 @@ public class ChallengeUnconfirmedFragment extends Fragment {
                         holder.video.seekTo(0);
                     });
 
-            AtomicReference<UserEntity> user = new AtomicReference<>();
-            mViewModel.getUserByEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail(), result -> {
-                if (result instanceof Result.Success) {
-                    user.set((UserEntity) ((Result.Success) result).data);
-                    if (user.get() != null) {
-                        if (!user.get().getId().equals(videoConfirmationEntity.getUser_id())) {
-                            boolean isConfirmed = false;
-                            for (String userId : videoConfirmationEntity.getUsersWhoConfirmedOrDenied())
-                                if (userId.equals(user.get().getId())) {
-                                    isConfirmed = true;
-                                    break;
-                                }
-                            if (!isConfirmed) {
-                                holder.confirmButton.setVisibility(View.VISIBLE);
-                                holder.denyButton.setVisibility(View.VISIBLE);
-                            }
+            MainActivityViewModel mMainActivityViewModel = new ViewModelProvider(requireActivity())
+                    .get(MainActivityViewModel.class);
+            AtomicReference<UserDTO> user = new AtomicReference<>(mMainActivityViewModel.getUser().getValue());
+            if (user.get() != null) {
+                if (!user.get().getId().equals(videoConfirmationEntity.getUser_id())) {
+                    boolean isConfirmed = false;
+                    for (String userId : videoConfirmationEntity.getUsersWhoConfirmedOrDenied())
+                        if (userId.equals(user.get().getId())) {
+                            isConfirmed = true;
+                            break;
                         }
-
-                        // TODO set User avatar
-//                        holder.avatar =
+                    if (!isConfirmed) {
+                        holder.confirmButton.setVisibility(View.VISIBLE);
+                        holder.denyButton.setVisibility(View.VISIBLE);
                     }
                 }
-            });
+
+                // TODO set User avatar
+//                holder.avatar.setImageIcon(I);
+            }
 
             holder.confirmButton.setOnClickListener(v -> {
                 holder.confirmButton.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.fade_in));

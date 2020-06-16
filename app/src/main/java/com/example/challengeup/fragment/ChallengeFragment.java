@@ -84,7 +84,7 @@ public class ChallengeFragment extends Fragment {
         mBtnLoadVideo = mBinding.btnLoadVideo;
 
         loadable = (IBlockingLoadable) requireActivity();
-        loadable.startBlockingLoading(5000);
+        loadable.startBlockingLoading(10000);
 
         String challengeId = ChallengeFragmentArgs
                 .fromBundle(requireArguments()).getChallengeId();
@@ -315,7 +315,7 @@ public class ChallengeFragment extends Fragment {
                     break;
                 case 2:
                     if (mFragmentsCache[2] == null)
-                        mFragmentsCache[2] = new ChallengeConfirmedFragment(mChallenge.getId());
+                        mFragmentsCache[2] = new ChallengeConfirmedFragment(mChallenge);
                     fragment = mFragmentsCache[2];
                     break;
             }
