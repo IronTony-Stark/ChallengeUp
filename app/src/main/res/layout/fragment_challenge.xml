@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:bind="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -20,9 +22,7 @@
             type="String" />
     </data>
 
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -37,9 +37,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:maxHeight="260dp"
-                app:layout_constraintHeight_max="wrap"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintWidth_max="wrap"
+                bind:layout_constraintHeight_max="wrap"
+                bind:layout_constraintTop_toTopOf="parent"
+                bind:layout_constraintWidth_max="wrap"
                 tools:scaleType="centerCrop"
                 tools:src="@tools:sample/backgrounds/scenic" />
 
@@ -48,58 +48,61 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:maxWidth="300dp"
                 android:text="@{challenge.name}"
+                android:textAlignment="center"
                 android:textSize="@dimen/h2"
-                app:layout_constraintEnd_toStartOf="@+id/iconSave"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageChallenge"
-                tools:text="Challenge Name" />
+                bind:layout_constraintEnd_toStartOf="@+id/iconSave"
+                bind:layout_constraintStart_toStartOf="parent"
+                bind:layout_constraintTop_toBottomOf="@+id/imageChallenge"
+                tools:text="The greatest ever" />
 
             <ImageView
                 android:id="@+id/iconSave"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:layout_marginEnd="24dp"
+                android:layout_marginEnd="32dp"
                 android:src="@drawable/ic_bookmark"
-                app:layout_constraintBottom_toBottomOf="@+id/dataCompleted"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/dataCompleted" />
+                bind:layout_constraintBottom_toBottomOf="@+id/dataCompleted"
+                bind:layout_constraintEnd_toEndOf="parent"
+                bind:layout_constraintTop_toTopOf="@+id/dataCompleted" />
 
             <ImageView
                 android:id="@+id/avatar"
                 roundImageUrl="@{userAvatar}"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_marginStart="48dp"
-                android:layout_marginTop="16dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/dataCompleted"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="8dp"
+                bind:layout_constraintStart_toStartOf="parent"
+                bind:layout_constraintTop_toBottomOf="@+id/dataCompleted"
                 tools:src="@tools:sample/avatars" />
 
             <TextView
                 android:id="@+id/nameUser"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="8dp"
                 android:text="@{userName}"
                 android:textColor="@color/nicknameColor"
                 android:textSize="@dimen/h4"
-                app:layout_constraintBottom_toBottomOf="@+id/avatar"
-                app:layout_constraintStart_toEndOf="@+id/avatar"
-                app:layout_constraintTop_toTopOf="@+id/avatar"
+                bind:layout_constraintBottom_toBottomOf="@+id/avatar"
+                bind:layout_constraintStart_toEndOf="@+id/avatar"
+                bind:layout_constraintTop_toTopOf="@+id/avatar"
                 tools:text="Iron Tony" />
 
             <Button
                 android:id="@+id/btnFollow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="48dp"
+                android:layout_marginEnd="32dp"
                 android:text="@string/follow"
                 android:textSize="@dimen/h6"
-                app:layout_constraintBottom_toBottomOf="@+id/avatar"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/avatar" />
+                bind:layout_constraintBottom_toBottomOf="@+id/avatar"
+                bind:layout_constraintEnd_toEndOf="parent"
+                bind:layout_constraintTop_toTopOf="@+id/avatar" />
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/categories"
@@ -108,10 +111,10 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
-                app:chipSpacing="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/avatar">
+                bind:chipSpacing="8dp"
+                bind:layout_constraintEnd_toEndOf="parent"
+                bind:layout_constraintStart_toStartOf="parent"
+                bind:layout_constraintTop_toBottomOf="@+id/avatar">
 
             </com.google.android.material.chip.ChipGroup>
 
@@ -123,8 +126,8 @@
                 android:layout_marginTop="16dp"
                 android:text="@string/description"
                 android:textSize="@dimen/h3"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/categories" />
+                bind:layout_constraintStart_toStartOf="parent"
+                bind:layout_constraintTop_toBottomOf="@+id/categories" />
 
             <TextView
                 android:id="@+id/description"
@@ -132,11 +135,11 @@
                 android:layout_height="wrap_content"
                 android:padding="10dp"
                 android:text="@{challenge.description}"
-                android:textAlignment="center"
+                android:textAlignment="textStart"
                 android:textSize="@dimen/h6"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/titleDescription"
+                bind:layout_constraintEnd_toEndOf="parent"
+                bind:layout_constraintStart_toStartOf="parent"
+                bind:layout_constraintTop_toBottomOf="@+id/titleDescription"
                 tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis suscipit lectus non est elementum congue. Sed at imperdiet quam. Pellentesque ullamcorper dolor nec sem euismod, nec feugiat ex ultricies. Proin ut efficitur ligula. Sed feugiat, metus a sagittis porttitor, ante metus vestibulum mi, sit amet faucibus nibh sapien eget mi. Vestibulum porta est vel volutpat aliquet. Nulla eleifend sem at feugiat porttitor. Mauris vel ligula at leo imperdiet viverra. Fusce nec euismod justo. Etiam cursus purus sed orci maximus eleifend. Sed sodales diam erat, id laoreet ante sollicitudin ut. Nunc congue neque vitae fringilla elementum. In feugiat, lacus non facilisis viverra, diam tortor sodales dui, at dignissim ipsum sem ut tortor. " />
 
             <ImageView
@@ -144,12 +147,12 @@
                 android:layout_width="48dp"
                 android:layout_height="46dp"
                 android:layout_marginStart="100dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="16dp"
                 android:src="@drawable/ic_trophy"
-                app:layout_constraintEnd_toStartOf="@+id/rewardRP"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/description" />
+                bind:layout_constraintEnd_toStartOf="@+id/rewardRP"
+                bind:layout_constraintHorizontal_bias="0.5"
+                bind:layout_constraintStart_toStartOf="parent"
+                bind:layout_constraintTop_toBottomOf="@+id/description" />
 
             <TextView
                 android:id="@+id/rewardRP"
@@ -158,11 +161,11 @@
                 android:layout_marginEnd="100dp"
                 android:text="@{challenge.rp}"
                 android:textSize="@dimen/h4"
-                app:layout_constraintBottom_toBottomOf="@+id/rewardAchievement"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/rewardAchievement"
-                app:layout_constraintTop_toTopOf="@+id/rewardAchievement"
+                bind:layout_constraintBottom_toBottomOf="@+id/rewardAchievement"
+                bind:layout_constraintEnd_toEndOf="parent"
+                bind:layout_constraintHorizontal_bias="0.5"
+                bind:layout_constraintStart_toEndOf="@+id/rewardAchievement"
+                bind:layout_constraintTop_toTopOf="@+id/rewardAchievement"
                 tools:text="100 RP" />
 
             <include
@@ -170,10 +173,10 @@
                 layout="@layout/item_stats"
                 android:layout_width="110dp"
                 android:layout_height="140dp"
-                android:layout_marginTop="24dp"
-                app:layout_constraintEnd_toStartOf="@+id/statsCompleted"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rewardAchievement"
+                android:layout_marginTop="16dp"
+                bind:layout_constraintEnd_toStartOf="@+id/statsCompleted"
+                bind:layout_constraintStart_toStartOf="parent"
+                bind:layout_constraintTop_toBottomOf="@+id/rewardAchievement"
                 bind:statsData="@{challenge.accepted}"
                 bind:statsDescription='@{"Accepted"}'
                 bind:statsIcon='@{@drawable/ic_users}' />
@@ -186,9 +189,9 @@
                 bind:statsData="@{challenge.completed}"
                 bind:statsDescription='@{"Completed"}'
                 bind:statsIcon='@{@drawable/ic_checkmark}'
-                app:layout_constraintEnd_toStartOf="@+id/statsLiked"
-                app:layout_constraintStart_toEndOf="@+id/statsAccepted"
-                app:layout_constraintTop_toTopOf="@+id/statsAccepted" />
+                bind:layout_constraintEnd_toStartOf="@+id/statsLiked"
+                bind:layout_constraintStart_toEndOf="@+id/statsAccepted"
+                bind:layout_constraintTop_toTopOf="@+id/statsAccepted" />
 
             <include
                 android:id="@+id/statsLiked"
@@ -198,9 +201,9 @@
                 bind:statsIcon='@{@drawable/ic_heart_border}'
                 android:layout_width="110dp"
                 android:layout_height="140dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/statsCompleted"
-                app:layout_constraintTop_toTopOf="@+id/statsCompleted" />
+                bind:layout_constraintEnd_toEndOf="parent"
+                bind:layout_constraintStart_toEndOf="@+id/statsCompleted"
+                bind:layout_constraintTop_toTopOf="@+id/statsCompleted" />
 
             <Button
                 android:id="@+id/btnAccept"
@@ -210,9 +213,9 @@
                 android:text="@string/challenge_me"
                 android:textSize="@dimen/h5"
                 android:visibility="invisible"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/statsCompleted" />
+                bind:layout_constraintEnd_toEndOf="parent"
+                bind:layout_constraintStart_toStartOf="parent"
+                bind:layout_constraintTop_toBottomOf="@+id/statsCompleted" />
 
             <Button
                 android:id="@+id/btnLoadVideo"
@@ -222,24 +225,24 @@
                 android:text="@string/upload_video_confirmation"
                 android:textSize="@dimen/h5"
                 android:visibility="invisible"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/statsCompleted" />
+                bind:layout_constraintEnd_toEndOf="parent"
+                bind:layout_constraintStart_toStartOf="parent"
+                bind:layout_constraintTop_toBottomOf="@id/statsCompleted" />
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                app:layout_constraintBottom_toTopOf="@+id/viewPager"
-                app:layout_constraintTop_toBottomOf="@+id/btnAccept" />
+                bind:layout_constraintBottom_toTopOf="@+id/viewPager"
+                bind:layout_constraintTop_toBottomOf="@+id/btnAccept" />
 
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/viewPager"
                 android:layout_width="match_parent"
                 android:layout_height="500dp"
                 android:maxHeight="500dp"
-                app:layout_constraintTop_toBottomOf="@id/tab_layout"
+                bind:layout_constraintTop_toBottomOf="@id/tab_layout"
                 tools:layout_editor_absoluteX="0dp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
