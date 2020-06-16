@@ -100,8 +100,7 @@ public class ChallengeFragment extends Fragment {
                     if (getCreatorResult instanceof Result.Success) {
                         //noinspection unchecked
                         UserEntity user = ((Result.Success<UserEntity>) getCreatorResult).data;
-                        if (user != null)
-                            setupUserData(user);
+                        setupUserData(user);
                     }
                 });
 
@@ -118,9 +117,15 @@ public class ChallengeFragment extends Fragment {
         });
     }
 
-    private void setupUserData(UserEntity user) {
-        mBinding.setUserName(user.getNick());
-        mBinding.setUserAvatar(user.getPhoto());
+    private void setupUserData(@Nullable UserEntity user) {
+        if (user != null) {
+            mBinding.setUserName(user.getNick());
+            String photoUrl = user.getPhoto();
+            mBinding.setUserAvatar(photoUrl != null ? photoUrl : MainActivityViewModel.DEFAULT_AVATAR_URL);
+        } else {
+            mBinding.setUserName("Anonym");
+            mBinding.setUserAvatar(MainActivityViewModel.DEFAULT_AVATAR_URL);
+        }
     }
 
     private void setupChallengeData(ChallengeEntity challenge) {
