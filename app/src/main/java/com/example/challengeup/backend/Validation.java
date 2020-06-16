@@ -41,10 +41,22 @@ public class Validation {
         return true;
     }
 
-    public static boolean validateNickTagPassword(String nick) throws IllegalArgumentException {
+    public static boolean validateNick(String nick) throws IllegalArgumentException {
         if (nick == null) throw new IllegalArgumentException("nick can`t be null");
-        if (!nick.matches("[A-Za-z0-9_\\-]{5}[A-Za-z0-9_\\-]*"))
+        if (!nick.matches("[A-Za-z0-9_\\- ]{5}[A-Za-z0-9_\\- ]*"))
             throw new IllegalArgumentException("wrong nick");
+        return true;
+    }
+    public static boolean validateTag(String nick) throws IllegalArgumentException {
+        if (nick == null) throw new IllegalArgumentException("tag can`t be null");
+        if (!nick.matches("[A-Za-z0-9_\\-]{5}[A-Za-z0-9_\\-]*"))
+            throw new IllegalArgumentException("wrong tag");
+        return true;
+    }
+    public static boolean validatePassword(String nick) throws IllegalArgumentException {
+        if (nick == null) throw new IllegalArgumentException("password can`t be null");
+        if (!nick.matches("[A-Za-z0-9_\\-]{5}[A-Za-z0-9_\\-]*"))
+            throw new IllegalArgumentException("wrong password");
         return true;
     }
 
