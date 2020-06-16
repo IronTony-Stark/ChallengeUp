@@ -1,6 +1,7 @@
 package com.example.challengeup.fragment;
 
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -147,6 +148,14 @@ public class ChallengesFragment extends Fragment {
         Spinner orderDirectionSpinner = mBinding.searchArea.spinnerDirection;
         orderDirectionSpinner.setAdapter(new ArrayAdapter<>(requireContext(),
                 R.layout.item_spinner, OrderDirection.values()));
+
+        queryEdiText.setOnKeyListener((v, keyCode, event) -> {
+            if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                mBinding.searchArea.iconSearch.callOnClick();
+                return true;
+            }
+            return false;
+        });
 
         mBinding.searchArea.iconSearch.setOnClickListener(v -> {
             mLoadable.startLoading();
