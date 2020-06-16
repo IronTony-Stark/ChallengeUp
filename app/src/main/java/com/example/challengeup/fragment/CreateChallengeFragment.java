@@ -135,9 +135,13 @@ public class CreateChallengeFragment extends Fragment {
                     .getCheckedChipIds()
                     .stream()
                     .map(id -> {
-                        Log.e("Chip", String.valueOf(id));
-                        return ((Chip) mCategories.getChildAt(id - 1)).getText().toString();
+                        Chip chip = (Chip) mCategories.getChildAt(id - 1);
+                        if (chip == null)
+                            Log.e("Chip | Null Pointer", String.valueOf(id));
+                        return chip;
                     })
+                    .filter(Objects::nonNull)
+                    .map(chip -> Objects.requireNonNull(chip).getText().toString())
                     .collect(Collectors.toList());
 
             ChallengeEntity challenge = new ChallengeEntity(
