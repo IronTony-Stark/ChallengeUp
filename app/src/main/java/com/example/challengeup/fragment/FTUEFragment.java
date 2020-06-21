@@ -91,8 +91,6 @@ public class FTUEFragment extends Fragment {
         mBlockingLoadable = (IBlockingLoadable) activity;
         mUIConfig = (IUIConfig) activity;
 
-        mUIConfig.setAppBarVisibility(false);
-
         mStorage = FirebaseStorage.getInstance().getReference(StorageFolders.user_photos.toString());
 
         mAvatar = mBinding.avatar;
@@ -180,6 +178,12 @@ public class FTUEFragment extends Fragment {
                 }
             });
         });
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mUIConfig.setAppBarVisibility(false);
     }
 
     @Override
