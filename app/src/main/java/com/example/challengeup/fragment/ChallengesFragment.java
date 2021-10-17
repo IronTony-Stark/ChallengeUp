@@ -51,7 +51,7 @@ import com.firebase.ui.auth.data.model.User;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
-import com.volokh.danylo.hashtaghelper.HashTagHelper;
+//import com.volokh.danylo.hashtaghelper.HashTagHelper;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -337,13 +337,13 @@ public class ChallengesFragment extends Fragment {
                 }
             });
 
-            HashTagHelper mTextHashTagHelper = HashTagHelper.Creator
-                    .create(
-                            ContextCompat.getColor(requireContext(), R.color.colorPrimary),
-                            hashTag -> Toast.makeText(getContext(), hashTag, Toast.LENGTH_SHORT)
-                                    .show(), '_'
-                    );
-            mTextHashTagHelper.handle(mDescription);
+//            HashTagHelper mTextHashTagHelper = HashTagHelper.Creator
+//                    .create(
+//                            ContextCompat.getColor(requireContext(), R.color.colorPrimary),
+//                            hashTag -> Toast.makeText(getContext(), hashTag, Toast.LENGTH_SHORT)
+//                                    .show(), '_'
+//                    );
+//            mTextHashTagHelper.handle(mDescription);
 
             holder.itemView.setOnClickListener(view -> {
                 ChallengesFragmentDirections.ActionChallengesToChallenge action =
