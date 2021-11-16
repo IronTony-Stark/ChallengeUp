@@ -38,7 +38,7 @@ import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-//import com.volokh.danylo.hashtaghelper.HashTagHelper;
+import com.volokh.danylo.hashtaghelper.HashTagHelper;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -59,7 +59,7 @@ public class CreateChallengeFragment extends Fragment {
     private StorageReference mStorage;
     private ILoadable mLoadable;
 
-//    private HashTagHelper mHashTagHelperDescription;
+    private HashTagHelper mHashTagHelperDescription;
     private ChipGroup mCategories;
 
     private EditText mInputName;
@@ -130,7 +130,7 @@ public class CreateChallengeFragment extends Fragment {
             String name = mInputName.getText().toString();
             String description = mInputDescription.getText().toString();
             String uid = Objects.requireNonNull(mMainActivityViewModel.getUser().getValue()).getId();
-//            List<String> hashtags = mHashTagHelperDescription.getAllHashTags();
+            List<String> hashtags = mHashTagHelperDescription.getAllHashTags();
             List<String> categories = mCategories
                     .getCheckedChipIds()
                     .stream()
@@ -148,7 +148,7 @@ public class CreateChallengeFragment extends Fragment {
                     name,
                     description,
                     uid,
-                    new ArrayList<>(), // hashtags
+                    (ArrayList<String>) hashtags,
                     (ArrayList<String>) categories // TODO remove casts
             );
 
@@ -180,7 +180,7 @@ public class CreateChallengeFragment extends Fragment {
         mInputName.setText("");
         mInputDescription.setText("");
         mBinding.setChallengeThumbnail(null);
-//        Toast.makeText(getContext(), String.valueOf(mHashTagHelperDescription.getAllHashTags().size()), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), String.valueOf(mHashTagHelperDescription.getAllHashTags().size()), Toast.LENGTH_SHORT).show();
         mCategories.clearCheck();
     }
 
@@ -202,15 +202,15 @@ public class CreateChallengeFragment extends Fragment {
     }
 
     private void setupHashtags() {
-//        mHashTagHelperDescription = HashTagHelper.Creator.create(
-//                ContextCompat.getColor(requireContext(), R.color.colorPrimary),
-//                null, '_');
-//        mHashTagHelperDescription.handle(mBinding.inputDescription);
-//
-//        HashTagHelper hashTagHelperPreview = HashTagHelper.Creator.create(
-//                ContextCompat.getColor(requireContext(), R.color.colorPrimary),
-//                null, '_');
-//        hashTagHelperPreview.handle(mBinding.preview.description);
+        mHashTagHelperDescription = HashTagHelper.Creator.create(
+                ContextCompat.getColor(requireContext(), R.color.colorPrimary),
+                null, '_');
+        mHashTagHelperDescription.handle(mBinding.inputDescription);
+
+        HashTagHelper hashTagHelperPreview = HashTagHelper.Creator.create(
+                ContextCompat.getColor(requireContext(), R.color.colorPrimary),
+                null, '_');
+        hashTagHelperPreview.handle(mBinding.preview.description);
     }
 
     private void setupCategories() {

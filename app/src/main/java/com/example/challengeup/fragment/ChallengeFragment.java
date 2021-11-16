@@ -36,7 +36,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-//import com.volokh.danylo.hashtaghelper.HashTagHelper;
+import com.volokh.danylo.hashtaghelper.HashTagHelper;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -160,11 +160,11 @@ public class ChallengeFragment extends Fragment {
     }
 
     private void setupHashtags() {
-//        HashTagHelper textHashTagHelper = HashTagHelper.Creator.create(
-//                ContextCompat.getColor(requireContext(), R.color.colorPrimary),
-//                hashTag -> Toast.makeText(getContext(), hashTag, Toast.LENGTH_SHORT
-//                ).show(), '_');
-//        textHashTagHelper.handle(mBinding.description);
+        HashTagHelper textHashTagHelper = HashTagHelper.Creator.create(
+                ContextCompat.getColor(requireContext(), R.color.colorPrimary),
+                hashTag -> Toast.makeText(getContext(), hashTag, Toast.LENGTH_SHORT
+                ).show(), '_');
+        textHashTagHelper.handle(mBinding.description);
     }
 
     private void setupChips() {

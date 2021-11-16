@@ -67,7 +67,7 @@ dependencies {
 
     // HashTags
     // Requires jcenter which is deprecated
-    // implementation 'com.github.danylovolokh:hashtag-helper:1.1.0'
+    implementation 'com.github.danylovolokh:hashtag-helper:1.1.0'
 
     // ProgressBar
     implementation 'com.pnikosis:materialish-progress:1.7'
@@ -76,10 +76,10 @@ dependencies {
     implementation 'com.github.iamBedant:OutlineTextView:1.0.5'
 
     // Lombok
+    // Don't forget to install Lombok plugin
     //noinspection AnnotationProcessorOnCompilePath
     compileOnly "org.projectlombok:lombok:1.18.12"
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 
     // ViewPager2
     implementation "androidx.viewpager2:viewpager2:1.0.0"
