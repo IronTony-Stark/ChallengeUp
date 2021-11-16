@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -27,6 +29,8 @@ import com.example.challengeup.backend.UserEntity;
 import com.example.challengeup.backend.VideoConfirmationEntity;
 import com.example.challengeup.databinding.FragmentChallengeBinding;
 import com.example.challengeup.dto.ChallengeDTO;
+import com.example.challengeup.fragment.dialog.CreateDialogFragment;
+import com.example.challengeup.fragment.dialog.ReportDialogFragment;
 import com.example.challengeup.request.Result;
 import com.example.challengeup.viewModel.ChallengesViewModel;
 import com.example.challengeup.viewModel.MainActivityViewModel;
@@ -44,7 +48,8 @@ import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
 
-public class ChallengeFragment extends Fragment {
+public class ChallengeFragment extends Fragment implements
+        ReportDialogFragment.ReportDialogListener {
 
     private FragmentChallengeBinding mBinding;
 
@@ -63,6 +68,7 @@ public class ChallengeFragment extends Fragment {
     public View onCreateView(@NotNull LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_challenge,
                 container, false);
         return mBinding.getRoot();
@@ -115,6 +121,30 @@ public class ChallengeFragment extends Fragment {
 
             loadable.finishBlockingLoading();
         });
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.reportMenuItem).setVisible(true);
+        super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        //noinspection SwitchStatementWithTooFewBranches
+        switch (item.getItemId()) {
+            case R.id.reportMenuItem:
+                ReportDialogFragment dialog = new ReportDialogFragment(this);
+                dialog.show(Objects.requireNonNull(getActivity()).getSupportFragmentManager(), REPORT_DIALOG_TAG);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onReportClick() {
+        Toast.makeText(getContext(), "Reported Successfully", Toast.LENGTH_SHORT).show();
     }
 
     private void setupUserData(@Nullable UserEntity user) {
@@ -332,4 +362,5 @@ public class ChallengeFragment extends Fragment {
 
     private Fragment[] mFragmentsCache = new Fragment[3];
     private static final int GET_VIDEO_REQUEST = 1;
+    public static final String REPORT_DIALOG_TAG = "REPORT_DIALOG_TAG";
 }

@@ -14,4 +14,10 @@
         android:title="@string/search"
         android:visible="false"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/reportMenuItem"
+        android:icon="@drawable/ic_dislike"
+        android:title="@string/report"
+        android:visible="false"
+        app:showAsAction="always" />
 </menu>
