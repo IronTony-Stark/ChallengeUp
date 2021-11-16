@@ -127,6 +127,10 @@ public class MainActivityViewModel extends ViewModel {
         mRequestExecutor.execute(new GetRankCommand(user), callback);
     }
 
+    public boolean isAdmin() {
+        return true;
+    }
+
     public LiveData<UserDTO> getUser() {
         return mUser;
     }

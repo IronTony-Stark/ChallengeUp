@@ -29,6 +29,10 @@
             <item
                 android:id="@+id/likedChallenges"
                 android:title="@string/liked_challenges" />
+            <item
+                android:id="@+id/reportedChallenges"
+                android:title="@string/reported_challenges"
+                android:visible="false"/>
         </menu>
     </item>
 </menu>

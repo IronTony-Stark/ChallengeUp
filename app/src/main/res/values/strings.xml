@@ -33,6 +33,7 @@
     <string name="buffering_string"><![CDATA[Buffering &#8230;]]></string>
     <string name="challenges">Challenges</string>
     <string name="liked_challenges">Liked Challenges</string>
+    <string name="reported_challenges">Reported Challenges</string>
     <string name="top">Top</string>
     <string name="challenge_up">Challenge Up!</string>
     <string name="load_photo">Load Photo</string>

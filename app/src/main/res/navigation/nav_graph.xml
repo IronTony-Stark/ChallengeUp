@@ -165,4 +165,9 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
     </fragment>
+    <fragment
+        android:id="@+id/reportedChallenges"
+        android:name="com.example.challengeup.fragment.ReportedChallengesFragment"
+        android:label="ReportedChallenges"
+        tools:layout="@layout/fragment_reported_challenges" />
 </navigation>
