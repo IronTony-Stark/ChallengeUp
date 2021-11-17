@@ -560,6 +560,16 @@ public class ChallengeEntity {
         isBlocked = blocked;
     }
 
+    public void report(){
+        setReportsCount(getReportsCount()+1);
+        update();
+    }
+
+    public void block(){
+        setBlocked(true);
+        update();
+    }
+
     public String getCreator_id() {
         return creator_id;
     }
