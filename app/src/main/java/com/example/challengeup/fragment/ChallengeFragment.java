@@ -9,6 +9,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -29,7 +31,6 @@ import com.example.challengeup.backend.UserEntity;
 import com.example.challengeup.backend.VideoConfirmationEntity;
 import com.example.challengeup.databinding.FragmentChallengeBinding;
 import com.example.challengeup.dto.ChallengeDTO;
-import com.example.challengeup.fragment.dialog.CreateDialogFragment;
 import com.example.challengeup.fragment.dialog.ReportDialogFragment;
 import com.example.challengeup.request.Result;
 import com.example.challengeup.viewModel.ChallengesViewModel;
@@ -212,6 +213,18 @@ public class ChallengeFragment extends Fragment implements
         Button btnAccept = mBinding.btnAccept;
         Button btnLoadVideo = mBinding.btnLoadVideo;
 
+        if (mMainActivityViewModel.isAdmin()) {
+            ImageView iconDislike = mBinding.iconDislike;
+            TextView reportNum = mBinding.reportedNum;
+            Button btnBan = mBinding.btnBan;
+
+            iconDislike.setVisibility(View.VISIBLE);
+            reportNum.setVisibility(View.VISIBLE);
+            btnBan.setVisibility(View.VISIBLE);
+
+            setupBtnBan(mChallenge.isBanned());
+        }
+
         mMainActivityViewModel.getUserById(Objects.requireNonNull(
                 mMainActivityViewModel.getUser().getValue()).getId(), getUserResult -> {
             if (getUserResult instanceof Result.Success) {
@@ -253,6 +266,26 @@ public class ChallengeFragment extends Fragment implements
             if (intent.resolveActivity(requireActivity().getPackageManager()) != null)
                 startActivityForResult(intent, GET_VIDEO_REQUEST);
         });
+    }
+
+    private void setupBtnBan(boolean banned) {
+        Button btnBan = mBinding.btnBan;
+
+        if (banned) {
+            btnBan.setText(R.string.unban_challenge);
+            btnBan.setBackgroundColor(getResources().getColor(R.color.colorGreen));
+            btnBan.setOnClickListener(v -> {
+                Toast.makeText(getContext(), "Unbanned Successfully", Toast.LENGTH_SHORT).show();
+                setupBtnBan(false);
+            });
+        } else {
+            btnBan.setText(R.string.ban_challenge);
+            btnBan.setBackgroundColor(getResources().getColor(R.color.colorRed));
+            btnBan.setOnClickListener(v -> {
+                Toast.makeText(getContext(), "Banned Successfully", Toast.LENGTH_SHORT).show();
+                setupBtnBan(true);
+            });
+        }
     }
 
     private void setupTabs(ChallengeEntity challengeEntity) {

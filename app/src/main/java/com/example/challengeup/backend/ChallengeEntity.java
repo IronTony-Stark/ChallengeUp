@@ -599,4 +599,8 @@ public class ChallengeEntity {
                 ", dateTime=" + dateTime +
                 '}';
     }
+
+    public boolean isBanned() {
+        return true;
+    }
 }

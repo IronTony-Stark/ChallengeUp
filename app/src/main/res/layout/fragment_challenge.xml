@@ -186,24 +186,24 @@
                 layout="@layout/item_stats"
                 android:layout_width="110dp"
                 android:layout_height="140dp"
-                bind:statsData="@{challenge.completed}"
-                bind:statsDescription='@{"Completed"}'
-                bind:statsIcon='@{@drawable/ic_checkmark}'
                 bind:layout_constraintEnd_toStartOf="@+id/statsLiked"
                 bind:layout_constraintStart_toEndOf="@+id/statsAccepted"
-                bind:layout_constraintTop_toTopOf="@+id/statsAccepted" />
+                bind:layout_constraintTop_toTopOf="@+id/statsAccepted"
+                bind:statsData="@{challenge.completed}"
+                bind:statsDescription='@{"Completed"}'
+                bind:statsIcon='@{@drawable/ic_checkmark}' />
 
             <include
                 android:id="@+id/statsLiked"
                 layout="@layout/item_stats"
-                bind:statsData="@{challenge.liked}"
-                bind:statsDescription='@{"Liked"}'
-                bind:statsIcon='@{@drawable/ic_heart_border}'
                 android:layout_width="110dp"
                 android:layout_height="140dp"
                 bind:layout_constraintEnd_toEndOf="parent"
                 bind:layout_constraintStart_toEndOf="@+id/statsCompleted"
-                bind:layout_constraintTop_toTopOf="@+id/statsCompleted" />
+                bind:layout_constraintTop_toTopOf="@+id/statsCompleted"
+                bind:statsData="@{challenge.liked}"
+                bind:statsDescription='@{"Liked"}'
+                bind:statsIcon='@{@drawable/ic_heart_border}' />
 
             <Button
                 android:id="@+id/btnAccept"
@@ -215,7 +215,7 @@
                 android:visibility="invisible"
                 bind:layout_constraintEnd_toEndOf="parent"
                 bind:layout_constraintStart_toStartOf="parent"
-                bind:layout_constraintTop_toBottomOf="@+id/statsCompleted" />
+                bind:layout_constraintTop_toBottomOf="@+id/btnBan" />
 
             <Button
                 android:id="@+id/btnLoadVideo"
@@ -227,7 +227,7 @@
                 android:visibility="invisible"
                 bind:layout_constraintEnd_toEndOf="parent"
                 bind:layout_constraintStart_toStartOf="parent"
-                bind:layout_constraintTop_toBottomOf="@id/statsCompleted" />
+                bind:layout_constraintTop_toBottomOf="@+id/btnBan" />
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tab_layout"
@@ -244,6 +244,44 @@
                 android:maxHeight="500dp"
                 bind:layout_constraintTop_toBottomOf="@id/tab_layout"
                 tools:layout_editor_absoluteX="0dp" />
+
+            <ImageView
+                android:id="@+id/iconDislike"
+                android:layout_width="48dp"
+                android:layout_height="46dp"
+                android:layout_marginEnd="16dp"
+                android:visibility="gone"
+                bind:layout_constraintBottom_toBottomOf="@+id/reportedNum"
+                bind:layout_constraintEnd_toStartOf="@+id/reportedNum"
+                bind:layout_constraintTop_toTopOf="@+id/reportedNum"
+                bind:srcCompat="@drawable/ic_dislike_black" />
+
+            <TextView
+                android:id="@+id/reportedNum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:textSize="@dimen/h4"
+                android:text="5"
+                android:visibility="gone"
+                bind:layout_constraintBottom_toBottomOf="@+id/btnBan"
+                bind:layout_constraintEnd_toStartOf="@+id/btnBan"
+                bind:layout_constraintHorizontal_bias="0.5"
+                bind:layout_constraintStart_toStartOf="parent"
+                bind:layout_constraintTop_toTopOf="@+id/btnBan"
+                tools:text="5" />
+
+            <Button
+                android:id="@+id/btnBan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/ban_challenge"
+                android:visibility="gone"
+                bind:layout_constraintEnd_toEndOf="parent"
+                bind:layout_constraintHorizontal_bias="0.5"
+                bind:layout_constraintStart_toEndOf="@+id/reportedNum"
+                bind:layout_constraintTop_toBottomOf="@+id/statsCompleted" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

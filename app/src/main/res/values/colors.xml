@@ -7,4 +7,6 @@
     <color name="colorTabsText">#03DAC5</color>
     <color name="trophyColor">#FFD814</color>
     <color name="nicknameColor">#2a2a2a</color>
+    <color name="colorRed">#f60239</color>
+    <color name="colorGreen">#4c9d49</color>
 </resources>

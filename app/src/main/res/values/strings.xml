@@ -55,6 +55,8 @@
     <string name="hint_search_by">Search by name, desc, hashtag, author</string>
     <string name="pick_topics">Pick topics you are most interested in</string>
     <string name="challenge_created">Challenge Created</string>
+    <string name="ban_challenge">Ban Challenge</string>
+    <string name="unban_challenge">Unban Challenge</string>
 
     <string-array name="createDialog">
         <item>Challenge</item>
