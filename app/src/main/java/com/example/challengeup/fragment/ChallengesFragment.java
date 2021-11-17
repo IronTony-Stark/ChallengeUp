@@ -124,7 +124,10 @@ public class ChallengesFragment extends Fragment {
         mViewModel.getAllChallenges(result -> {
             if (result instanceof Result.Success) {
                 //noinspection unchecked
-                mData = ((Result.Success<List<ChallengeEntity>>) result).data;
+                mData = ((Result.Success<List<ChallengeEntity>>) result).data
+                        .stream()
+                        .filter(c -> !c.isBlocked())
+                        .collect(Collectors.toList());
                 mAdapter.setDataset(mData);
             }
             mLoadable.finishLoading();
@@ -201,7 +204,10 @@ public class ChallengesFragment extends Fragment {
                 mLoadable.finishLoading();
                 if (result instanceof Result.Success) {
                     //noinspection unchecked
-                    mData = ((Result.Success<List<ChallengeEntity>>) result).data;
+                    mData = ((Result.Success<List<ChallengeEntity>>) result).data
+                            .stream()
+                            .filter(c -> !c.isBlocked())
+                            .collect(Collectors.toList());
                     mAdapter.setDataset(mData);
                 }
             });

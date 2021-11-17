@@ -13,6 +13,7 @@ import com.example.challengeup.request.RequestExecutor;
 import com.example.challengeup.request.command.AddBookmarkedCommand;
 import com.example.challengeup.request.command.AddChallengeCommand;
 import com.example.challengeup.request.command.AddChallengeToUndone;
+import com.example.challengeup.request.command.BanCommand;
 import com.example.challengeup.request.command.ChallengeSearchCommand;
 import com.example.challengeup.request.command.CreateVideoConfirmation;
 import com.example.challengeup.request.command.GetAllChallengesCommand;
@@ -22,6 +23,7 @@ import com.example.challengeup.request.command.GetNumAcceptedCommand;
 import com.example.challengeup.request.command.GetNumCompletedCommand;
 import com.example.challengeup.request.command.LikedCommand;
 import com.example.challengeup.request.command.RemoveBookmarkedCommand;
+import com.example.challengeup.request.command.ReportCommand;
 import com.example.challengeup.request.command.UnlikedCommand;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipDrawable;
@@ -98,5 +100,13 @@ public class ChallengesViewModel extends ViewModel {
 
             chipGroup.addView(chip);
         }
+    }
+
+    public void banChallenge(ChallengeEntity challenge, boolean ban, ICallback callback) {
+        mRequestExecutor.execute(new BanCommand(challenge, ban), callback);
+    }
+
+    public void reportChallenge(ChallengeEntity challenge, ICallback callback) {
+        mRequestExecutor.execute(new ReportCommand(challenge), callback);
     }
 }

@@ -13,4 +13,5 @@ public class ChallengeDTO {
     private String completed;
     private String liked;
     private String rp;
+    private String reportCount;
 }

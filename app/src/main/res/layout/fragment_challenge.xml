@@ -262,7 +262,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:textSize="@dimen/h4"
-                android:text="5"
+                android:text="@{challenge.reportCount}"
                 android:visibility="gone"
                 bind:layout_constraintBottom_toBottomOf="@+id/btnBan"
                 bind:layout_constraintEnd_toStartOf="@+id/btnBan"

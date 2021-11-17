@@ -32,7 +32,9 @@ import com.example.challengeup.backend.VideoConfirmationEntity;
 import com.example.challengeup.databinding.FragmentChallengeBinding;
 import com.example.challengeup.dto.ChallengeDTO;
 import com.example.challengeup.fragment.dialog.ReportDialogFragment;
+import com.example.challengeup.request.ICallback;
 import com.example.challengeup.request.Result;
+import com.example.challengeup.request.command.LikedCommand;
 import com.example.challengeup.viewModel.ChallengesViewModel;
 import com.example.challengeup.viewModel.MainActivityViewModel;
 import com.example.challengeup.viewModel.factory.ChallengesFactory;
@@ -145,7 +147,9 @@ public class ChallengeFragment extends Fragment implements
 
     @Override
     public void onReportClick() {
-        Toast.makeText(getContext(), "Reported Successfully", Toast.LENGTH_SHORT).show();
+        mViewModel.reportChallenge(mChallenge, result -> {
+            Toast.makeText(getContext(), "Reported Successfully", Toast.LENGTH_SHORT).show();
+        });
     }
 
     private void setupUserData(@Nullable UserEntity user) {
@@ -166,6 +170,7 @@ public class ChallengeFragment extends Fragment implements
                 .description(challenge.getTask())
                 .liked(String.valueOf(challenge.getLikes()))
                 .rp(String.valueOf(challenge.getRewardRp()))
+                .reportCount(String.valueOf(challenge.getReportsCount()))
                 .build();
 
         mBinding.setChallenge(challengeDTO);
@@ -213,18 +218,6 @@ public class ChallengeFragment extends Fragment implements
         Button btnAccept = mBinding.btnAccept;
         Button btnLoadVideo = mBinding.btnLoadVideo;
 
-        if (mMainActivityViewModel.isAdmin()) {
-            ImageView iconDislike = mBinding.iconDislike;
-            TextView reportNum = mBinding.reportedNum;
-            Button btnBan = mBinding.btnBan;
-
-            iconDislike.setVisibility(View.VISIBLE);
-            reportNum.setVisibility(View.VISIBLE);
-            btnBan.setVisibility(View.VISIBLE);
-
-            setupBtnBan(mChallenge.isBanned());
-        }
-
         mMainActivityViewModel.getUserById(Objects.requireNonNull(
                 mMainActivityViewModel.getUser().getValue()).getId(), getUserResult -> {
             if (getUserResult instanceof Result.Success) {
@@ -248,6 +241,18 @@ public class ChallengeFragment extends Fragment implements
                     for (String waitingConfirmationId : mUser.getWaitingConfirmation())
                         if (waitingConfirmationId.equals(mChallenge.getId()))
                             btnLoadVideo.setEnabled(false);
+
+                    if (mUser.isAdmin()) {
+                        ImageView iconDislike = mBinding.iconDislike;
+                        TextView reportNum = mBinding.reportedNum;
+                        Button btnBan = mBinding.btnBan;
+
+                        iconDislike.setVisibility(View.VISIBLE);
+                        reportNum.setVisibility(View.VISIBLE);
+                        btnBan.setVisibility(View.VISIBLE);
+
+                        setupBtnBan(mChallenge.isBlocked());
+                    }
                 }
             }
         });
@@ -276,6 +281,7 @@ public class ChallengeFragment extends Fragment implements
             btnBan.setBackgroundColor(getResources().getColor(R.color.colorGreen));
             btnBan.setOnClickListener(v -> {
                 Toast.makeText(getContext(), "Unbanned Successfully", Toast.LENGTH_SHORT).show();
+                mViewModel.banChallenge(mChallenge, false, result -> { });
                 setupBtnBan(false);
             });
         } else {
@@ -283,6 +289,7 @@ public class ChallengeFragment extends Fragment implements
             btnBan.setBackgroundColor(getResources().getColor(R.color.colorRed));
             btnBan.setOnClickListener(v -> {
                 Toast.makeText(getContext(), "Banned Successfully", Toast.LENGTH_SHORT).show();
+                mViewModel.banChallenge(mChallenge, true, result -> { });
                 setupBtnBan(true);
             });
         }

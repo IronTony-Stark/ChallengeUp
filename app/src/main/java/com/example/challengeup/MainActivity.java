@@ -260,11 +260,11 @@ public class MainActivity extends AppCompatActivity implements
         headerBinding.setViewModel(mViewModel);
         headerBinding.setLifecycleOwner(this);
 
-        if (mViewModel.isAdmin()) {
-            Menu menuNav = mNavView.getMenu();
-            MenuItem item = menuNav.findItem(R.id.reportedChallenges);
-            item.setVisible(true);
-        }
+//        if (mViewModel.isAdmin()) {
+//            Menu menuNav = mNavView.getMenu();
+//            MenuItem item = menuNav.findItem(R.id.reportedChallenges);
+//            item.setVisible(true);
+//        }
 
         mViewModel.refreshUserFromSharedPreferences();
         mViewModel.refreshUserAvatar();

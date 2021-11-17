@@ -237,8 +237,8 @@ public class ChallengeEntity {
                 challenge.setTimesViewed(Integer.parseInt(object.getJSONObject(key).getString("times_viewed")));
                 challenge.setRewardRp(Integer.parseInt(object.getJSONObject(key).getString("rewardRp")));
                 challenge.setRewardTrophies(trophiesArray);
-                challenge.setBlocked(object.getJSONObject(key).getString("isBlocked")));
-                challenge.setReportsCount(object.getJSONObject(key).getString("reportsCount"));
+                challenge.setBlocked(object.getJSONObject(key).getBoolean("isBlocked"));
+                challenge.setReportsCount(object.getJSONObject(key).getInt("reportsCount"));
                 if (!object.getJSONObject(key).getString("photo_link").equals("")) {
                     challenge.setPhoto(object.getJSONObject(key).getString("photo_link"));
                 }
@@ -363,8 +363,8 @@ public class ChallengeEntity {
             challenge.setTimesViewed(Integer.parseInt(object.getJSONObject(id).getString("times_viewed")));
             challenge.setRewardRp(Integer.parseInt(object.getJSONObject(id).getString("rewardRp")));
             challenge.setRewardTrophies(trophiesArray);
-            challenge.setBlocked(object.getJSONObject(key).getString("isBlocked")));
-            challenge.setReportsCount(object.getJSONObject(key).getString("reportsCount"));
+            challenge.setBlocked(object.getJSONObject(id).getBoolean("isBlocked"));
+            challenge.setReportsCount(object.getJSONObject(id).getInt("reportsCount"));
             if (!object.getJSONObject(id).getString("photo_link").equals("")) {
                 challenge.setPhoto(object.getJSONObject(id).getString("photo_link"));
             }
@@ -560,13 +560,18 @@ public class ChallengeEntity {
         isBlocked = blocked;
     }
 
-    public void report(){
-        setReportsCount(getReportsCount()+1);
+    public void report() {
+        setReportsCount(getReportsCount() + 1);
         update();
     }
 
-    public void block(){
+    public void block() {
         setBlocked(true);
+        update();
+    }
+
+    public void unblock() {
+        setBlocked(false);
         update();
     }
 

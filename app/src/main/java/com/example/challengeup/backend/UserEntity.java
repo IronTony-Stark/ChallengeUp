@@ -499,7 +499,7 @@ public class UserEntity {
                 user.setLiked(liked);
                 user.setInfo(object.getJSONObject(key).getString("info"));
                 user.setWaitingConfirmation(waitingConfirmation);
-                user.setAdmin(object.getJSONObject(key).getString("isAdmin"));
+                user.setAdmin(object.getJSONObject(key).getBoolean("isAdmin"));
                 if (!object.getJSONObject(key).getString("photo_link").equals("")) {
                     user.setPhoto(object.getJSONObject(key).getString("photo_link"));
                 }
@@ -626,7 +626,7 @@ public class UserEntity {
             user.setLiked(liked);
             user.setInfo(object.getJSONObject(id).getString("info"));
             user.setWaitingConfirmation(waitingConfirmation);
-            user.setAdmin(object.getJSONObject(key).getString("isAdmin"));
+            user.setAdmin(object.getJSONObject(id).getBoolean("isAdmin"));
             if (!object.getJSONObject(id).getString("photo_link").equals("")) {
                 user.setPhoto(object.getJSONObject(id).getString("photo_link"));
             }
@@ -748,7 +748,7 @@ public class UserEntity {
             user.setLiked(liked);
             user.setInfo(object.getJSONObject(id).getString("info"));
             user.setWaitingConfirmation(waitingConfirmation);
-            user.setAdmin(object.getJSONObject(key).getString("isAdmin"));
+            user.setAdmin(object.getJSONObject(id).getBoolean("isAdmin"));
             if (!object.getJSONObject(id).getString("photo_link").equals("")) {
                 user.setPhoto(object.getJSONObject(id).getString("photo_link"));
             }
@@ -785,7 +785,7 @@ public class UserEntity {
                     .put("totalRp", totalRp)
                     .put("liked", liked)
                     .put("info", info)
-                    .put("waitingConfirmation", waitingConfirmation)
+                    .put("waitingConfirmation", waitingConfirmation);
 
             //RequestBody body = RequestBody.create(jsonObject.toString(), JSON);
             RequestBody requestBody;
