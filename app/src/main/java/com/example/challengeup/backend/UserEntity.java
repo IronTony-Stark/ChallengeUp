@@ -37,6 +37,8 @@ public class UserEntity {
     private String email;
     private String info;
 
+    private boolean isAdmin;
+
 
     private int rp;
     private int totalRp;
@@ -60,6 +62,8 @@ public class UserEntity {
         this.nick = nick;
         this.email = email;
         info = "";
+
+        isAdmin = false;
 
         undone = new ArrayList<>();
         done = new ArrayList<>();
@@ -121,7 +125,8 @@ public class UserEntity {
                     .put("totalRp", user.totalRp)
                     .put("liked", user.liked)
                     .put("info",user.info)
-                    .put("waitingConfirmation", user.waitingConfirmation);
+                    .put("waitingConfirmation", user.waitingConfirmation)
+                    .put("isAdmin", user.isAdmin);
 
 
             RequestBody requestBody;
@@ -216,7 +221,8 @@ public class UserEntity {
                     .put("totalRp", 0)
                     .put("liked", new ArrayList<>())
                     .put("info", "")
-                    .put("waitingConfirmation",new ArrayList<>());
+                    .put("waitingConfirmation",new ArrayList<>())
+                    .put("isAdmin", false);
 
             RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
                     .addFormDataPart("data", jsonObject.toString())
@@ -493,6 +499,7 @@ public class UserEntity {
                 user.setLiked(liked);
                 user.setInfo(object.getJSONObject(key).getString("info"));
                 user.setWaitingConfirmation(waitingConfirmation);
+                user.setAdmin(object.getJSONObject(key).getString("isAdmin"));
                 if (!object.getJSONObject(key).getString("photo_link").equals("")) {
                     user.setPhoto(object.getJSONObject(key).getString("photo_link"));
                 }
@@ -619,6 +626,7 @@ public class UserEntity {
             user.setLiked(liked);
             user.setInfo(object.getJSONObject(id).getString("info"));
             user.setWaitingConfirmation(waitingConfirmation);
+            user.setAdmin(object.getJSONObject(key).getString("isAdmin"));
             if (!object.getJSONObject(id).getString("photo_link").equals("")) {
                 user.setPhoto(object.getJSONObject(id).getString("photo_link"));
             }
@@ -740,6 +748,7 @@ public class UserEntity {
             user.setLiked(liked);
             user.setInfo(object.getJSONObject(id).getString("info"));
             user.setWaitingConfirmation(waitingConfirmation);
+            user.setAdmin(object.getJSONObject(key).getString("isAdmin"));
             if (!object.getJSONObject(id).getString("photo_link").equals("")) {
                 user.setPhoto(object.getJSONObject(id).getString("photo_link"));
             }
@@ -776,7 +785,7 @@ public class UserEntity {
                     .put("totalRp", totalRp)
                     .put("liked", liked)
                     .put("info", info)
-                    .put("waitingConfirmation", waitingConfirmation);
+                    .put("waitingConfirmation", waitingConfirmation)
 
             //RequestBody body = RequestBody.create(jsonObject.toString(), JSON);
             RequestBody requestBody;
@@ -887,6 +896,14 @@ public class UserEntity {
 
     public int getTotalRp() {
         return totalRp;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
     }
 
     public void setTrophies(ArrayList<String> trophies) {

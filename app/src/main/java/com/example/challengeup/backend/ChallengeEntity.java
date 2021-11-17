@@ -29,22 +29,20 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class ChallengeEntity {
+    private final LocalDateTime dateTime;
     private String id;
     private String name;
     private String task;
     private String creator_id;
-
     private int likes;
     private int timesViewed;
     private int rewardRp;
-
+    private int reportsCount;
+    private boolean isBlocked;
     private ArrayList<String> rewardTrophies;
     private ArrayList<String> tags;
     private ArrayList<String> categories;
-
     private String photo;
-
-    private  final LocalDateTime dateTime;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public ChallengeEntity(String name, String task, String creator_id, ArrayList<String> tags, ArrayList<String> categories) {
@@ -88,26 +86,6 @@ public class ChallengeEntity {
 
     }
 
-    public String getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(String photo) {
-        this.photo = photo;
-    }
-
-
-    public ArrayList<VideoConfirmationEntity> getAllConfirmedVideos(){
-        return (ArrayList<VideoConfirmationEntity>) VideoConfirmationEntity.getAllVideos().stream().filter(x->x.getChallenge_id().equals(id) && x.isConfirmed()).collect(Collectors.toList());
-    }
-    public ArrayList<VideoConfirmationEntity> getAllUnconfirmedVideos(){
-        return (ArrayList<VideoConfirmationEntity>) VideoConfirmationEntity.getAllVideos().stream().filter(x->x.getChallenge_id().equals(id) && !x.isConfirmed()).collect(Collectors.toList());
-    }
-    public ArrayList<VideoConfirmationEntity> getAllVideos(){
-        return (ArrayList<VideoConfirmationEntity>) VideoConfirmationEntity.getAllVideos().stream().filter(x->x.getChallenge_id().equals(id)).collect(Collectors.toList());
-    }
-
-
     public static String addNewChallenge(ChallengeEntity challenge) throws IllegalArgumentException {
         Validation.validateTags(challenge.tags);
         Validation.validateTags(challenge.categories);
@@ -130,7 +108,9 @@ public class ChallengeEntity {
                     .put("categories", challenge.categories)
                     .put("rewardRp", challenge.rewardRp)
                     .put("rewardTrophies", challenge.rewardTrophies)
-                    .put("dateTime", challenge.dateTime);
+                    .put("dateTime", challenge.dateTime)
+                    .put("reportsCount", 0)
+                    .put("isBlocked", false);
 
 
             RequestBody body = RequestBody.create(jsonObject.toString(), JSON);
@@ -175,8 +155,9 @@ public class ChallengeEntity {
                     .put("categories", categories)
                     .put("rewardRp", 0)
                     .put("rewardTrophies", new ArrayList())
-                    .put("dateTime", LocalDateTime.now());
-
+                    .put("dateTime", LocalDateTime.now())
+                    .put("reportsCount", 0)
+                    .put("isBlocked", false);
 
             RequestBody body = RequestBody.create(jsonObject.toString(), JSON);
 
@@ -256,6 +237,8 @@ public class ChallengeEntity {
                 challenge.setTimesViewed(Integer.parseInt(object.getJSONObject(key).getString("times_viewed")));
                 challenge.setRewardRp(Integer.parseInt(object.getJSONObject(key).getString("rewardRp")));
                 challenge.setRewardTrophies(trophiesArray);
+                challenge.setBlocked(object.getJSONObject(key).getString("isBlocked")));
+                challenge.setReportsCount(object.getJSONObject(key).getString("reportsCount"));
                 if (!object.getJSONObject(key).getString("photo_link").equals("")) {
                     challenge.setPhoto(object.getJSONObject(key).getString("photo_link"));
                 }
@@ -269,46 +252,46 @@ public class ChallengeEntity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public static ArrayList<ChallengeEntity> search(String query, Integer liked, Integer accepted, Integer completed, Integer rp, List<String> categories, OrderBy orderBy, OrderDirection orderDirection){
+    public static ArrayList<ChallengeEntity> search(String query, Integer liked, Integer accepted, Integer completed, Integer rp, List<String> categories, OrderBy orderBy, OrderDirection orderDirection) {
 
 
         Predicate<ChallengeEntity> predicate = challengeEntity -> true;
 
         if (!Objects.isNull(liked))
-            predicate = predicate.and(challengeEntity -> challengeEntity.likes>=liked);
+            predicate = predicate.and(challengeEntity -> challengeEntity.likes >= liked);
         if (!Objects.isNull(rp))
-            predicate = predicate.and(challengeEntity -> challengeEntity.getRewardRp()>=rp);
+            predicate = predicate.and(challengeEntity -> challengeEntity.getRewardRp() >= rp);
         if (!Objects.isNull(accepted))
-            predicate = predicate.and(challengeEntity -> challengeEntity.numberOfPeopleWhoAccepted()>=accepted);
+            predicate = predicate.and(challengeEntity -> challengeEntity.numberOfPeopleWhoAccepted() >= accepted);
         if (!Objects.isNull(completed))
-            predicate =predicate.and(challengeEntity -> challengeEntity.numberOfPeopleWhoComplete()>completed);
+            predicate = predicate.and(challengeEntity -> challengeEntity.numberOfPeopleWhoComplete() > completed);
 
-        if (!Objects.isNull(query)){
+        if (!Objects.isNull(query)) {
             Predicate<ChallengeEntity> predicate1 = challengeEntity -> challengeEntity.getName().toLowerCase().contains(query.toLowerCase());
-            predicate1 = predicate1.or(challengeEntity -> challengeEntity.getTags().parallelStream().anyMatch(x->x.toLowerCase().contains(query.toLowerCase())));
+            predicate1 = predicate1.or(challengeEntity -> challengeEntity.getTags().parallelStream().anyMatch(x -> x.toLowerCase().contains(query.toLowerCase())));
             predicate1 = predicate1.or(challengeEntity -> challengeEntity.getTask().toLowerCase().contains(query.toLowerCase()));
             predicate = predicate.and(predicate1);
         }
 
-        if (!categories.isEmpty()){
+        if (!categories.isEmpty()) {
             predicate = predicate.and(challengeEntity -> challengeEntity.getCategories().stream().anyMatch(categories::contains));
         }
 
         Comparator<ChallengeEntity> challengeEntityComparator;
         switch (orderBy) {
-            case Liked:{
+            case Liked: {
                 challengeEntityComparator = Comparator.comparing(ChallengeEntity::getLikes);
                 break;
             }
-            case RP:{
+            case RP: {
                 challengeEntityComparator = Comparator.comparing(ChallengeEntity::getRewardRp);
                 break;
             }
-            case Accepted:{
+            case Accepted: {
                 challengeEntityComparator = Comparator.comparing(ChallengeEntity::numberOfPeopleWhoAccepted);
                 break;
             }
-            case Completed:{
+            case Completed: {
                 challengeEntityComparator = Comparator.comparing(ChallengeEntity::numberOfPeopleWhoComplete);
                 break;
             }
@@ -317,7 +300,8 @@ public class ChallengeEntity {
         }
 
         switch (orderDirection) {
-            case Descending: challengeEntityComparator  = challengeEntityComparator.reversed();
+            case Descending:
+                challengeEntityComparator = challengeEntityComparator.reversed();
         }
 
         Stream<ChallengeEntity> stream = ChallengeEntity.getAllChallenges().parallelStream();
@@ -379,6 +363,8 @@ public class ChallengeEntity {
             challenge.setTimesViewed(Integer.parseInt(object.getJSONObject(id).getString("times_viewed")));
             challenge.setRewardRp(Integer.parseInt(object.getJSONObject(id).getString("rewardRp")));
             challenge.setRewardTrophies(trophiesArray);
+            challenge.setBlocked(object.getJSONObject(key).getString("isBlocked")));
+            challenge.setReportsCount(object.getJSONObject(key).getString("reportsCount"));
             if (!object.getJSONObject(id).getString("photo_link").equals("")) {
                 challenge.setPhoto(object.getJSONObject(id).getString("photo_link"));
             }
@@ -415,6 +401,26 @@ public class ChallengeEntity {
         ArrayList<ChallengeEntity> challenges = ChallengeEntity.getAllChallenges();
         ArrayList<ChallengeEntity> a = (ArrayList<ChallengeEntity>) challenges.stream().filter(x -> x.getTags().containsAll(tags)).collect(Collectors.toList());
         return a;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
+    public ArrayList<VideoConfirmationEntity> getAllConfirmedVideos() {
+        return (ArrayList<VideoConfirmationEntity>) VideoConfirmationEntity.getAllVideos().stream().filter(x -> x.getChallenge_id().equals(id) && x.isConfirmed()).collect(Collectors.toList());
+    }
+
+    public ArrayList<VideoConfirmationEntity> getAllUnconfirmedVideos() {
+        return (ArrayList<VideoConfirmationEntity>) VideoConfirmationEntity.getAllVideos().stream().filter(x -> x.getChallenge_id().equals(id) && !x.isConfirmed()).collect(Collectors.toList());
+    }
+
+    public ArrayList<VideoConfirmationEntity> getAllVideos() {
+        return (ArrayList<VideoConfirmationEntity>) VideoConfirmationEntity.getAllVideos().stream().filter(x -> x.getChallenge_id().equals(id)).collect(Collectors.toList());
     }
 
     public long numberOfPeopleWhoAccepted() {
@@ -476,7 +482,9 @@ public class ChallengeEntity {
                     .put("times_viewed", timesViewed)
                     .put("rewardRp", rewardRp)
                     .put("rewardTrophies", rewardTrophies)
-                    .put("dateTime", dateTime);
+                    .put("dateTime", dateTime)
+                    .put("reportsCount", reportsCount)
+                    .put("isBlocked", isBlocked);
 
             // RequestBody body = RequestBody.create(jsonObject.toString(), JSON);
 
@@ -499,44 +507,20 @@ public class ChallengeEntity {
         return id;
     }
 
+    private void setId(String id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
 
-    public String getTask() {
-        return task;
-    }
-
-    public int getLikes() {
-        return likes;
-    }
-
-    public int getTimesViewed() {
-        return timesViewed;
-    }
-
-    public String getCreator_id() {
-        return creator_id;
-    }
-
-    public ArrayList<String> getTags() {
-        return tags;
-    }
-
-    public ArrayList<String> getCategories() {
-        return categories;
-    }
-
-    public int getRewardRp() {
-        return rewardRp;
-    }
-
-    public ArrayList<String> getRewardTrophies() {
-        return rewardTrophies;
-    }
-
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getTask() {
+        return task;
     }
 
     public void setTask(String task) {
@@ -544,20 +528,48 @@ public class ChallengeEntity {
         this.task = task;
     }
 
-    public LocalDateTime getDateTime() {
-        return dateTime;
+    public int getLikes() {
+        return likes;
     }
 
     public void setLikes(int likes) {
         this.likes = likes;
     }
 
+    public int getTimesViewed() {
+        return timesViewed;
+    }
+
     public void setTimesViewed(int timesViewed) {
         this.timesViewed = timesViewed;
     }
 
+    public int getReportsCount() {
+        return reportsCount;
+    }
+
+    public void setReportsCount(int reportsCount) {
+        this.reportsCount = reportsCount;
+    }
+
+    public boolean isBlocked() {
+        return isBlocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        isBlocked = blocked;
+    }
+
+    public String getCreator_id() {
+        return creator_id;
+    }
+
     public void setCreator_id(String creator_id) {
         this.creator_id = creator_id;
+    }
+
+    public ArrayList<String> getTags() {
+        return tags;
     }
 
     public void setTags(ArrayList<String> tags) {
@@ -565,42 +577,52 @@ public class ChallengeEntity {
         this.tags = tags;
     }
 
+    public ArrayList<String> getCategories() {
+        return categories;
+    }
+
     public void setCategories(ArrayList<String> categories) {
 
         this.categories = categories;
+    }
+
+    public int getRewardRp() {
+        return rewardRp;
     }
 
     public void setRewardRp(int rewardRp) {
         this.rewardRp = rewardRp;
     }
 
+    public ArrayList<String> getRewardTrophies() {
+        return rewardTrophies;
+    }
+
     public void setRewardTrophies(ArrayList<String> rewardTrophies) {
         this.rewardTrophies = rewardTrophies;
     }
 
-    private void setId(String id) {
-        this.id = id;
+    public LocalDateTime getDateTime() {
+        return dateTime;
     }
 
-    @Override
-    public String toString() {
+    @java.lang.Override
+    public java.lang.String toString() {
         return "ChallengeEntity{" +
-                "id='" + id + '\'' +
+                "dateTime=" + dateTime +
+                ", id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", task='" + task + '\'' +
                 ", creator_id='" + creator_id + '\'' +
                 ", likes=" + likes +
                 ", timesViewed=" + timesViewed +
                 ", rewardRp=" + rewardRp +
+                ", reportsCount=" + reportsCount +
+                ", isBlocked=" + isBlocked +
                 ", rewardTrophies=" + rewardTrophies +
                 ", tags=" + tags +
                 ", categories=" + categories +
                 ", photo='" + photo + '\'' +
-                ", dateTime=" + dateTime +
                 '}';
-    }
-
-    public boolean isBanned() {
-        return true;
     }
 }
